@@ -43,6 +43,7 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "acquire-product-80"
+          # project: "acquire-product-80"
+          project: "acquire-qa-80"
           entrypoint: "main.js"
           root: "."
