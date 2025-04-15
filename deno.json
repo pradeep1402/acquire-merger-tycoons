@@ -1,8 +1,12 @@
 {
   "lint": {
     "rules": {
-      "tags": ["recommended"],
-      "include": ["camelcase"]
+      "tags": [
+        "recommended"
+      ],
+      "include": [
+        "camelcase"
+      ]
     }
   },
   "fmt": {
@@ -25,10 +29,23 @@
     "test-coverage": "deno test -A --coverage=coverage",
     "coverage": {
       "command": "deno coverage --html",
-      "dependencies": ["test-coverage"]
+      "dependencies": [
+        "test-coverage"
+      ]
     }
   },
   "test": {
-    "include": ["src/*", "test/*"]
+    "include": [
+      "src/*",
+      "test/*"
+    ]
+  },
+  "deploy": {
+    "project": "b83ceb80-cc93-4119-930a-59f27e1a5a0c",
+    "exclude": [
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "main.js"
   }
 }
