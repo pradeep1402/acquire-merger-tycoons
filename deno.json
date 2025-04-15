@@ -6,10 +6,8 @@
     }
   },
   "fmt": {
-    "options": {
-      "lineWidth": 80,
-      "indentWidth": 2
-    }
+    "lineWidth": 80,
+    "indentWidth": 2
   },
   "imports": {
     "assert": "jsr:@std/assert@^1.0.12",
