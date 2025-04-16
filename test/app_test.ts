@@ -1,5 +1,10 @@
 import { assertEquals } from "assert";
+import { describe, it } from "testing/bdd";
+import { createApp } from "../src/app.ts";
 
-Deno.test("test", () => {
-  assertEquals(1, 1);
-});
+describe("", () => {
+  it("", () => {
+    // createApp();
+    assertEquals(1, 1);
+  })
+})

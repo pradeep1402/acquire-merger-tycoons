@@ -1,7 +1,10 @@
 import { createApp } from "./src/app.ts";
+import { Acquire } from "./src/models/game.ts";
 
 const main = () => {
-  Deno.serve({ port: 2616 }, createApp().fetch);
+  const acquire = new Acquire();
+  const app = createApp(acquire);
+  Deno.serve({ port: 2616 }, app.fetch);
 };
 
 main();
