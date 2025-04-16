@@ -1,10 +1,12 @@
+export type Player = { id: number; name: string };
+
 class Acquire {
   id: string;
-  players: { id: number; name: string }[];
+  players: Player[];
 
-  constructor() {
+  constructor(players: Player[]) {
     this.id = "1";
-    this.players = [{ id: 1, name: "krishnanand" }];
+    this.players = players;
   }
 }
 
