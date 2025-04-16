@@ -1,14 +1,12 @@
-import { assertEquals, assertFalse } from "assert";
+import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
-import { Tile } from "../src/models/tile.ts";
+import { Acquire, Player } from "../src/models/game.ts";
 
-describe("Tile model", () => {
+describe("Acquire model", () => {
   it("testing constructor", () => {
-    const tile = new Tile("1A");
-    assertEquals(tile.label, "1A");
-    assertFalse(tile.isIndependent);
-    assertFalse(tile.isDead);
-    assertEquals(tile.hotel, null);
-    assertFalse(tile.isOccupied);
+    const players: Player[] = [{ id: 2, name: "string" }];
+    const acquire = new Acquire(players);
+
+    assertEquals(acquire.players, players);
   });
 });
