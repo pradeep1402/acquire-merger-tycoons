@@ -7,7 +7,7 @@ describe("App: acquire/players", () => {
   it("should serve the list of players in the game", async () => {
     const players: Player[] = [{ id: 2, name: "krishnanand" }];
 
-    const acquire = new Acquire(players);
+    const acquire = new Acquire(["1A", "2A"], players);
     const app = createApp(acquire);
     const res = await app.request("acquire/players");
 
