@@ -49,5 +49,5 @@ jobs:
           # project: "acquire-product-80"
           # project: "acquire-qa-80"
           project: "acquire-dev-80"
-          entrypoint: "main.js"
+          entrypoint: "main.ts"
           root: "."
