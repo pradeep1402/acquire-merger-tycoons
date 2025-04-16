@@ -7,7 +7,7 @@ const setup = () => {
 };
 
 const main = () => {
-  const popup = document.getElementById("tiles-popup");
+  // const popup = document.getElementById("tiles-popup");
   setup();
 };
 
