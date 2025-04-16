@@ -16,7 +16,7 @@
     "lodash": "npm:lodash@^4.17.21"
   },
   "tasks": {
-    "start": "deno run -A --watch main.js",
+    "start": "deno run -A --watch main.ts",
     "test": "deno test -A",
     "test-watch": "deno test --watch -A",
     "lint": "deno lint",
@@ -33,6 +33,6 @@
     "project": "b83ceb80-cc93-4119-930a-59f27e1a5a0c",
     "exclude": ["**/node_modules"],
     "include": [],
-    "entrypoint": "main.js"
+    "entrypoint": "main.ts"
   }
 }
