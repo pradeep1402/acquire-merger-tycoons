@@ -52,7 +52,7 @@ const createGuestRoutes = () => {
       "/style/login.css",
       serveStatic({
         path: "./public/style/login.css",
-      })
+      }),
     );
   return guestRoutes;
 };
