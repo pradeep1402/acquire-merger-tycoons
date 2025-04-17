@@ -67,11 +67,12 @@ describe("App: /login", () => {
     assertEquals(res.status, 303);
   });
 
-  it("should redirect to login page if not loggedin", async () => {
+  it("should open login.html if not logged in .", async () => {
     const players: string[] = ["krishnanand", "Adi", "Pradeep"];
     const acquire = new Acquire(["1A", "2A"], players);
     const sessions: Set<string> = new Set(["Adhi"]);
     const app = createApp(acquire, sessions);
+
     const res = await app.request("/login.html");
     await res.text();
     assertEquals(res.status, 200);
