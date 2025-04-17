@@ -117,22 +117,6 @@ describe("App: acquire/gameboard", () => {
     const res = await app.request("acquire/gameboard", {
       headers: { cookie: "sessionId=Malli" },
     });
-    const board = [
-      {
-        label: "1A",
-        isIndependent: false,
-        isDead: false,
-        hotel: null,
-        isOccupied: false,
-      },
-      {
-        label: "2A",
-        isIndependent: false,
-        isDead: false,
-        hotel: null,
-        isOccupied: false,
-      },
-    ];
 
     assertEquals(res.status, 303);
   });

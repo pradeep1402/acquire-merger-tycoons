@@ -91,5 +91,3 @@ export const createApp = (acquire: Acquire, sessions: Set<string>) => {
 
   return app;
 };
-
-
