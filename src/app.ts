@@ -14,7 +14,7 @@ export const createApp = (acquire: Acquire) => {
 
   app.get("*", serveStatic({ root: "./public" }));
   app.use(setContext(acquire));
-  app.get("acquire/gameboard", serveGameBoard);
-  app.get("acquire/players", servePlayers);
+  app.get("/acquire/gameboard", serveGameBoard);
+  app.get("/acquire/players", servePlayers);
   return app;
 };

@@ -1,5 +1,5 @@
 :root {
-  --background-color: #1e2a38;
+  --color: #1e2a38;
 }
 
 * {
@@ -20,7 +20,7 @@ body {
   display: flex;
   width: 722px;
   flex-wrap: wrap;
-  border: 1px solid black;
+  border: 1px solid var(--color);
   background-color: #f9fafb;
 }
 
@@ -30,5 +30,44 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid black;
+  color: var(--color);
+  border: 1px solid var(--color);
+}
+
+#tiles-popup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #b1d4e0;
+  opacity: 75%;
+  width: 50vw;
+  height: 50vh;
+  background-color: var(--color);
+  border-radius: 20px;
+  font-family: "Times New Roman";
+  position: fixed;
+  top: 25%;
+  left: 25%;
+}
+
+#tiles {
+  width: 19em;
+  height: 14em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.player-tile {
+  width: 28%;
+  height: 35%;
+  background-color: #b1d4e0;
+  color: var(--color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
 }

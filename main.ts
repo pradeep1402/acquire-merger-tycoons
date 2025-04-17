@@ -1,9 +1,9 @@
 import { createApp } from "./src/app.ts";
-import { Acquire, Player } from "./src/models/game.ts";
+import { Acquire } from "./src/models/game.ts";
 
 const main = async () => {
   const tiles = JSON.parse(await Deno.readTextFile("./src/data/tiles.json"));
-  const players: Player[] = [{ id: 2, name: "krishnanand" }];
+  const players: string[] = ["Adi", "Krishna", "Siddhik"];
   const acquire = new Acquire(tiles, players);
   const app = createApp(acquire);
 

@@ -27,6 +27,7 @@ const renderGameBoard = async () => {
 
 const main = async () => {
   await renderGameBoard();
+  setup();
 };
 
 globalThis.onload = main;
