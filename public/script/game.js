@@ -62,7 +62,7 @@ const renderGameBoard = async () => {
 };
 
 const setup = async () => {
-  const player = await getResource("acquire/playerDetails");
+  const player = await getResource("acquire/player-details");
   const tiles = document.querySelectorAll(".player-tile");
   const tileData = [...player.tiles];
 
