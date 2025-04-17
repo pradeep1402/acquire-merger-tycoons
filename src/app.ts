@@ -70,8 +70,10 @@ export const createApp = (acquire: Acquire, sessions: Set<string>) => {
   const guestRoutes = createGuestRoutes();
   const authenticatedRoutes = createAuthenticatedRoutes();
   const app = new Hono();
-   
+
   app.use(setContext(acquire, sessions));
+  app.get("/acquire/gameboard", serveGameBoard);
+  app.get("/acquire/players", servePlayers);
   app.route("/", guestRoutes);
   app.route("/", authenticatedRoutes);
   return app;

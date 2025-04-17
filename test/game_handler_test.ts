@@ -8,7 +8,8 @@ describe("App: acquire/players", () => {
     const players: string[] = ["krishnanand", "Adi", "Pradeep"];
 
     const acquire = new Acquire(["1A", "2A"], players);
-    const app = createApp(acquire);
+    const sessions: Set<string> = new Set();
+    const app = createApp(acquire, sessions);
     const res = await app.request("acquire/players");
     const data = await res.json();
     assertEquals(data.length, 3);
@@ -21,7 +22,8 @@ describe("App: acquire/gameboard", () => {
     const players: string[] = ["krishnanand"];
 
     const acquire = new Acquire(["1A", "2A"], players);
-    const app = createApp(acquire);
+    const sessions: Set<string> = new Set();
+    const app = createApp(acquire, sessions);
     const res = await app.request("acquire/gameboard");
     const board = [
       {
