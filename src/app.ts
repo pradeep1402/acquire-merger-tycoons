@@ -19,17 +19,6 @@ const setContext =
     await next();
   };
 
-// const authenticateUser = async (ctx: Context, next: Next) => {
-//   const session = getCookie(ctx, "sessionId");
-//   const url = new URL(ctx.req.url);
-
-//   if (!session) {
-//     return ctx.redirect("/pages/login.html", 303);
-//   }
-
-//   await next();
-// };
-
 const ensureGuest = async (c: Context, next: Next) => {
   const sessionId = getCookie(c, "sessionId");
   const sessions = c.get("sessions");
