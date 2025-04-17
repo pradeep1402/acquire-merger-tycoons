@@ -1,57 +1,58 @@
+:root {
+  --background-color: #1e2a38;
+}
+
 * {
-  margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: system-ui;
 }
 
 body {
-  background-image: url("../images/acquire-bg.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-main {
   height: 100vh;
-  width: 100vw;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.7);
+  align-items: center;
 }
 
-#login-section {
-  text-align: center;
-  height: 280px;
-  width: 500px;
-  background-color: rgba(0, 0, 0, 0.5);
+.login-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
-  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.5);
+  height: 30%;
+  width: 16%;
+  border: 1px solid var(--background-color);
+  border-radius: 10px;
 }
 
-#name {
-  font-size: 1.8rem;
-  border: none;
-  width: 390px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 9%;
-  padding: 2%;
+.login-container > h1 {
+  color: var(--background-color);
 }
 
-#name::placeholder {
-  color: rgba(255, 255, 255, 0.9);
+.login-container > form {
+  height: 50%;
+  width: 72%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
-button {
-  font-size: 1.8rem;
-  font-weight: 500;
-  border: none;
-  display: block;
-  width: 410px;
-  padding: 2%;
-  background-color: rgba(255, 255, 255, 0.4);
-  color: rgba(255, 255, 255, 1);
+.login-container input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--background-color);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.login-container button {
+  width: 100%;
+  background-color: var(--background-color);
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 1.1rem;
 }
