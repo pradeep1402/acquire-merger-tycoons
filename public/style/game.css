@@ -1,1 +1,34 @@
+:root {
+  --background-color: #1e2a38;
+}
 
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: system-ui;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#gameBoard {
+  display: flex;
+  width: 722px;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  background-color: #f9fafb;
+}
+
+.tile {
+  height: 60px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+}
