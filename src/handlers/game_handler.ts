@@ -23,3 +23,9 @@ export const handleLogin = async (ctx: Context): Promise<Response> => {
 
   return ctx.redirect("/", 303);
 };
+
+export const servePlayerDetails = (ctx: Context): Response => {
+  const acquire = ctx.get("acquire");
+
+  return ctx.json(acquire.getPlayer("Adi"));
+};

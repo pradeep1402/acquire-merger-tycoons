@@ -6,10 +6,17 @@
     <title>Game</title>
     <link rel="stylesheet" href="/style/game.css" />
     <script src="/script/game.js"></script>
-    <script src="/script/tiles-popup.js"></script>
   </head>
   <body>
-    <div id="players"></div>
+    <div id="players">
+      <template id="players-template">
+        <div id="player">
+          <img id="player-avatar" />
+          <p id="player-name"></p>
+        </div>
+      </template>
+    </div>
+
     <div id="gameBoard">
       <template id="board">
         <div class="tile"></div>

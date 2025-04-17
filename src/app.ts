@@ -4,8 +4,10 @@ import { Acquire } from "./models/game.ts";
 import {
   handleLogin,
   serveGameBoard,
+  servePlayerDetails,
   servePlayers,
 } from "./handlers/game_handler.ts";
+
 import { getCookie } from "hono/cookie";
 
 const setContext =
@@ -74,8 +76,10 @@ export const createApp = (acquire: Acquire, sessions: Set<string>) => {
   app.use(setContext(acquire, sessions));
   app.get("/acquire/gameboard", serveGameBoard);
   app.get("/acquire/players", servePlayers);
+  app.get("/acquire/player-details", servePlayerDetails);
   app.route("/", guestRoutes);
   app.route("/", authenticatedRoutes);
+
   return app;
 };
 

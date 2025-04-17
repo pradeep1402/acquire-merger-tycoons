@@ -9,5 +9,6 @@ describe("Player model", () => {
 
     assertEquals(player.name, "Sudheer");
     assertEquals(player.tiles, new Set(tiles));
+    assertEquals(player.cash, 6000);
   });
 });

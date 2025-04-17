@@ -12,7 +12,27 @@ describe("App: acquire/players", () => {
     const app = createApp(acquire, sessions);
     const res = await app.request("acquire/players");
     const data = await res.json();
+
     assertEquals(data.length, 3);
+    assertEquals(res.status, 200);
+
+    players.forEach((name, i) => {
+      assertEquals(data[i].name, name);
+    });
+  });
+});
+
+describe("App: acquire/playerDetails", () => {
+  it("should serve details of a player in the game", async () => {
+    const players: string[] = ["krishnanand", "Adi", "Pradeep"];
+
+    const acquire = new Acquire(["1A", "2A"], players);
+    const sessions: Set<string> = new Set();
+    const app = createApp(acquire, sessions);
+    const res = await app.request("acquire/player-details");
+    const data = await res.json();
+
+    assertEquals(data.name, "Adi");
     assertEquals(res.status, 200);
   });
 });
