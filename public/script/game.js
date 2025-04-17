@@ -57,7 +57,7 @@ const setup = async () => {
   const tileData = [...player.tiles];
 
   tiles.forEach((tile, index) => (tile.textContent = tileData[index]));
-  
+
   setTimeout(() => {
     const popup = document.getElementById("tiles-popup");
     popup.style.display = "none";
