@@ -15,7 +15,7 @@ const main = async () => {
   const sessions: Set<string> = new Set();
   const app = createApp(acquire, sessions);
 
-  const port: number = Number(Deno.env.get("PORT")) | 3000;
+  const port: number = Number(Deno.env.get("PORT")) || 3000;
   Deno.serve({ port }, app.fetch);
 };
 
