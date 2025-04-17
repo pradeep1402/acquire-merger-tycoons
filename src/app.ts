@@ -3,8 +3,8 @@ import { serveStatic } from "hono/deno";
 import { Acquire } from "./models/game.ts";
 import {
   serveGameBoard,
-  servePlayers,
   servePlayerDetails,
+  servePlayers,
 } from "./handlers/game_handler.ts";
 
 const setContext =
