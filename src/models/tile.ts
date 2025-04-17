@@ -12,4 +12,14 @@ export class Tile {
     this.hotel = null;
     this.isOccupied = false;
   }
+
+  toJSON() {
+    return {
+      label: this.label,
+      isIndependent: this.isIndependent,
+      isDead: this.isDead,
+      hotel: this.hotel,
+      isOccupied: this.isOccupied,
+    };
+  }
 }

@@ -1,7 +1,7 @@
 export class Player {
-  name: string;
-  cash: number;
-  tiles: Set<string>;
+  private name: string;
+  private cash: number;
+  private tiles: Set<string>;
 
   constructor(name: string, tiles: string[]) {
     this.name = name;

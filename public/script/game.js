@@ -45,11 +45,11 @@ const renderPlayers = async () => {
 };
 
 const renderTile = (gameBoard) => {
-  return (tileInstance) => {
-    const clone = cloneTemplates("board");
-    const tile = clone.querySelector(".tile");
+  return (tileInfo) => {
+    const board = cloneTemplates("board");
+    const tile = board.querySelector(".tile");
 
-    tile.innerText = tileInstance.label;
+    tile.innerText = tileInfo.label;
     gameBoard.appendChild(tile);
   };
 };

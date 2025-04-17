@@ -11,6 +11,7 @@ const main = async () => {
     "Liki",
     "Sudheer",
   ];
+
   const acquire = new Acquire(tiles, players);
   const sessions: Set<string> = new Set();
   const app = createApp(acquire, sessions);
