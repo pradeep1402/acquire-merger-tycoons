@@ -8,7 +8,6 @@ investments, mergers, and stock management. Multiple players can join and play
 in real time.
 
 **Built with:**
-
 - 🦕 Deno (runtime)
 - 🌐 Hono (web framework)
 - 🧠 JavaScript / TypeScript
