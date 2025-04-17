@@ -9,7 +9,7 @@ describe("Acquire model", () => {
       const players: string[] = ["Adi"];
       const acquire = new Acquire(
         ["1A", "2A", "3A", "4A", "5A", "6A"],
-        players
+        players,
       );
 
       acquire.players.forEach((p, i) => {
@@ -24,7 +24,7 @@ describe("Acquire model", () => {
       const players: string[] = ["Adi"];
       const acquire = new Acquire(
         ["1A", "2A", "1A", "2A", "1A", "2A"],
-        players
+        players,
       );
       const actual = acquire.getPlayer("Adi");
 

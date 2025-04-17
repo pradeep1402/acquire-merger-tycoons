@@ -35,3 +35,9 @@
   align-items: center;
   font-size: 1.5rem;
 }
+
+#player-avatar {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+}
