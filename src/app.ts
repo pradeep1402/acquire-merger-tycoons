@@ -69,8 +69,6 @@ const ensureAuthenticated = async (c: Context, next: Next) => {
 const createAuthenticatedRoutes = () => {
   const authenticatedRoutes = new Hono();
 
-  
-
   authenticatedRoutes.use(ensureAuthenticated);
   authenticatedRoutes.get("/acquire/gameboard", serveGameBoard);
   authenticatedRoutes.get("/acquire/players", servePlayers);
