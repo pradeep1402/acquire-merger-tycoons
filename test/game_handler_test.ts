@@ -73,6 +73,7 @@ describe("App: /login", () => {
     const sessions: Set<string> = new Set(["Adhi"]);
     const app = createApp(acquire, sessions);
     const res = await app.request("/login.html");
+
     await res.text();
     assertEquals(res.status, 200);
   });
