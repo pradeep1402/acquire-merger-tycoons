@@ -4,10 +4,20 @@ const getResource = async (path) => {
 };
 
 const getAvatar = () => {
-  const avatarStore = ["/images/avatars/avatar1.jpeg"];
+  const avatarStore = [
+    "/avatar1.jpeg",
+    "/avatar2.jpeg",
+    "/avatar3.jpeg",
+    "/avatar4.jpeg",
+    "/avatar5.jpeg",
+    "/avatar6.jpeg",
+    "/avatar7.jpeg",
+    "/avatar8.jpeg",
+    "/avatar9.jpeg",
+  ];
   const randomIndex = Math.floor(Math.random() * avatarStore.length);
 
-  return avatarStore[randomIndex];
+  return "/images/avatars" + avatarStore[randomIndex];
 };
 
 const cloneTemplates = (id) => {
