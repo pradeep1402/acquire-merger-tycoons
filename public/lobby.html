@@ -4,8 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Waiting Page</title>
+    <link rel="stylesheet" href="/style/lobby.css" />
+
   </head>
   <body>
-    <h1>Hello</h1>
+    <h1>LOBBY</h1>
+    <section id="player-list">
+      <template id="lobby-template">
+        <div class="player-container">
+          <img id="player-avatar" />
+          <p id="player-name"></p>
+        </div>
+      </template>
+    </section>
+    <script src="/script/lobby.js"></script>
+
   </body>
 </html>
