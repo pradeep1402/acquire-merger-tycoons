@@ -3,13 +3,11 @@ import { Player } from "./player.ts";
 import _ from "lodash";
 
 class Acquire {
-  id: string;
-  players: Player[];
-  pile: string[];
-  board: Tile[];
+  private players: Player[];
+  private pile: string[];
+  private board: Tile[];
 
   constructor(tiles: string[], players: string[]) {
-    this.id = "1";
     this.pile = _.shuffle(tiles);
     this.board = tiles.map((tile: string): Tile => new Tile(tile));
     this.players = players.map(
@@ -17,8 +15,8 @@ class Acquire {
     );
   }
 
-  getBoard(): Tile[] {
-    return this.board;
+  getBoard() {
+    return this.board.map((tile) => tile.toJSON());
   }
 
   getTiles(count: number): string[] {

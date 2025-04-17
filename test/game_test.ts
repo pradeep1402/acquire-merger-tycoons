@@ -5,16 +5,16 @@ import { Tile } from "../src/models/tile.ts";
 
 describe("Acquire model", () => {
   describe("testing constructor", () => {
-    it("should initialise player with 6 tiles", () => {
+    it("should initialize player with 6 tiles", () => {
       const players: string[] = ["Adi"];
       const acquire = new Acquire(
         ["1A", "2A", "3A", "4A", "5A", "6A"],
         players,
       );
 
-      acquire.players.forEach((p, i) => {
+      acquire.getAllPlayers().forEach((p, i) => {
         assertEquals(p.name, players[i]);
-        assertEquals(p.tiles.size, 6);
+        assertEquals(p.tiles.length, 6);
       });
     });
   });
@@ -33,11 +33,13 @@ describe("Acquire model", () => {
     });
   });
 
-  it("testing getBoard method", () => {
-    const players: string[] = ["Adi", "Malli", "Aman"];
-    const acquire = new Acquire(["1A", "2A"], players);
-    const board = [new Tile("1A"), new Tile("2A")];
+  describe("getBoard() method", () => {
+    it("should return all info of all tiles", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const acquire = new Acquire(["1A", "2A"], players);
+      const board = [new Tile("1A").toJSON(), new Tile("2A").toJSON()];
 
-    assertEquals(acquire.getBoard(), board);
+      assertEquals(acquire.getBoard(), board);
+    });
   });
 });
