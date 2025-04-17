@@ -75,5 +75,19 @@ body {
 #player-avatar {
   height: 60px;
   width: 60px;
+  border: 3px solid rgba(0, 0, 0, 0.3);
   border-radius: 50%;
+}
+
+#players{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  position: absolute;
+  left: 2%;
+}
+
+#player{
+  text-align: center;
 }
