@@ -25,9 +25,27 @@ const renderGameBoard = async () => {
   board.forEach(renderTile(template, gameboard));
 };
 
+const setup = async () => {
+  const res = await fetch("acquire/playerDetails");
+  console.log(res);
+
+  const player = await res.json();
+  const tiles = document.querySelectorAll(".player-tile");
+  const tileData = [...player.tiles];
+  console.log(tileData, tiles);
+
+  tiles.forEach((tile, index) => (tile.textContent = tileData[index]));
+  setTimeout(() => {
+    const popup = document.getElementById("tiles-popup");
+    console.log(popup);
+
+    popup.style.display = "none";
+  }, 2500);
+};
+
 const main = async () => {
   await renderGameBoard();
-  setup();
+  await setup();
 };
 
 globalThis.onload = main;

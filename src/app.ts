@@ -16,10 +16,10 @@ const setContext =
 export const createApp = (acquire: Acquire) => {
   const app = new Hono();
 
-  app.get("*", serveStatic({ root: "./public" }));
   app.use(setContext(acquire));
   app.get("acquire/gameboard", serveGameBoard);
   app.get("acquire/players", servePlayers);
   app.get("acquire/playerDetails", servePlayerDetails);
+  app.get("*", serveStatic({ root: "./public" }));
   return app;
 };

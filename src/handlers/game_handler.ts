@@ -15,5 +15,5 @@ export const serveGameBoard = (ctx: Context): Response => {
 export const servePlayerDetails = (ctx: Context): Response => {
   const acquire = ctx.get("acquire");
 
-  return ctx.json(acquire.getPlayer());
+  return ctx.json(acquire.getPlayer("Adi"));
 };

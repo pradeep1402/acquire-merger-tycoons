@@ -16,6 +16,20 @@ describe("App: acquire/players", () => {
   });
 });
 
+describe("App: acquire/playerDetails", () => {
+  it("should serve details of a player in the game", async () => {
+    const players: string[] = ["krishnanand", "Adi", "Pradeep"];
+
+    const acquire = new Acquire(["1A", "2A"], players);
+    const app = createApp(acquire);
+    const res = await app.request("acquire/playerDetails");
+    const data = await res.json();
+
+    assertEquals(data.name, "Adi");
+    assertEquals(res.status, 200);
+  });
+});
+
 describe("App: acquire/gameboard", () => {
   it("should return the board array", async () => {
     const players: string[] = ["krishnanand"];
