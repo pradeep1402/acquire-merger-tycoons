@@ -6,9 +6,9 @@ describe("Player model", () => {
   it("testing constructor", () => {
     const tiles: string[] = ["1a", "2a", "3a", "4a", "3b", "6a"];
     const player = new Player("Sudheer", tiles);
-
-    assertEquals(player.name, "Sudheer");
-    assertEquals(player.tiles, new Set(tiles));
-    assertEquals(player.cash, 6000);
+    const person = player.toJSON()
+    assertEquals(person.name, "Sudheer");
+    assertEquals(person.tiles, tiles);
+    assertEquals(person.cash, 6000);
   });
 });

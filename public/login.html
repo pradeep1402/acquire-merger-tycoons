@@ -3,22 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <link rel="stylesheet" href="style/login.css" />
+    <title>login</title>
+    <link rel="stylesheet" href="../style/login.css" />
   </head>
   <body>
-    <main>
-      <div id="login-section">
-        <form id="player-login">
-          <input
-            type="text"
-            name="name"
-            id="name"
-            placeholder="Enter your name"
-          />
-          <button>Login</button>
-        </form>
-      </div>
+    <main class="login-container">
+      <h1>ACQUIRE</h1>
+      <form action="/login" method="post">
+        <input
+          type="text"
+          name="playerName"
+          placeholder="ENTER YOUR NAME"
+          required
+          minlength="2"
+        />
+        <button type="submit">Login</button>
+      </form>
     </main>
   </body>
 </html>
