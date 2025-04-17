@@ -79,7 +79,7 @@ body {
   border-radius: 50%;
 }
 
-#players{
+#players {
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -88,6 +88,6 @@ body {
   left: 2%;
 }
 
-#player{
+#player {
   text-align: center;
 }
