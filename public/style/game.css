@@ -1,3 +1,39 @@
+:root {
+  --color: #1e2a38;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: system-ui;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#gameBoard {
+  display: flex;
+  width: 722px;
+  flex-wrap: wrap;
+  border: 1px solid var(--color);
+  background-color: #f9fafb;
+}
+
+.tile {
+  height: 60px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color);
+  border: 1px solid var(--color);
+}
+
 #tiles-popup {
   display: flex;
   flex-direction: column;
@@ -7,7 +43,7 @@
   opacity: 75%;
   width: 50vw;
   height: 50vh;
-  background-color: #1e2a38;
+  background-color: var(--color);
   border-radius: 20px;
   font-family: "Times New Roman";
   position: fixed;
@@ -25,11 +61,11 @@
   flex-wrap: wrap;
 }
 
-.tile {
+.player-tile {
   width: 28%;
   height: 35%;
   background-color: #b1d4e0;
-  color: #1e2a38;
+  color: var(--color);
   display: flex;
   justify-content: center;
   align-items: center;
