@@ -2,5 +2,5 @@
 
 deno fmt
 deno lint
-deno test -A
+deno test -A --coverage
 deno run -A jsr:@ashishkujoy/deno-coverage-checker --lines=90 --functions=50 --branches=80
