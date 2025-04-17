@@ -14,7 +14,7 @@ describe("App: acquire/players", () => {
 
     assertEquals(data.length, 3);
     assertEquals(res.status, 200);
-    
+
     players.forEach((name, i) => {
       assertEquals(data[i].name, name);
     });
