@@ -7,7 +7,8 @@ const main = async () => {
   const acquire = new Acquire(tiles, players);
   const app = createApp(acquire);
 
-  Deno.serve({ port: 2616 }, app.fetch);
+  const port: number = Number(Deno.env.get("PORT")) | 3000;
+  Deno.serve({ port }, app.fetch);
 };
 
 main();

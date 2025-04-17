@@ -11,3 +11,9 @@ export const serveGameBoard = (ctx: Context): Response => {
 
   return ctx.json(game.getBoard());
 };
+
+export const servePlayerDetails = (ctx: Context): Response => {
+  const acquire = ctx.get("acquire");
+
+  return ctx.json(acquire.getPlayer());
+};
