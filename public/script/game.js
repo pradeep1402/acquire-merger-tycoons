@@ -34,47 +34,32 @@ const renderPlayers = async () => {
   });
 };
 
-const fetchGameBoard = async () => {
-  try {
-    const res = await fetch("/acquire/gameboard");
-    return await res.json();
-  } catch (error) {
-    console.error(`Fetching Game Board: ${error}`);
-  }
-};
-
-const renderTile = (template, gameboard) => {
+const renderTile = (gameBoard) => {
   return (tileInstance) => {
-    const clone = template.content.cloneNode(true);
+    const clone = cloneTemplates("board");
     const tile = clone.querySelector(".tile");
 
     tile.innerText = tileInstance.label;
-    gameboard.appendChild(tile);
+    gameBoard.appendChild(tile);
   };
 };
 
 const renderGameBoard = async () => {
-  const board = await fetchGameBoard();
-  const template = document.querySelector("#board");
-  const gameboard = document.querySelector("#gameBoard");
+  const board = await getResource("/acquire/gameboard");
+  const gameBoard = document.querySelector("#gameBoard");
 
-  board.forEach(renderTile(template, gameboard));
+  board.forEach(renderTile(gameBoard));
 };
 
 const setup = async () => {
-  const res = await fetch("acquire/playerDetails");
-  console.log(res);
-
-  const player = await res.json();
+  const player = await getResource("acquire/playerDetails");
   const tiles = document.querySelectorAll(".player-tile");
   const tileData = [...player.tiles];
-  console.log(tileData, tiles);
 
   tiles.forEach((tile, index) => (tile.textContent = tileData[index]));
+  
   setTimeout(() => {
     const popup = document.getElementById("tiles-popup");
-    console.log(popup);
-
     popup.style.display = "none";
   }, 2500);
 };

@@ -11,6 +11,7 @@ const main = async () => {
     "Liki",
     "Sudheer",
   ];
+  
   const acquire = new Acquire(tiles, players);
   const app = createApp(acquire);
 

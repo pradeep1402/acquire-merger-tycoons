@@ -11,8 +11,13 @@ describe("App: acquire/players", () => {
     const app = createApp(acquire);
     const res = await app.request("acquire/players");
     const data = await res.json();
+
     assertEquals(data.length, 3);
     assertEquals(res.status, 200);
+    
+    players.forEach((name, i) => {
+      assertEquals(data[i].name, name);
+    });
   });
 });
 
