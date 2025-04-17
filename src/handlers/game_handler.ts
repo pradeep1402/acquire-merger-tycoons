@@ -1,7 +1,13 @@
 import { Context } from "hono";
 
-export const servePlayers = (context: Context) => {
-  const acquire = context.get("acquire");
+export const servePlayers = (ctx: Context): Response => {
+  const acquire = ctx.get("acquire");
 
-  return context.json(acquire.players);
+  return ctx.json(acquire.getAllPlayers());
+};
+
+export const serveGameBoard = (ctx: Context): Response => {
+  const game = ctx.get("acquire");
+
+  return ctx.json(game.getBoard());
 };

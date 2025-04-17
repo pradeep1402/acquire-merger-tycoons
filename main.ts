@@ -1,8 +1,8 @@
 import { createApp } from "./src/app.ts";
-import { Acquire, Player } from "./src/models/game.ts";
+import { Acquire } from "./src/models/game.ts";
 
 const main = () => {
-  const players: Player[] = [{ id: 2, name: "krishnanand" }];
+  const players: string[] = ["Adi", "Krishna", "Siddhik"];
   const acquire = new Acquire(["1A", "2A"], players);
   const app = createApp(acquire);
 
