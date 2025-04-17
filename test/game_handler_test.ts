@@ -8,9 +8,11 @@ describe("App: acquire/players", () => {
     const players: string[] = ["krishnanand", "Adi", "Pradeep"];
 
     const acquire = new Acquire(["1A", "2A"], players);
-    const sessions: Set<string> = new Set();
+    const sessions: Set<string> = new Set(["Adi"]);
     const app = createApp(acquire, sessions);
-    const res = await app.request("acquire/players");
+    const res = await app.request("acquire/players", {
+      headers: { cookie: "sessionId=Adi" },
+    });
     const data = await res.json();
 
     assertEquals(data.length, 3);
@@ -27,9 +29,11 @@ describe("App: acquire/playerDetails", () => {
     const players: string[] = ["krishnanand", "Adi", "Pradeep"];
 
     const acquire = new Acquire(["1A", "2A"], players);
-    const sessions: Set<string> = new Set();
+    const sessions: Set<string> = new Set(["Adi"]);
     const app = createApp(acquire, sessions);
-    const res = await app.request("acquire/player-details");
+    const res = await app.request("acquire/player-details", {
+      headers: { cookie: "sessionId=Adi" },
+    });
     const data = await res.json();
 
     assertEquals(data.name, "Adi");
@@ -42,9 +46,11 @@ describe("App: acquire/gameboard", () => {
     const players: string[] = ["krishnanand"];
 
     const acquire = new Acquire(["1A", "2A"], players);
-    const sessions: Set<string> = new Set();
+    const sessions: Set<string> = new Set(["Adi"]);
     const app = createApp(acquire, sessions);
-    const res = await app.request("acquire/gameboard");
+    const res = await app.request("acquire/gameboard", {
+      headers: { cookie: "sessionId=Adi" },
+    });
     const board = [
       {
         label: "1A",
