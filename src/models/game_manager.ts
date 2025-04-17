@@ -1,5 +1,4 @@
 import { Acquire } from "./game.ts";
-
 class GameManager {
   private gamesMap: Map<string, Acquire>;
   private tiles: string[];
