@@ -92,14 +92,4 @@ export const createApp = (acquire: Acquire, sessions: Set<string>) => {
   return app;
 };
 
-// export const createApp = (acquire: Acquire, sessions: Set<string>) => {
-//   const app = new Hono();
 
-//   app.use(setContext(acquire, sessions));
-//   app.use("*", authenticateUser);
-//   app.post("/login", handleLogin);
-//   app.get("/acquire/gameboard", serveGameBoard);
-//   app.get("/acquire/players", servePlayers);
-//   app.get("*", serveStatic({ root: "./public" }));
-//   return app;
-// };

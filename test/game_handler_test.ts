@@ -41,6 +41,43 @@ describe("App: acquire/playerDetails", () => {
   });
 });
 
+describe("App: /login", () => {
+  it("should receive a cookie and redirect to index page", async () => {
+    const players: string[] = ["krishnanand", "Adi", "Pradeep"];
+    const formData = new FormData();
+    formData.set("playerName", "Adhi");
+    const acquire = new Acquire(["1A", "2A"], players);
+    const sessions: Set<string> = new Set(["Adi"]);
+    const app = createApp(acquire, sessions);
+    const res = await app.request("/login", { method: "POST", body: formData });
+
+    assertEquals(res.headers.getSetCookie(), ["sessionId=Adhi; Path=/"]);
+    assertEquals(res.status, 303);
+  });
+
+  it("should redirect to index page if already loggedin", async () => {
+    const players: string[] = ["krishnanand", "Adi", "Pradeep"];
+    const acquire = new Acquire(["1A", "2A"], players);
+    const sessions: Set<string> = new Set(["Adi"]);
+    const app = createApp(acquire, sessions);
+    const res = await app.request("/login.html", {
+      headers: { cookie: "sessionId=Adi" },
+    });
+
+    assertEquals(res.status, 303);
+  });
+
+  it("should redirect to login page if not loggedin", async () => {
+    const players: string[] = ["krishnanand", "Adi", "Pradeep"];
+    const acquire = new Acquire(["1A", "2A"], players);
+    const sessions: Set<string> = new Set(["Adhi"]);
+    const app = createApp(acquire, sessions);
+    const res = await app.request("/login.html");
+    await res.text();
+    assertEquals(res.status, 200);
+  });
+});
+
 describe("App: acquire/gameboard", () => {
   it("should return the board array", async () => {
     const players: string[] = ["krishnanand"];
@@ -70,5 +107,33 @@ describe("App: acquire/gameboard", () => {
 
     assertEquals(await res.json(), board);
     assertEquals(res.status, 200);
+  });
+  it("should redirect to login page", async () => {
+    const players: string[] = ["krishnanand"];
+
+    const acquire = new Acquire(["1A", "2A"], players);
+    const sessions: Set<string> = new Set(["Adi"]);
+    const app = createApp(acquire, sessions);
+    const res = await app.request("acquire/gameboard", {
+      headers: { cookie: "sessionId=Malli" },
+    });
+    const board = [
+      {
+        label: "1A",
+        isIndependent: false,
+        isDead: false,
+        hotel: null,
+        isOccupied: false,
+      },
+      {
+        label: "2A",
+        isIndependent: false,
+        isDead: false,
+        hotel: null,
+        isOccupied: false,
+      },
+    ];
+
+    assertEquals(res.status, 303);
   });
 });
