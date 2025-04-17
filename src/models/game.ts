@@ -13,7 +13,7 @@ class Acquire {
     this.pile = _.shuffle(tiles);
     this.board = tiles.map((tile: string): Tile => new Tile(tile));
     this.players = players.map(
-      (player: string): Player => new Player(player, this.getTiles(6))
+      (player: string): Player => new Player(player, this.getTiles(6)),
     );
   }
 
@@ -30,7 +30,7 @@ class Acquire {
   }
 
   getPlayer(player: string) {
-    return _.find(this.players, (p:Player) => p.toJSON().name === player);
+    return _.find(this.players, (p: Player) => p.toJSON().name === player);
   }
 }
 
