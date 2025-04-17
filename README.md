@@ -94,5 +94,5 @@ Test files for models, handlers, and core logic are inside `/tests`.\
 Run all tests using:
 
 ```bash
-deno test --coverage
+ deno test --coverage
 ```
