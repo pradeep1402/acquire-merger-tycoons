@@ -1,7 +1,7 @@
 import { GameManager } from "./game_manager.ts";
 
 export class Sessions {
-  private sessions: Map<string, string>;
+  private sessions: Map<string, { name: string; status: string }>;
   private waiting: { gameId: string; players: string[] };
   private idGenerator: () => string;
 
@@ -11,9 +11,17 @@ export class Sessions {
     this.waiting = { gameId: this.idGenerator(), players: [] };
   }
 
-  addPlayer(name: string): { gameId: string; playerId: string } {
+  addPlayer(name: string): string {
     const playerId = this.idGenerator();
-    this.sessions.set(playerId, name);
+
+    this.sessions.set(playerId, { name, status: "LoggedIn" });
+
+    return playerId;
+  }
+
+  addToWaitingList(playerId: string) {
+    const player = this.sessions.get(playerId);
+    if (player) player.status = "Waiting";
 
     if (this.waiting.players.length < 3) {
       this.waiting.players.push(playerId);
@@ -37,7 +45,7 @@ export class Sessions {
   }
 
   getPlayerName(playerId: string): string {
-    return this.sessions.get(playerId) || "Invalid Session Id...";
+    return this.sessions.get(playerId)?.name || "Invalid Session Id...";
   }
 
   removeSession(playerId: string) {

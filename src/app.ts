@@ -7,6 +7,7 @@ import {
   serveGameBoard,
   servePlayerDetails,
   servePlayers,
+  // serveGameStatus,
 } from "./handlers/game_handler.ts";
 
 import { getCookie } from "hono/cookie";
@@ -51,7 +52,7 @@ const createGuestRoutes = () => {
       "/style/login.css",
       serveStatic({
         path: "./public/style/login.css",
-      }),
+      })
     );
   return guestRoutes;
 };
@@ -73,6 +74,7 @@ const createAuthenticatedRoutes = () => {
   authenticatedRoutes.get("/acquire/gameboard", serveGameBoard);
   authenticatedRoutes.get("/acquire/players", servePlayers);
   authenticatedRoutes.get("/acquire/player-details", servePlayerDetails);
+  // authenticatedRoutes.get("/gameStatus", serveGameStatus);
 
   authenticatedRoutes.get("/*", serveStatic({ root: "./public" }));
   return authenticatedRoutes;

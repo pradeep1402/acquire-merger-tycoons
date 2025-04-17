@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { setCookie } from "hono/cookie";
+import { setCookie, getCookie } from "hono/cookie";
 
 export const servePlayers = (ctx: Context): Response => {
   const acquire = ctx.get("acquire");
