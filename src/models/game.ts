@@ -10,9 +10,10 @@ class Acquire {
   constructor(tiles: string[], players: string[]) {
     this.pile = _.shuffle(tiles);
     this.board = tiles.map((tile: string): Tile => new Tile(tile));
-    this.players = players.map(
-      (player: string): Player => new Player(player, this.getTiles(6)),
-    );
+    this.players = players.map((player: string): Player => {
+      const tiles = this.getTiles(6);
+      return new Player(player, tiles);
+    });
   }
 
   getBoard() {
@@ -29,7 +30,6 @@ class Acquire {
 
   getPlayer(player: string) {
     const playerDetails = _.find(this.players, (p: Player) => {
-      console.log("inside", p.toJSON().tiles);
       return p.toJSON().name === player;
     });
 

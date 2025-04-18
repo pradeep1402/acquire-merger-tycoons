@@ -6,9 +6,9 @@ import {
   handleLogin,
   handleQuickPlay,
   serveGameBoard,
+  serveGameStatus,
   servePlayerDetails,
   servePlayers,
-  serveGameStatus,
 } from "./handlers/game_handler.ts";
 import { getCookie } from "hono/cookie";
 import { Sessions } from "./models/sessions.ts";
