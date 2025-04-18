@@ -154,6 +154,30 @@ describe("App: acquire/gameboard", () => {
   });
 });
 
+describe("App: acquire/gameStatus", () => {
+  it("should return the game status when only one player", async () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const gameManager = new GameManager(["1A"]);
+    const sessions = new Sessions(idGenerator);
+    const player1 = sessions.addPlayer("Adi");
+    sessions.addToWaitingList(player1);
+    sessions.createRoom(gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/acquire/gameStatus", {
+      method: "GET",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+
+    assertEquals(await res.json(), {
+      gameId: "0",
+      players: [{ name: "Adi", status: "Waiting" }],
+    });
+    assertEquals(res.status, 200);
+  });
+});
+
 describe("App: acquire/home/quick-play", () => {
   it("should add player in waiting list", async () => {
     const sessions = new Sessions(() => "1");

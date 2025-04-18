@@ -36,12 +36,13 @@ export const servePlayerDetails = (ctx: Context): Response => {
   return ctx.json({ ...playerDetails, name });
 };
 
-// export const serveGameStatus = (ctx: Context): Response => {
-//   const { gameId } = getCookie(ctx);
-//   const gameManager = ctx.get("gameManager");
-//   const game = gameManager.getGame(gameId);
+export const serveGameStatus = (ctx: Context): Response => {
+  const sessions = ctx.get("sessions");
+  const gameManager = ctx.get("gameManager");
+  const gameStatus = sessions.createRoom(gameManager);
 
-//   return ctx.json(game);
+  return ctx.json(gameStatus);
+};
 
 export const handleQuickPlay = (ctx: Context): Response => {
   const sessions = ctx.get("sessions");

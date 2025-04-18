@@ -38,10 +38,14 @@ export class Sessions {
     if (this.waiting.players.length === 3) {
       const { players, gameId } = this.waiting;
       gameManager.createGame(gameId, players);
-      return "GAME STARTED";
+      return { status: "START" };
     }
 
-    return "WAITING...";
+    const players = this.waiting.players.map((playerId) =>
+      this.sessions.get(playerId)
+    );
+
+    return { gameId: this.waiting.gameId, players };
   }
 
   getPlayerName(playerId: string): string | null {

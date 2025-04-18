@@ -75,8 +75,12 @@ describe("Session model", () => {
       const gameManager = new GameManager(tiles);
 
       sessions.addPlayer("Sudheer");
+      sessions.addToWaitingList("1");
 
-      assertEquals(sessions.createRoom(gameManager), "WAITING...");
+      assertEquals(sessions.createRoom(gameManager), {
+        gameId: "0",
+        players: [{ name: "Sudheer", status: "Waiting" }],
+      });
     });
 
     it("should return join the game when three players joined", () => {
@@ -93,7 +97,7 @@ describe("Session model", () => {
       sessions.addToWaitingList("2");
       sessions.addToWaitingList("3");
 
-      assertEquals(sessions.createRoom(gameManager), "GAME STARTED");
+      assertEquals(sessions.createRoom(gameManager), { status: "START" });
     });
   });
   describe("testing removeSession", () => {
