@@ -6,6 +6,7 @@ class Acquire {
   private players: Player[];
   private pile: string[];
   private board: Tile[];
+  private currentPlayerIndex: number;
 
   constructor(tiles: string[], players: string[]) {
     this.pile = _.shuffle(tiles);
@@ -14,6 +15,13 @@ class Acquire {
       const tiles = this.getTiles(6);
       return new Player(player, tiles);
     });
+    this.currentPlayerIndex = 0;
+  }
+
+  getCurrentPlayer() {
+    const index = this.currentPlayerIndex % this.players.length;
+
+    return this.players[index].toJSON().id;
   }
 
   getBoard() {

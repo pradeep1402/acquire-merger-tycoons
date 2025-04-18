@@ -289,3 +289,63 @@ describe("App: /", () => {
     assertEquals(res.status, 200);
   });
 });
+
+describe("App: /game-stats", () => {
+  it("should return game stats when game starts", async () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const gameManager = new GameManager(["1A"]);
+    const sessions = new Sessions(idGenerator);
+    const player1 = sessions.addPlayer("Adi");
+    const player2 = sessions.addPlayer("bisht");
+    const player3 = sessions.addPlayer("malli");
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/acquire/game-stats", {
+      method: "GET",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+    const expected = {
+      board: [
+        {
+          label: "1A",
+          isIndependent: false,
+          isDead: false,
+          hotel: null,
+          isOccupied: false,
+        },
+      ],
+      players: ["you", "bisht", "malli"],
+      currentPlayer: "Adi",
+    };
+
+    assertEquals(await res.json(), expected);
+    assertEquals(res.status, 200);
+  });
+
+  it("should return the first player as current player when game starts", async () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const gameManager = new GameManager(["1A"]);
+    const sessions = new Sessions(idGenerator);
+    const player1 = sessions.addPlayer("Adi");
+    const player2 = sessions.addPlayer("bisht");
+    const player3 = sessions.addPlayer("malli");
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/acquire/game-stats", {
+      method: "GET",
+      headers: { cookie: "sessionId=2;gameId=0" },
+    });
+    const gameStats = await res.json();
+    assertEquals(gameStats.currentPlayer, "Adi");
+    assertEquals(gameStats.players, ["Adi", "you", "malli"]);
+    assertEquals(res.status, 200);
+  });
+});

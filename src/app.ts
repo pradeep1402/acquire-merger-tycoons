@@ -5,6 +5,7 @@ import { GameManager } from "./models/game_manager.ts";
 import {
   handleLogin,
   handleQuickPlay,
+  serveGame,
   serveGameBoard,
   serveGameStatus,
   servePlayerDetails,
@@ -90,6 +91,7 @@ const createAuthenticatedRoutes = () => {
   authenticatedRoutes.get("/acquire/players", servePlayers);
   authenticatedRoutes.get("/acquire/player-details", servePlayerDetails);
   authenticatedRoutes.get("/acquire/gameStatus", serveGameStatus);
+  authenticatedRoutes.get("/acquire/game-stats", serveGame);
 
   authenticatedRoutes.get("/*", serveStatic({ root: "./public" }));
   return authenticatedRoutes;

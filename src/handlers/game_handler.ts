@@ -63,3 +63,18 @@ export const handleQuickPlay = (ctx: Context): Response => {
 
   return ctx.json(gameId);
 };
+
+export const serveGame = (ctx: Context): Response => {
+  const game = ctx.get("game");
+  const board = game.getBoard();
+  const playerId = game.getCurrentPlayer();
+  const sessions = ctx.get("sessions");
+  const playerName = sessions.getPlayerName(playerId);
+  const sessionId = ctx.get("sessionId");
+  const players = game.getAllPlayers().map((player: { id: string }) => {
+    if (player.id === sessionId) return "you";
+    return sessions.getPlayerName(player.id);
+  });
+
+  return ctx.json({ board, players, currentPlayer: playerName });
+};
