@@ -8,7 +8,7 @@ describe("Session model", () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
 
-    assertEquals(sessions.addPlayer("Sudheer"), { gameId: "1", playerId: "1" });
+    assertEquals(sessions.addPlayer("Sudheer"), "1");
     assertEquals(sessions.getPlayerName("1"), "Sudheer");
   });
 
@@ -20,10 +20,50 @@ describe("Session model", () => {
     sessions.addPlayer("Sudheer");
     sessions.addPlayer("Pradeep");
 
-    assertEquals(sessions.addPlayer("Likhi"), { gameId: "0", playerId: "3" });
-    assertEquals(sessions.addPlayer("Pragna"), { playerId: "4", gameId: "5" });
+    assertEquals(sessions.addPlayer("Likhi"), "3");
+    assertEquals(sessions.addPlayer("Pragna"), "4");
 
     assertEquals(sessions.getPlayerName("4"), "Pragna");
+  });
+
+  it("testing addToWaitingList", () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const sessions = new Sessions(idGenerator);
+
+    sessions.addPlayer("Sudheer");
+    assertEquals(sessions.addToWaitingList("1"), {
+      playerId: "1",
+      gameId: "0",
+    });
+  });
+
+  it("testing addToWaitingList for more than 3 players join", () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const sessions = new Sessions(idGenerator);
+
+    sessions.addPlayer("Sudheer");
+    sessions.addPlayer("Pradeep");
+    sessions.addPlayer("Likhi");
+    sessions.addPlayer("Pragna");
+
+    assertEquals(sessions.addToWaitingList("1"), {
+      playerId: "1",
+      gameId: "0",
+    });
+    assertEquals(sessions.addToWaitingList("2"), {
+      playerId: "2",
+      gameId: "0",
+    });
+    assertEquals(sessions.addToWaitingList("3"), {
+      playerId: "3",
+      gameId: "0",
+    });
+    assertEquals(sessions.addToWaitingList("4"), {
+      playerId: "4",
+      gameId: "5",
+    });
   });
 
   describe("testing createRoom", () => {
@@ -49,6 +89,9 @@ describe("Session model", () => {
       sessions.addPlayer("Sudheer");
       sessions.addPlayer("adi");
       sessions.addPlayer("ramesh");
+      sessions.addToWaitingList("1");
+      sessions.addToWaitingList("2");
+      sessions.addToWaitingList("3");
 
       assertEquals(sessions.createRoom(gameManager), "GAME STARTED");
     });
