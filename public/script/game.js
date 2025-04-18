@@ -1,3 +1,5 @@
+import Collapse from "./collapse.js";
+
 const getResource = async (path) => {
   const res = await fetch(path);
   return await res.json();
@@ -61,12 +63,18 @@ const renderGameBoard = async () => {
   board.forEach(renderTile(gameBoard));
 };
 
-const setup = async () => {
-  const player = await getResource("acquire/player-details");
-  const tiles = document.querySelectorAll(".player-tile");
-  const tileData = [...player.tiles];
+const updateTiles = (tiles, values) => {
+  tiles.forEach((tile, i) => (tile.textContent = values[i] || ""));
+};
 
-  tiles.forEach((tile, index) => (tile.textContent = tileData[index]));
+const setup = () => {
+  // const player = await getResource("acquire/player-details");
+  const parent = document.getElementById("tiles");
+  const tiles = [...parent.children];
+  // const tileData = [...player.tiles];
+  const tileData = ["1a", "1a", "1a", "1a", "1a", "1a"];
+
+  updateTiles(tiles, tileData);
 
   setTimeout(() => {
     const popup = document.getElementById("tiles-popup");
@@ -74,10 +82,66 @@ const setup = async () => {
   }, 2500);
 };
 
+function renderStocks(stocks) {
+  const hotelNamesRow = document.getElementById("hotel-names-row");
+  const sharesRow = document.getElementById("shares-row");
+
+  hotelNamesRow.innerHTML = "";
+  sharesRow.innerHTML = "";
+
+  Object.entries(stocks).forEach(([hotel, shares]) => {
+    const nameCell = document.createElement("th");
+    nameCell.textContent = hotel;
+
+    const shareCell = document.createElement("td");
+    shareCell.textContent = shares;
+
+    hotelNamesRow.appendChild(nameCell);
+    sharesRow.appendChild(shareCell);
+  });
+}
+
+const updatePortfolio = () => {
+  try {
+    // const data = await getResource("/acquire/player-details");
+    const data = {
+      tiles: ["1a", "1a", "1a", "1a", "1a", "1a"],
+      stocks: {
+        Sackson: 3,
+        Tower: 5,
+        Continental: 2,
+        Imperial: 0,
+        Festival: 4,
+        Worldwide: 6,
+        American: 1,
+      },
+    };
+    const tilesData = ["1a", "1a", "1a", "1a", "1a", "1a"];
+    console.log(document.getElementById("cash-info"));
+
+    document.getElementById("cash-info").textContent = "$6000";
+    renderStocks(data.stocks);
+
+    const tiles = document.querySelectorAll("#portfolio-tiles .player-tile");
+    console.log(tiles);
+
+    updateTiles(tiles, tilesData);
+  } catch (error) {
+    console.error("Failed to update portfolio:", error);
+  }
+};
+
+const startPortfolioPolling = (interval = 500) => {
+  updatePortfolio();
+  setInterval(updatePortfolio, interval);
+};
+
 const main = async () => {
+  new Collapse("portfolio-header", "portfolio-body");
   await renderGameBoard();
-  await setup();
+  setup();
   await renderPlayers();
+  startPortfolioPolling();
 };
 
 globalThis.onload = main;

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game</title>
     <link rel="stylesheet" href="/style/game.css" />
-    <script src="/script/game.js"></script>
+    <script src="/script/game.js" type="module"></script>
   </head>
   <body>
     <div id="players">
@@ -22,6 +22,7 @@
         <div class="tile"></div>
       </template>
     </div>
+
     <div id="tiles-popup">
       <h1>You were assigned 6 tiles and $6000</h1>
       <div id="tiles">
@@ -33,7 +34,40 @@
         <div class="player-tile"></div>
       </div>
     </div>
-    <div id="portfolio"></div>
+
+    <div id="portfolio-panel">
+      <div id="portfolio-header">PORTFOLIO</div>
+      <div id="portfolio-body" class="hidden">
+        <div class="portfolio-section">
+          <h2>TILES</h2>
+          <div id="portfolio-tiles">
+            <div class="player-tile"></div>
+            <div class="player-tile"></div>
+            <div class="player-tile"></div>
+            <div class="player-tile"></div>
+            <div class="player-tile"></div>
+            <div class="player-tile"></div>
+          </div>
+        </div>
+        <div class="portfolio-section">
+          <h2>STOCKS</h2>
+          <table id="stock-info">
+            <thead>
+              <tr id="hotel-names-row"></tr>
+            </thead>
+            <tbody>
+              <tr id="shares-row"></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="portfolio-section">
+          <h2>CASH</h2>
+          <div id="cash-info"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="game-tray"></div>
   </body>
 </html>

@@ -40,12 +40,12 @@ body {
   justify-content: center;
   align-items: center;
   color: #b1d4e0;
-  opacity: 75%;
+  opacity: 0.75;
   width: 50vw;
   height: 50vh;
   background-color: var(--color);
   border-radius: 20px;
-  font-family: "Times New Roman";
+  font-family: "Times New Roman", serif;
   position: fixed;
   top: 25%;
   left: 25%;
@@ -55,10 +55,9 @@ body {
   width: 19em;
   height: 14em;
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .player-tile {
@@ -90,4 +89,64 @@ body {
 
 #player {
   text-align: center;
+}
+
+#portfolio-panel {
+  position: fixed;
+  bottom: 0;
+  margin: auto;
+}
+
+#portfolio-header {
+  background-color: var(--color);
+  color: #b1d4e0;
+  font-size: 1.5rem;
+  padding: 1em;
+  height: 2em;
+  width: 50vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+}
+
+#portfolio-body {
+  border-top: 1px solid #b1d4e0;
+  width: 50vw;
+  background-color: var(--color);
+  color: #b1d4e0;
+}
+
+.portfolio-section {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+#portfolio-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 9em;
+  height: 7em;
+}
+
+#stock-info {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+#stock-info th,
+#stock-info td {
+  padding: 0.5em;
+  border: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.display {
+  display: flex;
 }
