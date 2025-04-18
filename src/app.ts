@@ -4,9 +4,9 @@ import { logger } from "hono/logger";
 import { GameManager } from "./models/game_manager.ts";
 import {
   handleLogin,
+  handleQuickPlay,
   serveGameBoard,
   servePlayerDetails,
-  // handleQuickPlay,
   servePlayers,
   // serveGameStatus,
 } from "./handlers/game_handler.ts";
@@ -70,7 +70,7 @@ const createAuthenticatedRoutes = () => {
 
   authenticatedRoutes.use(ensureAuthenticated);
   authenticatedRoutes.use(authenticatedContext);
-  // authenticatedRoutes.post("acquire/home/quick-play", handleQuickPlay);
+  authenticatedRoutes.post("acquire/home/quick-play", handleQuickPlay);
   authenticatedRoutes.get("/acquire/gameboard", serveGameBoard);
   authenticatedRoutes.get("/acquire/players", servePlayers);
   authenticatedRoutes.get("/acquire/player-details", servePlayerDetails);

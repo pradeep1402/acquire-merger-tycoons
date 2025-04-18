@@ -153,3 +153,36 @@ describe("App: acquire/gameboard", () => {
     assertEquals(res.status, 303);
   });
 });
+
+describe("App: acquire/home/quick-play", () => {
+  it("should add player in waiting list", async () => {
+    const sessions = new Sessions(() => "1");
+    sessions.addPlayer("Krishna");
+    const gameManager = new GameManager(["A1", "A2"]);
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/acquire/home/quick-play", {
+      method: "POST",
+      headers: {
+        cookie: "sessionId=1",
+      },
+    });
+
+    assertEquals(res.status, 200);
+    assertEquals(await res.json(), "1");
+  });
+
+  it("should set gameId to a player", async () => {
+    const sessions = new Sessions(() => "1");
+    sessions.addPlayer("Krishna");
+    const gameManager = new GameManager(["A1", "A2"]);
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/acquire/home/quick-play", {
+      method: "POST",
+      headers: {
+        cookie: "sessionId=1",
+      },
+    });
+
+    assertEquals(res.headers.getSetCookie(), ["gameId=1; Path=/"]);
+  });
+});

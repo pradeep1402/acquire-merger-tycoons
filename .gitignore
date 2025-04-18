@@ -2,3 +2,4 @@
 coverage
 coverage.sh
 src/models/room.ts
+public/.DS_Store
