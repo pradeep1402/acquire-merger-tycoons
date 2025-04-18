@@ -37,13 +37,8 @@ const createGuestRoutes = () => {
   guestRoutes
     .use("/login.html", ensureGuest)
     .post("/login", handleLogin)
-    .get("/login.html", serveStatic({ path: "./public/login.html" }))
-    .get(
-      "/style/login.css",
-      serveStatic({
-        path: "./public/style/login.css",
-      }),
-    );
+    .get("*", serveStatic({ root: "./public/general/" }))
+    
   return guestRoutes;
 };
 

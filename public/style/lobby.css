@@ -6,10 +6,24 @@
 }
 
 .player-container {
-  background-color: antiquewhite;
+  background-color: rgb(29, 39, 48);
   height: 200px;
   width: 200px;
   padding: 20px;
   margin: 10px;
   text-align: center;
+  border-radius: 5px;
+  color: antiquewhite;
+  font-size: 1.2rem;
+}
+
+#player-list {
+  display: flex;
+}
+
+.main-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

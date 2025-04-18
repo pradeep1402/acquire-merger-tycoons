@@ -11,7 +11,7 @@ const applyPlayerTemplate = (player) => {
 };
 
 const renderWaitingList = () => {
-  const players = ["boy", "girl", "pragna"];
+  const players = ["boy", "girl", "pragna", "krishna"];
   const playerList = document.getElementById("player-list");
 
   players.forEach((p) => {
