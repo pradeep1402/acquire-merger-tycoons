@@ -31,6 +31,7 @@ const renderWaitingList = () => {
 
 const main = () => {
   renderWaitingList();
+  const x = 0;
 };
 
 globalThis.onload = main;
