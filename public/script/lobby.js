@@ -13,7 +13,7 @@ const applyPlayerTemplate = (player) => {
 const renderWaitingList = () => {
   const intervalId = setInterval(async () => {
     const res = await (await fetch("/gameStatus")).json();
-    
+
     if (res.status === "START") {
       clearInterval(intervalId);
       globalThis.location = "/game.html";
