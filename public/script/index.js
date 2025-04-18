@@ -4,7 +4,7 @@ const postRequest = async (path) => {
 };
 
 const quickPlayHandler = async () => {
-  const status = await postRequest("/acquire/home/quick-play");
+  await postRequest("/acquire/home/quick-play");
   globalThis.location.href = "/lobby.html";
 };
 
