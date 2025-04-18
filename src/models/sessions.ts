@@ -44,8 +44,12 @@ export class Sessions {
     return "WAITING...";
   }
 
-  getPlayerName(playerId: string): string {
-    return this.sessions.get(playerId)?.name || "Invalid Session Id...";
+  getPlayerName(playerId: string): string | null {
+    return this.sessions.get(playerId)?.name || null;
+  }
+
+  isSessionIdExist(id: string) {
+    return this.sessions.has(id);
   }
 
   removeSession(playerId: string) {

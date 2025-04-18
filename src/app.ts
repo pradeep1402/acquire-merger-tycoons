@@ -1,7 +1,7 @@
 import { Context, Hono, Next } from "hono";
 import { serveStatic } from "hono/deno";
 import { logger } from "hono/logger";
-import { Acquire } from "./models/game.ts";
+import { GameManager } from "./models/game_manager.ts";
 import {
   handleLogin,
   serveGameBoard,
@@ -9,14 +9,14 @@ import {
   servePlayers,
   // serveGameStatus,
 } from "./handlers/game_handler.ts";
-
 import { getCookie } from "hono/cookie";
+import { Sessions } from "./models/sessions.ts";
 
 const setContext =
-  (acquire: Acquire, sessions: Set<string>) =>
-  async (context: Context, next: Next) => {
-    context.set("sessions", sessions);
-    context.set("acquire", acquire);
+  (sessions: Sessions, gameManager: GameManager) =>
+  async (ctx: Context, next: Next) => {
+    ctx.set("sessions", sessions);
+    ctx.set("gameManager", gameManager);
     await next();
   };
 
@@ -24,7 +24,7 @@ const ensureGuest = async (c: Context, next: Next) => {
   const sessionId = getCookie(c, "sessionId");
   const sessions = c.get("sessions");
 
-  if (sessionId && sessions.has(sessionId)) {
+  if (sessionId && sessions.isSessionIdExist(sessionId)) {
     return c.redirect("/", 303);
   }
 
@@ -41,7 +41,7 @@ const createGuestRoutes = () => {
       "/style/login.css",
       serveStatic({
         path: "./public/style/login.css",
-      }),
+      })
     );
   return guestRoutes;
 };
@@ -50,16 +50,29 @@ const ensureAuthenticated = async (c: Context, next: Next) => {
   const sessionId = getCookie(c, "sessionId");
   const sessions = c.get("sessions");
 
-  if (!sessions.has(sessionId)) {
+  if (!sessions.isSessionIdExist(sessionId)) {
     return c.redirect("/login.html", 303);
   }
   return await next();
+};
+
+const authenticatedContext = async (ctx: Context, next: Next) => {
+  const { sessionId, gameId } = getCookie(ctx);
+  const gameManager = ctx.get("gameManager");
+  const sessions = ctx.get("sessions");
+
+  ctx.set("sessionId", sessionId);
+  ctx.set("game", gameManager.getGame(gameId));
+  ctx.set("username", sessions.getPlayerName(sessionId));
+
+  await next();
 };
 
 const createAuthenticatedRoutes = () => {
   const authenticatedRoutes = new Hono();
 
   authenticatedRoutes.use(ensureAuthenticated);
+  authenticatedRoutes.use(authenticatedContext);
   authenticatedRoutes.get("/acquire/gameboard", serveGameBoard);
   authenticatedRoutes.get("/acquire/players", servePlayers);
   authenticatedRoutes.get("/acquire/player-details", servePlayerDetails);
@@ -69,13 +82,13 @@ const createAuthenticatedRoutes = () => {
   return authenticatedRoutes;
 };
 
-export const createApp = (acquire: Acquire, sessions: Set<string>) => {
+export const createApp = (sessions: Sessions, gameManager: GameManager) => {
   const guestRoutes = createGuestRoutes();
   const authenticatedRoutes = createAuthenticatedRoutes();
   const app = new Hono();
 
   app.use(logger());
-  app.use(setContext(acquire, sessions));
+  app.use(setContext(sessions, gameManager));
 
   app.route("/", guestRoutes);
   app.route("/", authenticatedRoutes);

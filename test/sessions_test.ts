@@ -105,7 +105,7 @@ describe("Session model", () => {
       sessions.addPlayer("Sudheer");
 
       assertEquals(sessions.removeSession("1"), "Removed Successfully");
-      assertEquals(sessions.getPlayerName("1"), "Invalid Session Id...");
+      assertEquals(sessions.getPlayerName("1"), null);
     });
   });
 });
