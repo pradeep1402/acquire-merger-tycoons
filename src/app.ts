@@ -6,6 +6,7 @@ import {
   handleLogin,
   serveGameBoard,
   servePlayerDetails,
+  // handleQuickPlay,
   servePlayers,
   // serveGameStatus,
 } from "./handlers/game_handler.ts";
@@ -53,6 +54,7 @@ const ensureAuthenticated = async (c: Context, next: Next) => {
   if (!sessions.isSessionIdExist(sessionId)) {
     return c.redirect("/login.html", 303);
   }
+
   return await next();
 };
 
@@ -73,6 +75,7 @@ const createAuthenticatedRoutes = () => {
 
   authenticatedRoutes.use(ensureAuthenticated);
   authenticatedRoutes.use(authenticatedContext);
+  // authenticatedRoutes.post("acquire/home/quick-play", handleQuickPlay);
   authenticatedRoutes.get("/acquire/gameboard", serveGameBoard);
   authenticatedRoutes.get("/acquire/players", servePlayers);
   authenticatedRoutes.get("/acquire/player-details", servePlayerDetails);

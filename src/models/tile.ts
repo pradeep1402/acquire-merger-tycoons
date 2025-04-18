@@ -1,10 +1,9 @@
 export class Tile {
-  public label: string;
-  public isIndependent: boolean;
-  public isDead: boolean;
-  public hotel: null | string;
-  public isOccupied: boolean;
-
+  private label: string;
+  private isIndependent: boolean;
+  private isDead: boolean;
+  private hotel: null | string;
+  private isOccupied: boolean;
   constructor(name: string) {
     this.label = name;
     this.isIndependent = false;

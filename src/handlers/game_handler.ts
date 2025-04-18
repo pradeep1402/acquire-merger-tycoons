@@ -42,4 +42,8 @@ export const servePlayerDetails = (ctx: Context): Response => {
 //   const game = gameManager.getGame(gameId);
 
 //   return ctx.json(game);
+// export const handleQuickPlay = (ctx: Context): Response => {
+//   const session = ctx.get("session");
+
+//   return ctx.json(session.addToWaitingList());
 // };
