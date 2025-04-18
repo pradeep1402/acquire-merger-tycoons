@@ -5,12 +5,14 @@ const applyPlayerTemplate = (player) => {
   clone
     .getElementById("player-avatar")
     .setAttribute("src", "/images/avatars/avatar3.jpeg");
-  clone.getElementById("player-name").textContent = player;
+  clone.getElementById("player-name").textContent = player.name;
 
   return clone;
 };
 
 const renderWaitingList = () => {
+  const playerList = document.getElementById("player-list");
+
   const intervalId = setInterval(async () => {
     const res = await (await fetch("/acquire/gameStatus")).json();
     console.log(res);
@@ -20,9 +22,9 @@ const renderWaitingList = () => {
     }
 
     const players = res.players;
-    const playerList = document.getElementById("player-list");
-
+    playerList.innerHTML = "";
     players.forEach((p) => {
+      console.log(players);
       playerList.appendChild(applyPlayerTemplate(p));
     });
   }, 1000);
