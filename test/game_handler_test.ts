@@ -210,3 +210,61 @@ describe("App: acquire/home/quick-play", () => {
     assertEquals(res.headers.getSetCookie(), ["gameId=1; Path=/"]);
   });
 });
+
+describe("App: /", () => {
+  it("should redirect to waiting page when player already have gameId and is waiting", async () => {
+    const sessions = new Sessions(() => "1");
+    sessions.addPlayer("Krishna");
+    const gameManager = new GameManager(["A1", "A2"]);
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/", {
+      headers: {
+        cookie: "sessionId=1;gameId=1",
+      },
+    });
+
+    assertEquals(res.status, 303);
+    assertEquals(res.headers.get("location"), "/lobby.html");
+  });
+
+  it("should redirect to game page when three players started the game", async () => {
+    let i = 0;
+    const idGenerator = () => `${i++}`;
+    const sessions = new Sessions(idGenerator);
+    sessions.addPlayer("Krishna");
+    sessions.addPlayer("Sudheer");
+    sessions.addPlayer("Adi");
+    sessions.addToWaitingList("1");
+    sessions.addToWaitingList("2");
+    sessions.addToWaitingList("3");
+
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.createRoom(gameManager);
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/", {
+      headers: {
+        cookie: "sessionId=1;gameId=0",
+      },
+    });
+
+    assertEquals(res.status, 303);
+    assertEquals(res.headers.get("location"), "/game.html");
+  });
+
+  it("should return the home page", async () => {
+    const idGenerator = () => "1";
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.addPlayer("Krishna");
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/", {
+      headers: {
+        cookie: "sessionId=1",
+      },
+    });
+    await res.text();
+
+    assertEquals(res.status, 200);
+  });
+});
