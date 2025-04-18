@@ -24,7 +24,9 @@
     "coverage": {
       "command": "deno run -A jsr:@ashishkujoy/deno-coverage-checker --lines=100 --functions=100 --branches=100",
       "dependencies": ["test-coverage"]
-    }
+    },
+    "prod-deploy": "deployctl deploy --project=acquire-prod-1 --entrypoint=main.ts --org='Acquire-TheMergerTycoons'",
+    "qa-deploy": "deployctl deploy --project=acquire-qa-51 --entrypoint=main.ts --org='Acquire-TheMergerTycoons'"
   },
   "test": {
     "include": ["src/*", "test/*"]
@@ -34,7 +36,5 @@
     "exclude": ["**/node_modules"],
     "include": [],
     "entrypoint": "main.ts"
-  },
-  "prod-deploy": "deployctl deploy --project=acquire-prod-1 --entrypoint=main.ts --org='Acquire-TheMergerTycoons'",
-  "qa-deploy": "deployctl deploy --project=acquire-qa-51 --entrypoint=main.ts --org='Acquire-TheMergerTycoons'"
+  }
 }
