@@ -17,5 +17,4 @@ const main = () => {
   handleQuickPlay();
 };
 
-let a = 10
 globalThis.onload = main;

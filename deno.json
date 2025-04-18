@@ -16,6 +16,8 @@
     "lodash": "npm:lodash@^4.17.21"
   },
   "tasks": {
+    "gp": "git pull -r && deno lint",
+    "ga": "deno lint && git add .",
     "start": "deno run -A --watch main.ts",
     "test": "deno test -A",
     "test-watch": "deno test --watch -A",

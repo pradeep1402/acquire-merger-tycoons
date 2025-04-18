@@ -1,6 +1,8 @@
 #!/bin/zsh
 set -e
+git stash
 deno fmt
 deno lint
 deno test -A --coverage
 deno run -A jsr:@ashishkujoy/deno-coverage-checker --lines=100 --functions=100 --branches=100
+git stash pop
