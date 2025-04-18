@@ -17,16 +17,20 @@ body {
 }
 
 #gameBoard {
+  position: fixed;
+  top: 5%;
+  left: 20%;
   display: flex;
-  width: 722px;
+  width: 50vw;
+  height: 70vh;
   flex-wrap: wrap;
   border: 1px solid var(--color);
   background-color: #f9fafb;
 }
 
 .tile {
-  height: 60px;
-  width: 60px;
+  height: 11.11%;
+  width: 8.33%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,6 +97,7 @@ body {
 
 #portfolio-panel {
   position: fixed;
+  left: 20%;
   bottom: 0;
   margin: auto;
 }

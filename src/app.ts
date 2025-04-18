@@ -65,11 +65,26 @@ const authenticatedContext = async (ctx: Context, next: Next) => {
   await next();
 };
 
+const ensureGameId = async (ctx: Context, next: Next) => {
+  const gameId = getCookie(ctx, "gameId");
+  const gameManager = ctx.get("gameManager");
+
+  if (gameId) {
+    const game = gameManager.getGame(gameId);
+    return game
+      ? ctx.redirect("/game.html", 303)
+      : ctx.redirect("/lobby.html", 303);
+  }
+
+  await next();
+};
+
 const createAuthenticatedRoutes = () => {
   const authenticatedRoutes = new Hono();
 
   authenticatedRoutes.use(ensureAuthenticated);
   authenticatedRoutes.use(authenticatedContext);
+  authenticatedRoutes.use("/", ensureGameId);
   authenticatedRoutes.post("acquire/home/quick-play", handleQuickPlay);
   authenticatedRoutes.get("/acquire/gameboard", serveGameBoard);
   authenticatedRoutes.get("/acquire/players", servePlayers);

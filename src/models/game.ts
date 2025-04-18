@@ -10,9 +10,10 @@ class Acquire {
   constructor(tiles: string[], players: string[]) {
     this.pile = _.shuffle(tiles);
     this.board = tiles.map((tile: string): Tile => new Tile(tile));
-    this.players = players.map(
-      (playerId: string): Player => new Player(playerId, this.getTiles(6)),
-    );
+    this.players = players.map((player: string): Player => {
+      const tiles = this.getTiles(6);
+      return new Player(player, tiles);
+    });
   }
 
   getBoard() {
