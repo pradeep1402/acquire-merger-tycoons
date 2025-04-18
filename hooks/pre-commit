@@ -1,5 +1,5 @@
 #!/bin/zsh
-
+set -e
 deno fmt
 deno lint
 deno test -A
