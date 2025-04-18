@@ -11,12 +11,21 @@ const applyPlayerTemplate = (player) => {
 };
 
 const renderWaitingList = () => {
-  const players = ["boy", "girl", "pragna", "krishna"];
-  const playerList = document.getElementById("player-list");
+  const intervalId = setInterval(async () => {
+    const res = await (await fetch("/gameStatus")).json();
 
-  players.forEach((p) => {
-    playerList.appendChild(applyPlayerTemplate(p));
-  });
+    if (res.status === "START") {
+      clearInterval(intervalId);
+      globalThis.location = "/game.html";
+    }
+
+    const players = res.players;
+    const playerList = document.getElementById("player-list");
+
+    players.forEach((p) => {
+      playerList.appendChild(applyPlayerTemplate(p));
+    });
+  }, 1000);
 };
 
 const main = () => {
