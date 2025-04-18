@@ -31,8 +31,10 @@ describe("Session model", () => {
     const idGenerator = () => `${id++}`;
     const sessions = new Sessions(idGenerator);
 
+    const tiles = ["1A", "2A"];
+    const gameManager = new GameManager(tiles);
     sessions.addPlayer("Sudheer");
-    assertEquals(sessions.addToWaitingList("1"), {
+    assertEquals(sessions.addToWaitingList("1", gameManager), {
       playerId: "1",
       gameId: "0",
     });
@@ -43,63 +45,31 @@ describe("Session model", () => {
     const idGenerator = () => `${id++}`;
     const sessions = new Sessions(idGenerator);
 
+    const tiles = ["1A", "2A"];
+    const gameManager = new GameManager(tiles);
     sessions.addPlayer("Sudheer");
     sessions.addPlayer("Pradeep");
     sessions.addPlayer("Likhi");
     sessions.addPlayer("Pragna");
 
-    assertEquals(sessions.addToWaitingList("1"), {
+    assertEquals(sessions.addToWaitingList("1", gameManager), {
       playerId: "1",
       gameId: "0",
     });
-    assertEquals(sessions.addToWaitingList("2"), {
+    assertEquals(sessions.addToWaitingList("2", gameManager), {
       playerId: "2",
       gameId: "0",
     });
-    assertEquals(sessions.addToWaitingList("3"), {
+    assertEquals(sessions.addToWaitingList("3", gameManager), {
       playerId: "3",
       gameId: "0",
     });
-    assertEquals(sessions.addToWaitingList("4"), {
+    assertEquals(sessions.addToWaitingList("4", gameManager), {
       playerId: "4",
       gameId: "5",
     });
   });
 
-  describe("testing createRoom", () => {
-    it("should return waiting when only one player joined", () => {
-      let id = 0;
-      const idGenerator = () => `${id++}`;
-      const sessions = new Sessions(idGenerator);
-      const tiles = ["1A", "2A"];
-      const gameManager = new GameManager(tiles);
-
-      sessions.addPlayer("Sudheer");
-      sessions.addToWaitingList("1");
-
-      assertEquals(sessions.createRoom(gameManager), {
-        gameId: "0",
-        players: [{ name: "Sudheer", status: "Waiting" }],
-      });
-    });
-
-    it("should return join the game when three players joined", () => {
-      let id = 0;
-      const idGenerator = () => `${id++}`;
-      const sessions = new Sessions(idGenerator);
-      const tiles = ["1A", "2A"];
-      const gameManager = new GameManager(tiles);
-
-      sessions.addPlayer("Sudheer");
-      sessions.addPlayer("adi");
-      sessions.addPlayer("ramesh");
-      sessions.addToWaitingList("1");
-      sessions.addToWaitingList("2");
-      sessions.addToWaitingList("3");
-
-      assertEquals(sessions.createRoom(gameManager), { status: "START" });
-    });
-  });
   describe("testing removeSession", () => {
     it("should return waiting when only one player joined", () => {
       let id = 0;

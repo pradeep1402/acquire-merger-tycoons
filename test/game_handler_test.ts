@@ -13,9 +13,9 @@ describe("App: acquire/players", () => {
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("krish");
     const player3 = sessions.addPlayer("sudheer");
-    sessions.addToWaitingList(player1);
-    sessions.addToWaitingList(player2);
-    sessions.addToWaitingList(player3);
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
     sessions.createRoom(gameManager);
 
     const app = createApp(sessions, gameManager);
@@ -40,9 +40,9 @@ describe("App: acquire/playerDetails", () => {
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("krish");
     const player3 = sessions.addPlayer("sudheer");
-    sessions.addToWaitingList(player1);
-    sessions.addToWaitingList(player2);
-    sessions.addToWaitingList(player3);
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
     sessions.createRoom(gameManager);
 
     const app = createApp(sessions, gameManager);
@@ -108,9 +108,9 @@ describe("App: acquire/gameboard", () => {
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("krish");
     const player3 = sessions.addPlayer("sudheer");
-    sessions.addToWaitingList(player1);
-    sessions.addToWaitingList(player2);
-    sessions.addToWaitingList(player3);
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
     sessions.createRoom(gameManager);
 
     const app = createApp(sessions, gameManager);
@@ -161,8 +161,7 @@ describe("App: acquire/gameStatus", () => {
     const gameManager = new GameManager(["1A"]);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
-    sessions.addToWaitingList(player1);
-    sessions.createRoom(gameManager);
+    sessions.addToWaitingList(player1, gameManager);
 
     const app = createApp(sessions, gameManager);
     const res = await app.request("/acquire/gameStatus", {
@@ -174,6 +173,28 @@ describe("App: acquire/gameStatus", () => {
       gameId: "0",
       players: [{ name: "Adi", status: "Waiting" }],
     });
+    assertEquals(res.status, 200);
+  });
+
+  it("should return the game status as START when required number of players join the game", async () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const gameManager = new GameManager(["1A"]);
+    const sessions = new Sessions(idGenerator);
+    const player1 = sessions.addPlayer("Adi");
+    const player2 = sessions.addPlayer("Bdi");
+    const player3 = sessions.addPlayer("Cdi");
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/acquire/gameStatus", {
+      method: "GET",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+
+    assertEquals(await res.json(), { status: "START" });
     assertEquals(res.status, 200);
   });
 });
@@ -231,14 +252,14 @@ describe("App: /", () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
     sessions.addPlayer("Krishna");
     sessions.addPlayer("Sudheer");
     sessions.addPlayer("Adi");
-    sessions.addToWaitingList("1");
-    sessions.addToWaitingList("2");
-    sessions.addToWaitingList("3");
+    sessions.addToWaitingList("1", gameManager);
+    sessions.addToWaitingList("2", gameManager);
+    sessions.addToWaitingList("3", gameManager);
 
-    const gameManager = new GameManager(["A1", "A2"]);
     sessions.createRoom(gameManager);
     const app = createApp(sessions, gameManager);
     const res = await app.request("/", {

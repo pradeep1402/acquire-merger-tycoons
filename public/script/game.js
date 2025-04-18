@@ -90,7 +90,7 @@ const updateCash = (cash) => {
 
 const updatePortfolio = async () => {
   try {
-    const data = await getResource("acquire/player-details");
+    const data = await getResource("/acquire/player-details");
     const tiles = document.querySelectorAll("#portfolio-tiles .player-tile");
 
     updateTiles(tiles, [...data.tiles]);

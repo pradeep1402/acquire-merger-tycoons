@@ -40,17 +40,25 @@ export const servePlayerDetails = (ctx: Context): Response => {
 };
 
 export const serveGameStatus = (ctx: Context): Response => {
-  const sessions = ctx.get("sessions");
+  const gameId = getCookie(ctx, "gameId");
   const gameManager = ctx.get("gameManager");
-  const gameStatus = sessions.createRoom(gameManager);
+  const gameStatus = gameManager.getGame(gameId);
+  const sessions = ctx.get("sessions");
 
-  return ctx.json(gameStatus);
+  if (gameStatus) {
+    return ctx.json({ status: "START" });
+  }
+
+  const players = sessions.getWaitingPlayers();
+
+  return ctx.json(players);
 };
 
 export const handleQuickPlay = (ctx: Context): Response => {
   const sessions = ctx.get("sessions");
   const sessionId = ctx.get("sessionId");
-  const { gameId } = sessions.addToWaitingList(sessionId);
+  const gameManager = ctx.get("gameManager");
+  const { gameId } = sessions.addToWaitingList(sessionId, gameManager);
   setCookie(ctx, "gameId", gameId);
 
   return ctx.json(gameId);

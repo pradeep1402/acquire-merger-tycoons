@@ -2,13 +2,13 @@ import { GameManager } from "./game_manager.ts";
 
 export class Sessions {
   private sessions: Map<string, { name: string; status: string }>;
-  private waiting: { gameId: string; playerIds: string[] };
+  private waiting: { gameId: string; players: string[] };
   private idGenerator: () => string;
 
   constructor(idGenerator: () => string) {
     this.idGenerator = idGenerator;
     this.sessions = new Map();
-    this.waiting = { gameId: this.idGenerator(), playerIds: [] };
+    this.waiting = { gameId: this.idGenerator(), players: [] };
   }
 
   addPlayer(name: string): string {
@@ -19,30 +19,31 @@ export class Sessions {
     return playerId;
   }
 
-  addToWaitingList(playerId: string) {
+  addToWaitingList(playerId: string, gameManager: GameManager) {
     const player = this.sessions.get(playerId);
     if (player) player.status = "Waiting";
 
-    if (this.waiting.playerIds.length < 3) {
-      this.waiting.playerIds.push(playerId);
-      return { playerId, gameId: this.waiting.gameId };
+    const gameId = this.waiting.gameId;
+
+    if (this.waiting.players.length < 2) {
+      this.waiting.players.push(playerId);
+      return { playerId, gameId };
     }
 
-    this.waiting.gameId = this.idGenerator();
-    this.waiting.playerIds = [playerId];
+    this.waiting.players.push(playerId);
+    this.createRoom(gameManager);
 
-    return { playerId, gameId: this.waiting.gameId };
+    return { playerId, gameId };
   }
 
   createRoom(gameManager: GameManager) {
-    if (this.waiting.playerIds.length === 3) {
-      const { playerIds, gameId } = this.waiting;
+    const { players, gameId } = this.waiting;
+    gameManager.createGame(gameId, players);
+    this.waiting = { gameId: this.idGenerator(), players: [] };
+  }
 
-      gameManager.createGame(gameId, playerIds);
-      return { status: "START" };
-    }
-
-    const players = this.waiting.playerIds.map((playerId) =>
+  getWaitingPlayers() {
+    const players = this.waiting.players.map((playerId) =>
       this.sessions.get(playerId)
     );
 
