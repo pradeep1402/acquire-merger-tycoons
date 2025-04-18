@@ -29,21 +29,25 @@ const renderPlayers = async () => {
   });
 };
 
-const renderTile = (gameBoard) => {
-  return (tileInfo) => {
-    const board = cloneTemplates("board");
-    const tile = board.querySelector(".tile");
+const renderTile = (tileInfo) => {
+  const board = cloneTemplates("board");
+  const tile = board.querySelector(".tile");
 
-    tile.innerText = tileInfo.label;
-    gameBoard.appendChild(tile);
-  };
+  tile.innerText = tileInfo.label;
+  return tile;
 };
 
 const renderGameBoard = async () => {
   const board = await getResource("/acquire/gameboard");
   const gameBoard = document.querySelector("#gameBoard");
+  const tiles = [];
 
-  board.forEach(renderTile(gameBoard));
+  board.forEach((tile) => {
+    tiles.push(renderTile(tile));
+  });
+
+  gameBoard.replaceChildren(...tiles);
+  setTimeout(renderGameBoard, 1000);
 };
 
 const updateTiles = (tiles, values) => {
