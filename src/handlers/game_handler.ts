@@ -1,12 +1,15 @@
 import { Context } from "hono";
-import { setCookie } from "hono/cookie";
+import { getCookie, setCookie } from "hono/cookie";
 
 export const servePlayers = (ctx: Context): Response => {
   const acquire = ctx.get("game");
   const sessions = ctx.get("sessions");
-  const players = acquire
-    .getAllPlayers()
-    .map((player: { name: string }) => sessions.getPlayerName(player.name));
+  const sessionId = getCookie(ctx, "sessionId");
+
+  const players = acquire.getAllPlayers().map((player: { id: string }) => {
+    if (player.id === sessionId) return "you";
+    return sessions.getPlayerName(player.id);
+  });
 
   return ctx.json(players);
 };

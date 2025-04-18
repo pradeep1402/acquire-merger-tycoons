@@ -15,7 +15,7 @@ const renderWaitingList = () => {
 
   const intervalId = setInterval(async () => {
     const res = await (await fetch("/acquire/gameStatus")).json();
-    console.log(res);
+
     if (res.status === "START") {
       clearInterval(intervalId);
       globalThis.location = "/game.html";
@@ -24,7 +24,6 @@ const renderWaitingList = () => {
     const players = res.players;
     playerList.innerHTML = "";
     players.forEach((p) => {
-      console.log(players);
       playerList.appendChild(applyPlayerTemplate(p));
     });
   }, 1000);

@@ -8,8 +8,8 @@ class GameManager {
     this.gamesMap = new Map();
   }
 
-  createGame(gameId: string, players: string[]): Acquire {
-    const acquire = new Acquire(this.tiles, players);
+  createGame(gameId: string, playerIds: string[]): Acquire {
+    const acquire = new Acquire(this.tiles, playerIds);
     this.gamesMap.set(gameId, acquire);
 
     return acquire;

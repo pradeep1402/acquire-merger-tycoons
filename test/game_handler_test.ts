@@ -26,7 +26,7 @@ describe("App: acquire/players", () => {
     const players = await res.json();
 
     assertEquals(res.status, 200);
-    assertEquals(players, ["Adi", "krish", "sudheer"]);
+    assertEquals(players, ["Adi", "krish", "you"]);
     assertEquals(players.length, 3);
   });
 });

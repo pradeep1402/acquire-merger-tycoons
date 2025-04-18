@@ -6,14 +6,14 @@ import { Tile } from "../src/models/tile.ts";
 describe("Acquire model", () => {
   describe("testing constructor", () => {
     it("should initialize player with 6 tiles", () => {
-      const players: string[] = ["Adi"];
+      const players: string[] = ["12"];
       const acquire = new Acquire(
         ["1A", "2A", "3A", "4A", "5A", "6A"],
         players,
       );
 
       acquire.getAllPlayers().forEach((p, i) => {
-        assertEquals(p.name, players[i]);
+        assertEquals(p.id, players[i]);
         assertEquals(p.tiles.length, 6);
       });
     });
@@ -21,14 +21,14 @@ describe("Acquire model", () => {
 
   describe("getPlayer(player) method", () => {
     it("should return a specific player info", () => {
-      const players: string[] = ["Adi"];
+      const players: string[] = ["123"];
       const acquire = new Acquire(
         ["1A", "2A", "1A", "2A", "1A", "2A"],
         players,
       );
-      const actual = acquire.getPlayer("Adi");
+      const actual = acquire.getPlayer("123");
 
-      assertEquals(actual.name, "Adi");
+      assertEquals(actual.id, "123");
       assertEquals(actual.cash, 6000);
     });
   });

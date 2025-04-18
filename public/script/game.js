@@ -32,7 +32,7 @@ const applyPlayerTemplate = (player) => {
   playerTemplate
     .getElementById("player-avatar")
     .setAttribute("src", getAvatar());
-  playerTemplate.getElementById("player-name").textContent = player.name;
+  playerTemplate.getElementById("player-name").textContent = player;
 
   return playerTemplate;
 };
@@ -117,13 +117,11 @@ const updatePortfolio = () => {
       },
     };
     const tilesData = ["1a", "1a", "1a", "1a", "1a", "1a"];
-    console.log(document.getElementById("cash-info"));
 
     document.getElementById("cash-info").textContent = "$6000";
     renderStocks(data.stocks);
 
     const tiles = document.querySelectorAll("#portfolio-tiles .player-tile");
-    console.log(tiles);
 
     updateTiles(tiles, tilesData);
   } catch (error) {
