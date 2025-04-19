@@ -24,10 +24,13 @@ export class Game {
     });
   }
 
-  placeTile(tile: Tile) {
-    const index = this.currentPlayerIndex % this.players.length;
+  private updateCurrentPlayerIndex() {
+    this.currentPlayerIndex =
+      (this.currentPlayerIndex + 1) % this.players.length;
+  }
 
-    if (this.players[index].isTileExits(tile)) {
+  placeTile(tile: Tile) {
+    if (this.players[this.currentPlayerIndex].isTileExits(tile)) {
       this.board.placeTile(tile);
       return { status: true };
     }
@@ -56,9 +59,7 @@ export class Game {
   }
 
   getCurrentPlayer() {
-    const index = this.currentPlayerIndex % this.players.length;
-
-    return this.players[index].getPlayerDetails().playerId;
+    return this.players[this.currentPlayerIndex].getPlayerDetails().playerId;
   }
 
   getGameStats() {
