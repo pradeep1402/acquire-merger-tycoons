@@ -5,75 +5,26 @@ const getResource = async (path) => {
   return await res.json();
 };
 
-const cloneTemplates = (id) => {
-  const template = document.getElementById(id);
-  return template.content.cloneNode(true);
-};
-
-const applyPlayerTemplate = (player) => {
-  const playerTemplate = cloneTemplates("players-template");
-  playerTemplate
-    .getElementById("player-avatar")
-    .setAttribute("src", "/images/avatars/avatar1.jpeg");
-  playerTemplate.getElementById("player-name").textContent = player;
-
-  return playerTemplate;
-};
-
-const renderPlayers = async () => {
-  const players = await getResource("/acquire/players");
-  const playerSection = document.getElementById("players");
-
-  players.forEach((p) => {
-    playerSection.appendChild(applyPlayerTemplate(p));
-  });
-};
-
-const renderTile = (tileInfo) => {
-  const board = cloneTemplates("board");
-  const tile = board.querySelector(".tile");
-
-  tile.innerText = tileInfo.label;
-  return tile;
-};
-
-const renderGameBoard = async () => {
-  const board = await getResource("/acquire/gameboard");
-  const gameBoard = document.querySelector("#gameBoard");
-  const tiles = [];
-
-  board.forEach((tile) => {
-    tiles.push(renderTile(tile));
-  });
-
-  gameBoard.replaceChildren(...tiles);
-  setTimeout(renderGameBoard, 1000);
-};
+// const highlight = async () => {
+//   const player = await getResource("/acquire/player-details");
+//   const tiles = [...player.tiles]
+//   tiles.forEach(t => {
+//     const body = document.querySelector('body');
+//     body.classList.add('unfocus')
+//     const tile = document.getElementById(t);
+//     tile.classList.add('highlight');
+//   })
+// };
 
 const updateTiles = (tiles, values) => {
   tiles.forEach((tile, i) => (tile.textContent = values[i] || ""));
 };
 
-const setup = async () => {
-  const player = await getResource("/acquire/player-details");
-  const parent = document.getElementById("tiles");
-  const tiles = [...parent.children];
-
-  updateTiles(tiles, [...player.tiles]);
-
-  setTimeout(() => {
-    const popup = document.getElementById("tiles-popup");
-    popup.style.display = "none";
-  }, 5000);
-};
-
 const renderStocks = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
   const nameCell = document.createElement("th");
   nameCell.textContent = hotel;
-
   const shareCell = document.createElement("td");
   shareCell.textContent = shares;
-
   hotelNamesRow.appendChild(nameCell);
   sharesRow.appendChild(shareCell);
 };
@@ -96,7 +47,6 @@ const updatePortfolio = async () => {
   try {
     const data = await getResource("/acquire/player-details");
     const tiles = document.querySelectorAll("#portfolio-tiles .player-tile");
-
     updateTiles(tiles, [...data.tiles]);
     updateStocks(data.stocks);
     updateCash(data.cash);
@@ -119,13 +69,71 @@ const startPortfolioPolling = (interval = 500) => {
 //   }, 2000);
 // };
 
+const applyPlayerTemplate = (player) => {
+  const playerTemplate = cloneTemplates("players-template");
+  playerTemplate
+    .getElementById("player-avatar")
+    .setAttribute("src", "/images/avatars/avatar1.jpeg");
+  playerTemplate.getElementById("player-name").textContent = player;
+  return playerTemplate;
+};
+
+const renderPlayers = async () => {
+  const players = await getResource("/acquire/players");
+  const playerSection = document.getElementById("players");
+  players.forEach((p) => {
+    playerSection.appendChild(applyPlayerTemplate(p));
+  });
+};
+
+const setup = async () => {
+  const player = await getResource("/acquire/player-details");
+  const parent = document.getElementById("tiles");
+  const tiles = [...parent.children];
+  updateTiles(tiles, [...player.tiles]);
+
+  setTimeout(() => {
+    const popup = document.getElementById("tiles-popup");
+    popup.style.display = "none";
+  }, 5000);
+};
+
+const cloneTemplates = (id) => {
+  const template = document.getElementById(id);
+  return template.content.cloneNode(true);
+};
+
+const renderTile = (tileLabel) => {
+  const board = cloneTemplates("board");
+  const tile = board.querySelector(".tile");
+  tile.innerText = tileLabel;
+  tile.id = tileLabel;
+  return tile;
+};
+
+const renderGameBoard = () => {
+  const gameBoard = document.querySelector("#gameBoard");
+  const tiles = [];
+
+  const rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
+
+  rows.forEach((row) => {
+    for (let col = 1; col <= 12; col++) {
+      const tileLabel = `${col}${row}`;
+      tiles.push(renderTile(tileLabel));
+    }
+  });
+
+  gameBoard.replaceChildren(...tiles);
+};
+
 const main = async () => {
   new Collapse("portfolio-header", "portfolio-body");
-  // renderGame();
-  await renderGameBoard();
-  setup();
+  renderGameBoard();
+  await setup();
   await renderPlayers();
   startPortfolioPolling();
+  // await highlight();
 };
 
 globalThis.onload = main;

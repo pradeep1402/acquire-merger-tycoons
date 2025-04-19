@@ -14,4 +14,3 @@ const main = async () => {
 };
 
 main();
-//test commit hook

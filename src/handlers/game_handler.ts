@@ -37,7 +37,6 @@ export const servePlayerDetails = (ctx: Context): Response => {
   const name = ctx.get("username");
   const sessionId = ctx.get("sessionId");
   const playerDetails = game.getPlayerDetails(sessionId);
-  console.log(playerDetails);
   return ctx.json({ ...playerDetails, name });
 };
 

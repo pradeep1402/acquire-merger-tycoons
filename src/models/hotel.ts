@@ -1,16 +1,17 @@
 type Tile = string;
 
 export class Hotel {
-  private name: string;
-  private tiles: Tile[];
-  private stocksAvailable: number;
-  private isActive: boolean;
+  name: string;
+  tiles: Tile[];
+  stocksAvailable: number;
+  // isActive: boolean;
 
   constructor(name: string) {
     this.name = name;
     this.tiles = [];
     this.stocksAvailable = 25;
-    this.isActive = false;
+
+    // this.isActive = false; //
   }
 
   addTile(tile: Tile) {

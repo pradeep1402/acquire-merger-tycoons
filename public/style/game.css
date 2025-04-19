@@ -21,21 +21,23 @@ body {
   top: 5%;
   left: 20%;
   display: flex;
-  width: 50vw;
-  height: 70vh;
   flex-wrap: wrap;
+  width: 50%;
+  height: 70%;
   border: 1px solid var(--color);
   background-color: #f9fafb;
+  justify-content: space-evenly;
 }
 
 .tile {
-  height: 11.11%;
-  width: 8.33%;
+  width: 6.2%;
+  height: 7%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: var(--color);
   border: 1px solid var(--color);
+  margin: 0.5em;
 }
 
 #tiles-popup {
@@ -154,4 +156,14 @@ body {
 
 .display {
   display: flex;
+}
+
+.highlight {
+  background-color: #1e2a38;
+  color: #b1d4e0;
+  opacity: 1;
+}
+
+.unfocus {
+  z-index: 0.3;
 }
