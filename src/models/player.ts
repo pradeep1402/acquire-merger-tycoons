@@ -48,6 +48,10 @@ export class Player {
     return this.tiles.has(tile);
   }
 
+  removeTile(tile: string) {
+    this.tiles.delete(tile);
+  }
+
   doesPlayerMatch(playerId: string) {
     return this.playerId === playerId;
   }

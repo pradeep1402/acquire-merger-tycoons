@@ -1,4 +1,4 @@
-import { assertEquals } from "assert";
+import { assert, assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
 import { createApp } from "../src/app.ts";
 import { Sessions } from "../src/models/sessions.ts";
@@ -327,6 +327,52 @@ describe("App: /game-stats", () => {
     const gameStats = await res.json();
     assertEquals(gameStats.currentPlayer, "Adi");
     assertEquals(gameStats.playersName, ["Adi", "you", "malli"]);
+    assertEquals(res.status, 200);
+  });
+});
+
+describe("App: /acquire/place-tile/:tile", () => {
+  it("should return true if tile placed", async () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const gameManager = new GameManager(["1A", "2A"]);
+    const sessions = new Sessions(idGenerator);
+    const player1 = sessions.addPlayer("Adi");
+    const player2 = sessions.addPlayer("bisht");
+    const player3 = sessions.addPlayer("malli");
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/acquire/place-tile/1A", {
+      method: "PATCH",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+
+    assert((await res.json()).status);
+    assertEquals(res.status, 200);
+  });
+
+  it("should return true if tile placed", async () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const gameManager = new GameManager(["1A", "2A"]);
+    const sessions = new Sessions(idGenerator);
+    const player1 = sessions.addPlayer("Adi");
+    const player2 = sessions.addPlayer("bisht");
+    const player3 = sessions.addPlayer("malli");
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/acquire/place-tile/3A", {
+      method: "PATCH",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+
+    assertFalse((await res.json()).status);
     assertEquals(res.status, 200);
   });
 });

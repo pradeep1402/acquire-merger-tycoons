@@ -162,11 +162,11 @@ body {
 .highlight {
   background-color: #1e2a38;
   color: #b1d4e0;
-  opacity: 1;
 }
 
-.unfocus {
-  z-index: 0.3;
+.place-tile {
+  background-color: #b1d4e0;
+  color: #1e2a38;
 }
 
 .active-player {

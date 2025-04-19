@@ -24,14 +24,17 @@ export class Game {
     });
   }
 
-  // private updateCurrentPlayerIndex() {
-  //   this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
-  //     this.players.length;
-  // }
+  private updateCurrentPlayerIndex() {
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
+      this.players.length;
+  }
 
   placeTile(tile: Tile) {
-    if (this.players[this.currentPlayerIndex].isTileExits(tile)) {
+    const currentPlayer = this.players[this.currentPlayerIndex];
+    if (currentPlayer.isTileExits(tile)) {
       this.board.placeTile(tile);
+      currentPlayer.removeTile(tile);
+      this.updateCurrentPlayerIndex();
       return { status: true };
     }
 

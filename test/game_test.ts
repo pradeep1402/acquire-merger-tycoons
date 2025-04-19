@@ -46,7 +46,7 @@ describe("Game model", () => {
     it("should return independtent tiles when two tile is placed", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new Game(["1A", "2A"], players);
-      const board = { independentTiles: ["1A", "2A"], hotels: [] };
+      const board = { independentTiles: ["1A"], hotels: [] };
       game.placeTile("1A");
       game.placeTile("2A");
       assertEquals(game.getBoard(), board);

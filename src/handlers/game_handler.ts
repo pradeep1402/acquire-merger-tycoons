@@ -85,3 +85,11 @@ export const serveGame = (ctx: Context): Response => {
     currentPlayer: currentPlayerName,
   });
 };
+
+export const handlePlaceTile = (ctx: Context) => {
+  const game = ctx.get("game");
+  const id = ctx.req.param("tile");
+  const status = game.placeTile(id);
+
+  return ctx.json(status);
+};

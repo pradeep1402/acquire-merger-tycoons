@@ -5,22 +5,48 @@ const getResource = async (path) => {
   return await res.json();
 };
 
-// const highlight = async () => {
-//   const player = await getResource("/acquire/player-details");
-//   const tiles = [...player.tiles]
-//   tiles.forEach(t => {
-//     const body = document.querySelector('body');
-//     body.classList.add('unfocus')
-//     const tile = document.getElementById(t);
-//     tile.classList.add('highlight');
-//   })
-// };
+const handlePlaceTile = async (event) => {
+  const player = await getResource("/acquire/player-details");
+  const tiles = [...player.tiles];
+  const id = event.target.id;
+  if (tiles.includes(id)) {
+    await fetch(`/acquire/place-tile/${id}`, { method: "PATCH" });
+    const tile = document.getElementById(id);
+    tile.classList.add("place-tile");
+    changeFocus(tiles);
+    const board = document.getElementById("gameBoard");
+    board.removeEventListener("click", handlePlaceTile);
+    await updateGameStats();
+  }
+};
 
-// const updateGameStats = async () => {
-//   const { currentPlayer } = await getResource('/acquire/game-stats');
-//   const id = currentPlayer.id;
-//   const sessionId = document.cookie.sessionId;
-// }
+const changeFocus = (tiles) => {
+  tiles.forEach((t) => {
+    const tile = document.getElementById(t);
+    tile.classList.toggle("highlight");
+  });
+};
+
+const highlight = async () => {
+  const player = await getResource("/acquire/player-details");
+  const tiles = [...player.tiles];
+  changeFocus(tiles);
+  const board = document.getElementById("gameBoard");
+  board.addEventListener("click", handlePlaceTile);
+};
+
+const startTurn = async (isMyTurn) => {
+  if (!isMyTurn) {
+    await updateGameStats();
+    return;
+  }
+  await highlight();
+};
+
+const updateGameStats = async () => {
+  const gameStats = await getResource("/acquire/game-stats");
+  await startTurn(gameStats.isMyTurn);
+};
 
 const updateTiles = (tiles, values) => {
   tiles.forEach((tile, i) => (tile.textContent = values[i] || ""));
@@ -160,7 +186,7 @@ const main = async () => {
   startPortfolioPolling();
   renderGame();
   // await highlight();
-  // updateGameStats()
+  await updateGameStats();
 };
 
 globalThis.onload = main;

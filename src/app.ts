@@ -4,6 +4,7 @@ import { logger } from "hono/logger";
 import { GameManager } from "./models/game_manager.ts";
 import {
   handleLogin,
+  handlePlaceTile,
   handleQuickPlay,
   serveGame,
   serveGameBoard,
@@ -92,6 +93,7 @@ const createAuthenticatedRoutes = () => {
   authenticatedRoutes.get("/acquire/player-details", servePlayerDetails);
   authenticatedRoutes.get("/acquire/gameStatus", serveGameStatus);
   authenticatedRoutes.get("/acquire/game-stats", serveGame);
+  authenticatedRoutes.patch("/acquire/place-tile/:tile", handlePlaceTile);
 
   authenticatedRoutes.get("/*", serveStatic({ root: "./public" }));
   return authenticatedRoutes;
