@@ -1,3 +1,12 @@
+* {
+  font-family: sans-serif;
+}
+
+h1 {
+  font-size: 50px;
+  color: rgb(29, 39, 48);
+}
+
 #player-avatar {
   height: 60px;
   width: 60px;
@@ -18,7 +27,12 @@
 }
 
 #player-list {
+  border: 5px outset black;
   display: flex;
+  justify-content: space-around;
+  width: 70%;
+  padding: 3%;
+  height: 700px;
 }
 
 .main-container {
