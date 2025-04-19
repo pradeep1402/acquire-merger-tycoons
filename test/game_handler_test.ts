@@ -298,8 +298,9 @@ describe("App: /game-stats", () => {
     });
     const expected = {
       board: { independentTiles: [], hotels: [] },
-      players: ["you", "bisht", "malli"],
+      playersName: ["you", "bisht", "malli"],
       currentPlayer: "Adi",
+      isMyTurn: true,
     };
 
     assertEquals(await res.json(), expected);
@@ -325,7 +326,7 @@ describe("App: /game-stats", () => {
     });
     const gameStats = await res.json();
     assertEquals(gameStats.currentPlayer, "Adi");
-    assertEquals(gameStats.players, ["Adi", "you", "malli"]);
+    assertEquals(gameStats.playersName, ["Adi", "you", "malli"]);
     assertEquals(res.status, 200);
   });
 });

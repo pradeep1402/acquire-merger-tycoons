@@ -1,6 +1,7 @@
 import { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { Game } from "../models/game.ts";
+import { Sessions } from "../models/sessions.ts";
 
 export const servePlayers = (ctx: Context): Response => {
   const game = ctx.get("game");
@@ -67,15 +68,20 @@ export const handleQuickPlay = (ctx: Context): Response => {
 
 export const serveGame = (ctx: Context): Response => {
   const game: Game = ctx.get("game");
-  const board = game.getBoard();
-  const playerId = game.getCurrentPlayer();
-  const sessions = ctx.get("sessions");
-  const playerName = sessions.getPlayerName(playerId);
-  const sessionId = ctx.get("sessionId");
-  const players = game.getPlayerIds().map((playerId: string) => {
+  const sessions: Sessions = ctx.get("sessions");
+  const sessionId: string = ctx.get("sessionId");
+  const { board, playersId, currentPlayerId } = game.getGameStats();
+  const currentPlayerName = sessions.getPlayerName(currentPlayerId);
+  const playersName = playersId.map((playerId: string) => {
     if (playerId === sessionId) return "you";
     return sessions.getPlayerName(playerId);
   });
+  const isMyTurn = currentPlayerId === sessionId;
 
-  return ctx.json({ board, players, currentPlayer: playerName });
+  return ctx.json({
+    board,
+    playersName,
+    isMyTurn,
+    currentPlayer: currentPlayerName,
+  });
 };

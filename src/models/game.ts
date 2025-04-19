@@ -60,4 +60,11 @@ export class Game {
 
     return this.players[index].getPlayerDetails().playerId;
   }
+
+  getGameStats() {
+    const board = this.getBoard();
+    const currentPlayerId = this.getCurrentPlayer();
+    const playersId = this.getPlayerIds();
+    return { board, playersId, currentPlayerId };
+  }
 }

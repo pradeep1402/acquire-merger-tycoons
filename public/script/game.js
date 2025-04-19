@@ -60,14 +60,14 @@ const startPortfolioPolling = (interval = 500) => {
   setInterval(updatePortfolio, interval);
 };
 
-// const renderGame = () => {
-//   const id = setInterval(async () => {
-//     const res = await fetch("/acquire/game-stats");
-//     const stats = await res.json();
+const renderGame = () => {
+  setInterval(async () => {
+    const res = await fetch("/acquire/game-stats");
+    const stats = await res.json();
 
-//     console.log();
-//   }, 2000);
-// };
+    console.log(stats);
+  }, 2000);
+};
 
 const applyPlayerTemplate = (player) => {
   const playerTemplate = cloneTemplates("players-template");
@@ -133,6 +133,7 @@ const main = async () => {
   await setup();
   await renderPlayers();
   startPortfolioPolling();
+  renderGame();
   // await highlight();
 };
 
