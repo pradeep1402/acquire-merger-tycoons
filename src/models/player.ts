@@ -1,3 +1,5 @@
+type Tile = string;
+
 type StocksCount = {
   Sackson: number;
   Tower: number;
@@ -21,24 +23,32 @@ const allZeroStockCounts = (): StocksCount => {
 };
 
 export class Player {
-  private id: string;
+  private playerId: string;
   private cash: number;
-  private tiles: Set<string>;
+  private tiles: Set<Tile>;
   private stocks: StocksCount;
 
-  constructor(id: string, tiles: string[]) {
-    this.id = id;
+  constructor(playerId: string, tiles: Tile[]) {
+    this.playerId = playerId;
     this.cash = 6000;
     this.tiles = new Set(tiles);
     this.stocks = allZeroStockCounts();
   }
 
-  toJSON() {
+  getPlayerDetails() {
     return {
-      id: this.id,
+      playerId: this.playerId,
       cash: this.cash,
       tiles: [...this.tiles],
       stocks: { ...this.stocks },
     };
+  }
+
+  isTileExits(tile: string) {
+    return this.tiles.has(tile);
+  }
+
+  doesPlayerMatch(playerId: string) {
+    return this.playerId === playerId;
   }
 }

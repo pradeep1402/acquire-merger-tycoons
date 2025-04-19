@@ -1,49 +1,63 @@
-import { Tile } from "./tile.ts";
-import { Player } from "./player.ts";
 import _ from "lodash";
+import { Board } from "./board.ts";
+import { Player } from "./player.ts";
 
-class Acquire {
+type Tile = string;
+
+export class Game {
+  private board: Board;
+  private pile: Tile[];
   private players: Player[];
-  private pile: string[];
-  private board: Tile[];
   private currentPlayerIndex: number;
 
-  constructor(tiles: string[], players: string[]) {
+  constructor(tiles: Tile[], playerIds: string[]) {
+    this.board = new Board();
     this.pile = _.shuffle(tiles);
-    this.board = tiles.map((tile: string): Tile => new Tile(tile));
-    this.players = players.map((player: string): Player => {
-      const tiles = this.getTiles(6);
-      return new Player(player, tiles);
-    });
+    this.players = this.setPlayers(playerIds);
     this.currentPlayerIndex = 0;
   }
 
-  getCurrentPlayer() {
-    const index = this.currentPlayerIndex % this.players.length;
-
-    return this.players[index].toJSON().id;
+  private setPlayers(playerIds: string[]) {
+    return playerIds.map((player: string): Player => {
+      const tiles = this.getTiles(6);
+      return new Player(player, tiles);
+    });
   }
 
-  getBoard() {
-    return this.board.map((tile) => tile.toJSON());
+  placeTile(tile: Tile) {
+    const index = this.currentPlayerIndex % this.players.length;
+
+    if (this.players[index].isTileExits(tile)) {
+      this.board.placeTile(tile);
+      return { status: true };
+    }
+
+    return { status: false };
+  }
+
+  getPlayerIds() {
+    return this.players.map((player) => player.getPlayerDetails().playerId);
   }
 
   getTiles(count: number): string[] {
     return this.pile.splice(0, count);
   }
 
-  getAllPlayers() {
-    return this.players.map((p) => p.toJSON());
+  getBoard() {
+    return this.board.getBoard();
   }
 
-  getPlayer(player: string) {
-    const playerDetails = _.find(
-      this.players,
-      (p: Player) => p.toJSON().id === player,
+  getPlayerDetails(playerId: string) {
+    const playerInfo = this.players.find((player: Player) =>
+      player.doesPlayerMatch(playerId)
     );
 
-    return playerDetails.toJSON();
+    return playerInfo?.getPlayerDetails();
+  }
+
+  getCurrentPlayer() {
+    const index = this.currentPlayerIndex % this.players.length;
+
+    return this.players[index].getPlayerDetails().playerId;
   }
 }
-
-export { Acquire };

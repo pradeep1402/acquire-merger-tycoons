@@ -1,14 +1,16 @@
 import { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
+import { Game } from "../models/game.ts";
 
 export const servePlayers = (ctx: Context): Response => {
-  const acquire = ctx.get("game");
+  const game = ctx.get("game");
   const sessions = ctx.get("sessions");
   const sessionId = getCookie(ctx, "sessionId");
 
-  const players = acquire.getAllPlayers().map((player: { id: string }) => {
-    if (player.id === sessionId) return "you";
-    return sessions.getPlayerName(player.id);
+  const players = game.getPlayerIds().map((playerId: string) => {
+    if (playerId === sessionId) return "you";
+
+    return sessions.getPlayerName(playerId);
   });
 
   return ctx.json(players);
@@ -34,8 +36,8 @@ export const servePlayerDetails = (ctx: Context): Response => {
   const game = ctx.get("game");
   const name = ctx.get("username");
   const sessionId = ctx.get("sessionId");
-  const playerDetails = game.getPlayer(sessionId);
-
+  const playerDetails = game.getPlayerDetails(sessionId);
+  console.log(playerDetails);
   return ctx.json({ ...playerDetails, name });
 };
 
@@ -65,15 +67,15 @@ export const handleQuickPlay = (ctx: Context): Response => {
 };
 
 export const serveGame = (ctx: Context): Response => {
-  const game = ctx.get("game");
+  const game: Game = ctx.get("game");
   const board = game.getBoard();
   const playerId = game.getCurrentPlayer();
   const sessions = ctx.get("sessions");
   const playerName = sessions.getPlayerName(playerId);
   const sessionId = ctx.get("sessionId");
-  const players = game.getAllPlayers().map((player: { id: string }) => {
-    if (player.id === sessionId) return "you";
-    return sessions.getPlayerName(player.id);
+  const players = game.getPlayerIds().map((playerId: string) => {
+    if (playerId === sessionId) return "you";
+    return sessions.getPlayerName(playerId);
   });
 
   return ctx.json({ board, players, currentPlayer: playerName });

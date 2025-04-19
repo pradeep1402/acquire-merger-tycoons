@@ -1,20 +1,15 @@
-import { assertEquals } from "assert";
+import { assert, assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
-import { Acquire } from "../src/models/game.ts";
-import { Tile } from "../src/models/tile.ts";
+import { Game } from "../src/models/game.ts";
 
-describe("Acquire model", () => {
-  describe("testing constructor", () => {
-    it("should initialize player with 6 tiles", () => {
-      const players: string[] = ["12"];
-      const acquire = new Acquire(
-        ["1A", "2A", "3A", "4A", "5A", "6A"],
-        players,
-      );
+describe("Game model", () => {
+  describe("getPlayerIds(", () => {
+    it("should return all the players ids", () => {
+      const players: string[] = ["12", "13", "14"];
+      const game = new Game(["1A", "2A", "3A", "4A", "5A", "6A"], players);
 
-      acquire.getAllPlayers().forEach((p, i) => {
-        assertEquals(p.id, players[i]);
-        assertEquals(p.tiles.length, 6);
+      game.getPlayerIds().forEach((playerId, i) => {
+        assertEquals(playerId, players[i]);
       });
     });
   });
@@ -22,24 +17,55 @@ describe("Acquire model", () => {
   describe("getPlayer(player) method", () => {
     it("should return a specific player info", () => {
       const players: string[] = ["123"];
-      const acquire = new Acquire(
-        ["1A", "2A", "1A", "2A", "1A", "2A"],
-        players,
-      );
-      const actual = acquire.getPlayer("123");
+      const tiles = ["1A"];
+      const game = new Game(tiles, players);
+      const actual = game.getPlayerDetails("123");
 
-      assertEquals(actual.id, "123");
-      assertEquals(actual.cash, 6000);
+      assertEquals(actual?.playerId, "123");
+      assertEquals(actual?.cash, 6000);
+      assertEquals(actual?.tiles, tiles);
     });
   });
 
   describe("getBoard() method", () => {
-    it("should return all info of all tiles", () => {
+    it("should return no tile when no tile is placed", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
-      const acquire = new Acquire(["1A", "2A"], players);
-      const board = [new Tile("1A").toJSON(), new Tile("2A").toJSON()];
+      const game = new Game(["1A", "2A"], players);
+      const board = { independentTiles: [], hotels: [] };
+      assertEquals(game.getBoard(), board);
+    });
 
-      assertEquals(acquire.getBoard(), board);
+    it("should return independtent tiles when one tile is placed", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(["1A", "2A"], players);
+      const board = { independentTiles: ["1A"], hotels: [] };
+      game.placeTile("1A");
+      assertEquals(game.getBoard(), board);
+    });
+
+    it("should return independtent tiles when two tile is placed", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(["1A", "2A"], players);
+      const board = { independentTiles: ["1A", "2A"], hotels: [] };
+      game.placeTile("1A");
+      game.placeTile("2A");
+      assertEquals(game.getBoard(), board);
+    });
+  });
+
+  describe("placeTile() method", () => {
+    it("should return false for wrong tile", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(["1A", "2A"], players);
+
+      assertFalse(game.placeTile("3A").status);
+    });
+
+    it("should return true for tile user have", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(["1A", "2A"], players);
+
+      assert(game.placeTile("1A").status);
     });
   });
 });

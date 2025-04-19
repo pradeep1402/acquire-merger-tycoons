@@ -100,7 +100,7 @@ describe("App: /login", () => {
 });
 
 describe("App: acquire/gameboard", () => {
-  it("should return the board array", async () => {
+  it("should return the empty board", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
     const gameManager = new GameManager(["1A", "2A"]);
@@ -119,22 +119,10 @@ describe("App: acquire/gameboard", () => {
       headers: { cookie: "sessionId=1;gameId=0" },
     });
 
-    const board = [
-      {
-        label: "1A",
-        isIndependent: false,
-        isDead: false,
-        hotel: null,
-        isOccupied: false,
-      },
-      {
-        label: "2A",
-        isIndependent: false,
-        isDead: false,
-        hotel: null,
-        isOccupied: false,
-      },
-    ];
+    const board = {
+      independentTiles: [],
+      hotels: [],
+    };
 
     assertEquals(await res.json(), board);
     assertEquals(res.status, 200);
@@ -309,15 +297,7 @@ describe("App: /game-stats", () => {
       headers: { cookie: "sessionId=1;gameId=0" },
     });
     const expected = {
-      board: [
-        {
-          label: "1A",
-          isIndependent: false,
-          isDead: false,
-          hotel: null,
-          isOccupied: false,
-        },
-      ],
+      board: { independentTiles: [], hotels: [] },
       players: ["you", "bisht", "malli"],
       currentPlayer: "Adi",
     };

@@ -1,6 +1,6 @@
-import { Acquire } from "./game.ts";
+import { Game } from "./game.ts";
 class GameManager {
-  private gamesMap: Map<string, Acquire>;
+  private gamesMap: Map<string, Game>;
   private tiles: string[];
 
   constructor(tiles: string[]) {
@@ -8,14 +8,14 @@ class GameManager {
     this.gamesMap = new Map();
   }
 
-  createGame(gameId: string, playerIds: string[]): Acquire {
-    const acquire = new Acquire(this.tiles, playerIds);
+  createGame(gameId: string, playerIds: string[]): Game {
+    const acquire = new Game(this.tiles, playerIds);
     this.gamesMap.set(gameId, acquire);
 
     return acquire;
   }
 
-  getGame(gameId: string): Acquire | undefined {
+  getGame(gameId: string): Game | undefined {
     return this.gamesMap.get(gameId);
   }
 }
