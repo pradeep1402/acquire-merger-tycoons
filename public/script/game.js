@@ -110,8 +110,18 @@ const startPortfolioPolling = (interval = 500) => {
   setInterval(updatePortfolio, interval);
 };
 
+// const renderGame = () => {
+//   const id = setInterval(async () => {
+//     const res = await fetch("/acquire/game-stats");
+//     const stats = await res.json();
+
+//     console.log();
+//   }, 2000);
+// };
+
 const main = async () => {
   new Collapse("portfolio-header", "portfolio-body");
+  // renderGame();
   await renderGameBoard();
   setup();
   await renderPlayers();

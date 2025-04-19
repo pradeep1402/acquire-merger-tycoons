@@ -1,12 +1,12 @@
 :root {
-  --color: #1e2a38;
+  --primary-color: #1e2a38;
 }
 
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: system-ui;
+  font-family: system-ui, sans-serif;
 }
 
 body {
@@ -23,7 +23,7 @@ main {
   align-items: center;
   height: 26%;
   width: 14%;
-  border: 1px solid var(--color);
+  border: 1px solid var(--primary-color);
   border-radius: 10px;
 }
 
@@ -45,13 +45,20 @@ main h3 {
 }
 
 main button {
-  width: 100%;
+  width: 80%;
   padding: 10px;
+  font-size: 1rem;
   border-radius: 6px;
-  font-size: 1.1rem;
-  &:hover {
-    background-color: var(--color);
-    color: white;
-    transition: all 500ms ease-in-out;
-  }
+  cursor: pointer;
+  transition: all 500ms ease-in-out;
+  background-color: var(--primary-color);
+  color: white;
+  transition: all 0.3s ease-in-out;
+  border: none;
+}
+
+main button:hover {
+  cursor: pointer;
+  background-color: #3f5671;
+  transform: scale(1.1);
 }
