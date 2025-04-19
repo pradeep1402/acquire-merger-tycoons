@@ -175,3 +175,8 @@ body {
     2px 2px 10px rgba(0, 100, 0, 0.8),
     -2px -2px 10px rgba(0, 100, 0, 0.8);
 }
+
+.place-tile {
+  background-color: #b1d4e0;
+  color: #1e2a38;
+}

@@ -123,7 +123,14 @@ const renderTile = (tileLabel) => {
   return tile;
 };
 
-const renderGameBoard = () => {
+const placeTile = (tiles) => {
+  tiles.forEach((t) => {
+    const tile = document.getElementById(t);
+    tile.classList.add("place-tile");
+  });
+};
+
+const renderGameBoard = async () => {
   const gameBoard = document.querySelector("#gameBoard");
   const tiles = [];
 
@@ -137,6 +144,12 @@ const renderGameBoard = () => {
   });
 
   gameBoard.replaceChildren(...tiles);
+
+  const { independentTiles } = await (await fetch("acquire/gameboard")).json();
+  console.log(independentTiles);
+  placeTile(independentTiles);
+
+  setTimeout(renderGameBoard, 1000);
 };
 
 const main = async () => {
