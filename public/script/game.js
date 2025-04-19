@@ -16,6 +16,12 @@ const getResource = async (path) => {
 //   })
 // };
 
+// const updateGameStats = async () => {
+//   const { currentPlayer } = await getResource('/acquire/game-stats');
+//   const id = currentPlayer.id;
+//   const sessionId = document.cookie.sessionId;
+// }
+
 const updateTiles = (tiles, values) => {
   tiles.forEach((tile, i) => (tile.textContent = values[i] || ""));
 };
@@ -135,6 +141,7 @@ const main = async () => {
   startPortfolioPolling();
   renderGame();
   // await highlight();
+  // updateGameStats()
 };
 
 globalThis.onload = main;

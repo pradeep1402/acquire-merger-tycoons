@@ -22,22 +22,23 @@ body {
   left: 20%;
   display: flex;
   flex-wrap: wrap;
-  width: 50%;
-  height: 70%;
+  width: 50vw;
+  height: 70vh;
   border: 1px solid var(--color);
   background-color: #f9fafb;
   justify-content: space-evenly;
+  align-items: center;
+  gap: 0.5% 0.5%;
 }
 
 .tile {
-  width: 6.2%;
-  height: 7%;
+  width: 7.5%;
+  height: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: var(--color);
   border: 1px solid var(--color);
-  margin: 0.5em;
 }
 
 #tiles-popup {
