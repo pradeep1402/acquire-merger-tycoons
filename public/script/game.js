@@ -70,17 +70,23 @@ const renderGame = () => {
   setInterval(async () => {
     const res = await fetch("/acquire/game-stats");
     const stats = await res.json();
+    const { currentPlayer, isMyTurn } = stats;
+    const avatar = isMyTurn
+      ? document.querySelector("#you")
+      : document.querySelector(`#${currentPlayer}`);
 
-    console.log(stats);
+    avatar.classList.add("active-player");
   }, 2000);
 };
 
 const applyPlayerTemplate = (player) => {
   const playerTemplate = cloneTemplates("players-template");
-  playerTemplate
-    .getElementById("player-avatar")
-    .setAttribute("src", "/images/avatars/avatar1.jpeg");
-  playerTemplate.getElementById("player-name").textContent = player;
+  const avatar = playerTemplate.querySelector(".player-avatar");
+
+  avatar.setAttribute("src", "/images/avatars/avatar1.jpeg");
+  avatar.id = `${player}`;
+  playerTemplate.querySelector(".player-name").textContent = player;
+
   return playerTemplate;
 };
 
