@@ -92,11 +92,20 @@ const startPortfolioPolling = (interval = 500) => {
   setInterval(updatePortfolio, interval);
 };
 
+const removeActivePlayer = (playersName) => {
+  playersName.map((player) => {
+    document.querySelector(`#${player}`).classList.remove("active-player");
+  });
+};
+
 const renderGame = () => {
   setInterval(async () => {
     const res = await fetch("/acquire/game-stats");
     const stats = await res.json();
-    const { currentPlayer, isMyTurn } = stats;
+    const { currentPlayer, isMyTurn, playersName } = stats;
+
+    removeActivePlayer(playersName);
+
     const avatar = isMyTurn
       ? document.querySelector("#you")
       : document.querySelector(`#${currentPlayer}`);
@@ -149,14 +158,7 @@ const renderTile = (tileLabel) => {
   return tile;
 };
 
-const placeTile = (tiles) => {
-  tiles.forEach((t) => {
-    const tile = document.getElementById(t);
-    tile.classList.add("place-tile");
-  });
-};
-
-const renderGameBoard = async () => {
+const renderGameBoard = () => {
   const gameBoard = document.querySelector("#gameBoard");
   const tiles = [];
 
@@ -170,13 +172,8 @@ const renderGameBoard = async () => {
   });
 
   gameBoard.replaceChildren(...tiles);
-
-  const { independentTiles } = await (await fetch("acquire/gameboard")).json();
-  console.log(independentTiles);
-  placeTile(independentTiles);
-
-  setTimeout(renderGameBoard, 1000);
 };
+
 
 const main = async () => {
   new Collapse("portfolio-header", "portfolio-body");
@@ -185,7 +182,6 @@ const main = async () => {
   await renderPlayers();
   startPortfolioPolling();
   renderGame();
-  // await highlight();
   await updateGameStats();
 };
 
