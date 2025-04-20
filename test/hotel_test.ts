@@ -31,9 +31,38 @@ describe("Hotel class", () => {
   });
 
   it("should return details of the hotel", () => {
-    const hotel = new Hotel("Imperial");
+    const hotel = new Hotel("Imperial", "blue");
     hotel.addTile("1A");
     hotel.addTile("2A");
-    assertEquals(hotel.getHotel(), { name: "Imperial", tiles: ["1A", "2A"] });
+    assertEquals(hotel.getHotel(), {
+      name: "Imperial",
+      tiles: ["1A", "2A"],
+      color: "blue",
+    });
+  });
+
+  it("should toggle the isActive status", () => {
+    const hotel = new Hotel("Imperial", "blue");
+    hotel.addTile("1A");
+    hotel.addTile("2A");
+
+    assert(hotel.toggleStatus());
+  });
+
+  it("should toggle the isActive status to false", () => {
+    const hotel = new Hotel("Imperial", "blue");
+    hotel.addTile("1A");
+    hotel.addTile("2A");
+    hotel.toggleStatus();
+
+    assertFalse(hotel.toggleStatus());
+  });
+
+  it("should decrement the stocks count to number provided", () => {
+    const hotel = new Hotel("Imperial", "blue");
+    hotel.addTile("1A");
+    hotel.addTile("2A");
+
+    assertEquals(hotel.decrementStocks(3), 22);
   });
 });

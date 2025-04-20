@@ -14,7 +14,7 @@ const renderWaitingList = () => {
   const playerList = document.getElementById("player-list");
 
   const intervalId = setInterval(async () => {
-    const res = await (await fetch("/acquire/gameStatus")).json();
+    const res = await (await fetch("/acquire/game-status")).json();
 
     if (res.status === "START") {
       clearInterval(intervalId);
@@ -22,9 +22,9 @@ const renderWaitingList = () => {
     }
 
     const players = res.players;
-    playerList.innerHTML = "";
-    players.forEach((p) => {
-      playerList.appendChild(applyPlayerTemplate(p));
+    playerList.textContent = "";
+    players.forEach((player) => {
+      playerList.appendChild(applyPlayerTemplate(player));
     });
   }, 3000);
 };

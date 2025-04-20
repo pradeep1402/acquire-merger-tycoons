@@ -22,8 +22,13 @@
     </template>
 
     <div id="tiles-popup">
-      <h1>You were assigned 6 tiles and $6000</h1>
+      <h1 id="popup-header">You were assigned 6 tiles and $6000</h1>
       <div id="tiles-container"></div>
+    </div>
+
+    <div id="popup" style="display: none; background-color: aqua; z-index: 1">
+      <h1 id="popup-header">Select Hotel To Found</h1>
+      <div id="hotel-container" class="display"></div>
     </div>
 
     <template id="assigned-tile">

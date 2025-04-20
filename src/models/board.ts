@@ -5,31 +5,75 @@ type Tile = string;
 
 export class Board {
   hotels: Hotel[];
-  independentTiles: Tile[];
+  independentTiles: Set<Tile>;
 
-  constructor() {
-    this.hotels = [];
-    this.independentTiles = [];
+  constructor(hotels: Hotel[]) {
+    this.hotels = hotels;
+    this.independentTiles = new Set();
+  }
+
+  getInActiveHotels() {
+    return this.hotels
+      .filter((hotel) => !hotel.isActive())
+      .map((hotel) => hotel.getHotel());
   }
 
   placeTile(tile: Tile) {
-    // if (this.isDependent(tile)) {
-    //   const [hotel] = this.dependentHotels(tile);
-    //   hotel.addTile(tile);
-    // }
-    this.independentTiles.push(tile);
+    const adjacentTiles = this.getAdjacentTiles(tile, new Set());
 
-    return tile;
+    if (adjacentTiles.size === 0) {
+      this.independentTiles.add(tile);
+      return { tile, type: "Independent" };
+    }
+
+    return { inActiveHotels: this.getInActiveHotels(), type: "Build" };
+  }
+
+  private moveToHotel(tiles: Tile[], hotel: Hotel | undefined) {
+    tiles.forEach((tile) => {
+      this.independentTiles.delete(tile);
+      hotel?.addTile(tile);
+    });
+  }
+
+  buildHotel(tile: Tile, hotelName: string) {
+    const hotel = this.hotels.find((hotel) => hotel.name === hotelName);
+    const tiles = [...this.getAdjacentTiles(tile, new Set()), tile];
+
+    hotel?.toggleStatus();
+    hotel?.decrementStocks(1);
+    this.moveToHotel(tiles, hotel);
+
+    return hotel?.getHotel();
   }
 
   getBoard() {
-    // const hotels = this.hotels.map((hotel) => hotel.getHotel());
+    const activeHotels = this.hotels.filter((hotel) => hotel.isActive());
+    const hotels = activeHotels.map((hotel) => hotel.getHotel());
 
-    return { independentTiles: this.independentTiles, hotels: [] };
+    return { independentTiles: [...this.independentTiles], hotels };
   }
 
-  private parseTile(tile: Tile): number[] {
-    return [+tile.slice(0, -1), tile.charCodeAt(tile.length - 1)];
+  private getAdjacentTiles(tile: Tile, adjacentTiles: Set<Tile>): Set<Tile> {
+    const tilesAdjacent = this.getAdjacentOf(tile);
+
+    const tilesFound = tilesAdjacent.filter(
+      (adjTile: Tile) =>
+        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile),
+    );
+
+    for (const adjTile of tilesFound) {
+      adjacentTiles.add(adjTile);
+      this.getAdjacentTiles(adjTile, adjacentTiles);
+    }
+
+    return adjacentTiles;
+  }
+
+  parseTile(tile: Tile): number[] {
+    const match = tile.match(/^(\d+)([A-I])$/) as RegExpMatchArray;
+    const [_, value, letter] = match;
+    return [Number(value), letter.charCodeAt(0)];
   }
 
   private leftOf(tile: Tile) {
@@ -67,16 +111,16 @@ export class Board {
     return _.compact(adjacent);
   }
 
-  private isPlaced(tile: Tile) {
-    return this.independentTiles.includes(tile);
-    // this.hotels.some((h) => h.isTileBelongs(tile))
-  }
+  // private isPlaced(tile: Tile) {
+  //   return this.independentTiles.has(tile);
+  //   this.hotels.some((h) => h.isTileBelongs(tile))
+  // }
 
-  getAdjacentTilesOf(tile: Tile): Tile[] {
-    const adjacent = this.getAdjacentOf(tile);
+  // getAdjacentTilesOf(tile: Tile): Tile[] {
+  //   const adjacent = this.getAdjacentOf(tile);
 
-    return adjacent.filter((t: Tile) => this.isPlaced(t));
-  }
+  //   return adjacent.filter((t: Tile) => this.isPlaced(t));
+  // }
 
   // isDependent(tile: Tile) {
   //   return this.dependentHotels(tile).length === 1;

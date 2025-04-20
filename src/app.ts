@@ -3,14 +3,12 @@ import { serveStatic } from "hono/deno";
 import { logger } from "hono/logger";
 import { GameManager } from "./models/game_manager.ts";
 import {
+  handleFoundingHotel,
   handleLogin,
   handlePlaceTile,
   handleQuickPlay,
   serveGame,
-  serveGameBoard,
   serveGameStatus,
-  servePlayerDetails,
-  servePlayers,
 } from "./handlers/game_handler.ts";
 import { deleteCookie, getCookie } from "hono/cookie";
 import { Sessions } from "./models/sessions.ts";
@@ -115,12 +113,13 @@ const createAuthenticatedRoutes = () => {
   authenticatedRoutes.use(authenticatedContext);
   authenticatedRoutes.use("/", ensureGameId);
   authenticatedRoutes.post("acquire/home/quick-play", handleQuickPlay);
-  authenticatedRoutes.get("/acquire/gameboard", serveGameBoard);
-  authenticatedRoutes.get("/acquire/players", servePlayers);
-  authenticatedRoutes.get("/acquire/player-details", servePlayerDetails);
-  authenticatedRoutes.get("/acquire/gameStatus", serveGameStatus);
+  authenticatedRoutes.get("/acquire/game-status", serveGameStatus);
   authenticatedRoutes.get("/acquire/game-stats", serveGame);
   authenticatedRoutes.patch("/acquire/place-tile/:tile", handlePlaceTile);
+  authenticatedRoutes.patch(
+    "/acquire/place-tile/:tile/:hotel",
+    handleFoundingHotel,
+  );
 
   authenticatedRoutes.get("/*", serveStatic({ root: "./public" }));
   return authenticatedRoutes;

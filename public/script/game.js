@@ -9,17 +9,44 @@ const getResource = async (path) => {
   }
 };
 
-const createTileClickHandler = async (event) => {
-  const stats = await getResource("/acquire/game-stats");
-  const tiles = stats.playerPortfolio.tiles;
+const handleFoundHotel = (tileLabel) => async (event) => {
+  await fetch(`/acquire/place-tile/${tileLabel}/${event.target.textContent}`, {
+    method: "PATCH",
+  });
 
-  console.log(event.target);
-  const id = event.target.id;
+  const container = document.querySelector("#popup");
+  container.style.display = "none";
+  const board = document.querySelector(".gameBoard");
+  board.removeEventListener("click", createTileClickHandler);
+};
 
-  if (!tiles.includes(id)) return;
+const renderSelectHotel = (inActiveHotels, tileLabel) => {
+  const container = document.querySelector("#popup");
+  const hotelList = document.querySelector("#hotel-container");
+  container.style.display = "block";
 
-  await fetch(`/acquire/place-tile/${id}`, { method: "PATCH" });
-  const tile = document.getElementById(id);
+  inActiveHotels.forEach((hotel) => {
+    const div = document.createElement("div");
+    div.textContent = hotel.name;
+    div.addEventListener("click", handleFoundHotel(tileLabel));
+    hotelList.appendChild(div);
+  });
+};
+
+const createTileClickHandler = (tiles) => async (event) => {
+  const tileLabel = event.target.id;
+  if (!tiles.includes(tileLabel)) return;
+
+  const res = await fetch(`/acquire/place-tile/${tileLabel}`, {
+    method: "PATCH",
+  });
+
+  const playerInfo = await res.json();
+  if (playerInfo.type === "Build") {
+    renderSelectHotel(playerInfo.inActiveHotels, tileLabel);
+  }
+
+  const tile = document.getElementById(tileLabel);
   tile.classList.add("place-tile");
   removeHighlight(tiles);
   const board = document.querySelector(".gameBoard");
@@ -72,8 +99,8 @@ const renderStocks = (stocks) => {
   const hotelNamesRow = document.getElementById("hotel-names-row");
   const sharesRow = document.getElementById("shares-row");
 
-  hotelNamesRow.innerHTML = "";
-  sharesRow.innerHTML = "";
+  hotelNamesRow.textContent = "";
+  sharesRow.textContent = "";
 
   Object.entries(stocks).forEach(renderStockRow(hotelNamesRow, sharesRow));
 };
@@ -101,8 +128,8 @@ const hotelColor = (name) => {
     tower: "#fab92a",
     sackson: "red",
     festival: "green",
-    continental: "skyblue",
-    imperial: "orange",
+    Continental: "skyblue",
+    Imperial: "orange",
     worldwide: "purple",
     american: "blue",
   };
@@ -114,7 +141,6 @@ const renderAHotel = ({ name, tiles }) => {
   tiles.forEach((t) => {
     const tile = document.getElementById(t);
     tile.style.backgroundColor = hotelColor(name);
-    console.log(tile);
   });
 };
 
@@ -125,12 +151,8 @@ const renderHotels = (hotels) => {
 };
 
 const renderPlaceTilesBoard = (board) => {
-  const { independentTiles } = board;
+  const { independentTiles, hotels } = board;
   renderIndependentTiles(independentTiles);
-  const hotels = [
-    { name: "tower", tiles: ["1A", "2A", "2B"] },
-    { name: "imperial", tiles: ["12F", "11F", "11E"] },
-  ];
   renderHotels(hotels);
 };
 

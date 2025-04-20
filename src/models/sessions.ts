@@ -46,7 +46,6 @@ export class Sessions {
     const players = this.waiting.players.map((playerId) =>
       this.sessions.get(playerId)
     );
-
     return { gameId: this.waiting.gameId, players };
   }
 

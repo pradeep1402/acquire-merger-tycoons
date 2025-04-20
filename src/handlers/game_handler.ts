@@ -3,26 +3,6 @@ import { getCookie, setCookie } from "hono/cookie";
 import { Game } from "../models/game.ts";
 import { Sessions } from "../models/sessions.ts";
 
-export const servePlayers = (ctx: Context): Response => {
-  const game = ctx.get("game");
-  const sessions = ctx.get("sessions");
-  const sessionId = getCookie(ctx, "sessionId");
-
-  const players = game.getPlayerIds().map((playerId: string) => {
-    if (playerId === sessionId) return "you";
-
-    return sessions.getPlayerName(playerId);
-  });
-
-  return ctx.json(players);
-};
-
-export const serveGameBoard = (ctx: Context): Response => {
-  const game = ctx.get("game");
-
-  return ctx.json(game.getBoard());
-};
-
 export const handleLogin = async (ctx: Context): Promise<Response> => {
   const fd = await ctx.req.formData();
   const sessions = ctx.get("sessions");
@@ -31,14 +11,6 @@ export const handleLogin = async (ctx: Context): Promise<Response> => {
   setCookie(ctx, "sessionId", playerId);
 
   return ctx.redirect("/", 303);
-};
-
-export const servePlayerDetails = (ctx: Context): Response => {
-  const game = ctx.get("game");
-  const name = ctx.get("username");
-  const sessionId = ctx.get("sessionId");
-  const playerDetails = game.getPlayerDetails(sessionId);
-  return ctx.json({ ...playerDetails, name });
 };
 
 export const serveGameStatus = (ctx: Context): Response => {
@@ -89,7 +61,20 @@ export const serveGame = (ctx: Context): Response => {
 export const handlePlaceTile = (ctx: Context) => {
   const game = ctx.get("game");
   const id = ctx.req.param("tile");
-  const status = game.placeTile(id);
+  const placeInfo = game.placeTile(id);
 
-  return ctx.json(status);
+  placeInfo.type === "Independent" && game.updateCurrentPlayerIndex();
+
+  return ctx.json(placeInfo);
+};
+
+export const handleFoundingHotel = (ctx: Context) => {
+  const game = ctx.get("game");
+  const tile = ctx.req.param("tile");
+  const hotel = ctx.req.param("hotel");
+
+  const foundedHotel = game.foundHotel(tile, hotel);
+  game.updateCurrentPlayerIndex();
+
+  return ctx.json(foundedHotel);
 };

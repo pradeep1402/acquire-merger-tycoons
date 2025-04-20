@@ -1,63 +1,8 @@
-import { assert, assertEquals, assertFalse } from "assert";
+import { assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
 import { createApp } from "../src/app.ts";
 import { Sessions } from "../src/models/sessions.ts";
 import { GameManager } from "../src/models/game_manager.ts";
-
-describe("App: acquire/players", () => {
-  it("should serve the list of players in the game", async () => {
-    let id = 0;
-    const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A"]);
-    const sessions = new Sessions(idGenerator);
-    const player1 = sessions.addPlayer("Adi");
-    const player2 = sessions.addPlayer("krish");
-    const player3 = sessions.addPlayer("sudheer");
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
-    sessions.createRoom(gameManager);
-
-    const app = createApp(sessions, gameManager);
-    const res = await app.request("acquire/players", {
-      method: "GET",
-      headers: { cookie: "sessionId=3;gameId=0" },
-    });
-    const players = await res.json();
-
-    assertEquals(res.status, 200);
-    assertEquals(players, ["Adi", "krish", "you"]);
-    assertEquals(players.length, 3);
-  });
-});
-
-describe("App: acquire/playerDetails", () => {
-  it("should serve details of a player in the game", async () => {
-    let id = 0;
-    const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A"]);
-    const sessions = new Sessions(idGenerator);
-    const player1 = sessions.addPlayer("Adi");
-    const player2 = sessions.addPlayer("krish");
-    const player3 = sessions.addPlayer("sudheer");
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
-    sessions.createRoom(gameManager);
-
-    const app = createApp(sessions, gameManager);
-    const res = await app.request("acquire/player-details", {
-      method: "GET",
-      headers: { cookie: "sessionId=1;gameId=0" },
-    });
-    const player = await res.json();
-
-    assertEquals(player.name, "Adi");
-    assertEquals(player.cash, 6000);
-    assertEquals(player.tiles, ["1A"]);
-    assertEquals(res.status, 200);
-  });
-});
 
 describe("App: /login", () => {
   it("should receive a cookie and redirect to index page", async () => {
@@ -99,50 +44,7 @@ describe("App: /login", () => {
   });
 });
 
-describe("App: acquire/gameboard", () => {
-  it("should return the empty board", async () => {
-    let id = 0;
-    const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A", "2A"]);
-    const sessions = new Sessions(idGenerator);
-    const player1 = sessions.addPlayer("Adi");
-    const player2 = sessions.addPlayer("krish");
-    const player3 = sessions.addPlayer("sudheer");
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
-    sessions.createRoom(gameManager);
-
-    const app = createApp(sessions, gameManager);
-    const res = await app.request("acquire/gameboard", {
-      method: "GET",
-      headers: { cookie: "sessionId=1;gameId=0" },
-    });
-
-    const board = {
-      independentTiles: [],
-      hotels: [],
-    };
-
-    assertEquals(await res.json(), board);
-    assertEquals(res.status, 200);
-  });
-
-  it("should redirect to login page", async () => {
-    const idGenerator = () => "1";
-    const gameManager = new GameManager(["1A", "2A"]);
-    const sessions = new Sessions(idGenerator);
-
-    const app = createApp(sessions, gameManager);
-    const res = await app.request("acquire/gameboard", {
-      method: "GET",
-    });
-
-    assertEquals(res.status, 303);
-  });
-});
-
-describe("App: acquire/gameStatus", () => {
+describe("App: acquire/game-status", () => {
   it("should return the game status when only one player", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
@@ -152,7 +54,7 @@ describe("App: acquire/gameStatus", () => {
     sessions.addToWaitingList(player1, gameManager);
 
     const app = createApp(sessions, gameManager);
-    const res = await app.request("/acquire/gameStatus", {
+    const res = await app.request("/acquire/game-status", {
       method: "GET",
       headers: { cookie: "sessionId=1;gameId=0" },
     });
@@ -177,7 +79,7 @@ describe("App: acquire/gameStatus", () => {
     sessions.addToWaitingList(player3, gameManager);
 
     const app = createApp(sessions, gameManager);
-    const res = await app.request("/acquire/gameStatus", {
+    const res = await app.request("/acquire/game-status", {
       method: "GET",
       headers: { cookie: "sessionId=1;gameId=0" },
     });
@@ -411,6 +313,18 @@ describe("App: /", () => {
 
     assertEquals(res.status, 303);
   });
+
+  it("should return the login page", async () => {
+    const idGenerator = () => "1";
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["1A"]);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/");
+    await res.text();
+
+    assertEquals(res.status, 303);
+  });
 });
 
 describe("App: /game-stats", () => {
@@ -494,9 +408,11 @@ describe("App: /acquire/place-tile/:tile", () => {
     const idGenerator = () => `${id++}`;
     const gameManager = new GameManager(["1A", "2A"]);
     const sessions = new Sessions(idGenerator);
+
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
     const player3 = sessions.addPlayer("malli");
+
     sessions.addToWaitingList(player1, gameManager);
     sessions.addToWaitingList(player2, gameManager);
     sessions.addToWaitingList(player3, gameManager);
@@ -507,7 +423,7 @@ describe("App: /acquire/place-tile/:tile", () => {
       headers: { cookie: "sessionId=1;gameId=0" },
     });
 
-    assert((await res.json()).status);
+    assertEquals(await res.json(), { type: "Independent", tile: "1A" });
     assertEquals(res.status, 200);
   });
 
@@ -530,6 +446,42 @@ describe("App: /acquire/place-tile/:tile", () => {
     });
 
     assertFalse((await res.json()).status);
+    assertEquals(res.status, 200);
+  });
+});
+
+describe("App: /acquire/place-tile/:tile/:hotel", () => {
+  it("should return the new hotel info when the hotel build request is send with the hotel name", async () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const gameManager = new GameManager(["2A", "3A"]);
+    const sessions = new Sessions(idGenerator);
+
+    const player1 = sessions.addPlayer("Adi");
+    const player2 = sessions.addPlayer("bisht");
+    const player3 = sessions.addPlayer("malli");
+
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
+
+    const app = createApp(sessions, gameManager);
+
+    await app.request("/acquire/place-tile/3A", {
+      method: "PATCH",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+
+    const res = await app.request("/acquire/place-tile/2A/Imperial", {
+      method: "PATCH",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+
+    assertEquals(await res.json(), {
+      name: "Imperial",
+      tiles: ["3A", "2A"],
+      color: "orange",
+    });
     assertEquals(res.status, 200);
   });
 });

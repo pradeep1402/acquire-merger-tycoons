@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertFalse } from "assert";
+import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
 import { Game } from "../src/models/game.ts";
 
@@ -58,14 +58,27 @@ describe("Game model", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new Game(["1A", "2A"], players);
 
-      assertFalse(game.placeTile("3A").status);
+      assertEquals(game.placeTile("3A"), { status: false });
     });
 
-    it("should return true for tile user have", () => {
+    it("should return the tile info of placed tile", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new Game(["1A", "2A"], players);
 
-      assert(game.placeTile("1A").status);
+      assertEquals(game.placeTile("1A"), { tile: "1A", type: "Independent" });
+    });
+  });
+
+  describe("foundHotel() method", () => {
+    it("should return false for wrong tile", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(["1A", "2A"], players);
+
+      assertEquals(game.foundHotel("3A", "Imperial"), {
+        name: "Imperial",
+        tiles: ["3A"],
+        color: "orange",
+      });
     });
   });
 });
