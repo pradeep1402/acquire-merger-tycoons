@@ -298,7 +298,25 @@ describe("App: /game-stats", () => {
     });
     const expected = {
       board: { independentTiles: [], hotels: [] },
-      playersName: ["you", "bisht", "malli"],
+      playerPortfolio: {
+        cash: 6000,
+        playerId: "1",
+        stocks: {
+          American: 0,
+          Continental: 0,
+          Festival: 0,
+          Imperial: 0,
+          Sackson: 0,
+          Tower: 0,
+          Worldwide: 0,
+        },
+        tiles: ["1A"],
+      },
+      players: [
+        { isYou: true, name: "Adi" },
+        { isYou: false, name: "bisht" },
+        { isYou: false, name: "malli" },
+      ],
       currentPlayer: "Adi",
       isMyTurn: true,
     };
@@ -326,7 +344,11 @@ describe("App: /game-stats", () => {
     });
     const gameStats = await res.json();
     assertEquals(gameStats.currentPlayer, "Adi");
-    assertEquals(gameStats.playersName, ["Adi", "you", "malli"]);
+    assertEquals(gameStats.players, [
+      { isYou: false, name: "Adi" },
+      { isYou: true, name: "bisht" },
+      { isYou: false, name: "malli" },
+    ]);
     assertEquals(res.status, 200);
   });
 });

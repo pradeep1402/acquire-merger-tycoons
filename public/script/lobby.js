@@ -26,7 +26,7 @@ const renderWaitingList = () => {
     players.forEach((p) => {
       playerList.appendChild(applyPlayerTemplate(p));
     });
-  }, 1000);
+  }, 3000);
 };
 
 const main = () => {

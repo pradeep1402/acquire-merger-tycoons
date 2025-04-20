@@ -1,58 +1,58 @@
 import Collapse from "./collapse.js";
 
 const getResource = async (path) => {
-  const res = await fetch(path);
-  return await res.json();
-};
-
-const handlePlaceTile = async (event) => {
-  const player = await getResource("/acquire/player-details");
-  const tiles = [...player.tiles];
-  const id = event.target.id;
-  if (tiles.includes(id)) {
-    await fetch(`/acquire/place-tile/${id}`, { method: "PATCH" });
-    const tile = document.getElementById(id);
-    tile.classList.add("place-tile");
-    changeFocus(tiles);
-    const board = document.getElementById("gameBoard");
-    board.removeEventListener("click", handlePlaceTile);
-    await updateGameStats();
+  try {
+    const res = await fetch(path);
+    return await res.json();
+  } catch (error) {
+    console.error(`In getResourse: ${path}, ${error}`);
   }
 };
 
-const changeFocus = (tiles) => {
-  tiles.forEach((t) => {
-    const tile = document.getElementById(t);
-    tile.classList.toggle("highlight");
+const createTileClickHandler = (tiles) => async (event) => {
+  const id = event.target.id;
+  if (!tiles.includes(id)) return;
+
+  await fetch(`/acquire/place-tile/${id}`, { method: "PATCH" });
+  const tile = document.getElementById(id);
+  tile.classList.add("place-tile");
+  removeHighlight(tiles);
+};
+
+const highlight = (tiles) => {
+  tiles.forEach((tile) => {
+    const tileNode = document.getElementById(tile);
+    tileNode.classList.add("highlight");
   });
 };
 
-const highlight = async () => {
-  const player = await getResource("/acquire/player-details");
-  const tiles = [...player.tiles];
-  changeFocus(tiles);
+const removeHighlight = (tiles) => {
+  tiles.forEach((tile) => {
+    const tileNode = document.getElementById(tile);
+    tileNode.classList.remove("highlight");
+  });
+};
+
+const handlePlayerTurn = (isMyTurn, tiles) => {
+  if (!isMyTurn) return;
+
+  highlight(tiles);
   const board = document.getElementById("gameBoard");
-  board.addEventListener("click", handlePlaceTile);
+  board.addEventListener("click", createTileClickHandler(tiles));
 };
 
-const startTurn = async (isMyTurn) => {
-  if (!isMyTurn) {
-    await updateGameStats();
-    return;
-  }
-  await highlight();
+const renderPlayerTiles = (tilesContainer, tiles) => {
+  tilesContainer.innerText = "";
+  tiles.forEach((tile) => {
+    const playertile = cloneTemplates("assigned-tile").querySelector(
+      ".player-tile",
+    );
+    playertile.innerText = tile;
+    tilesContainer.appendChild(playertile);
+  });
 };
 
-const updateGameStats = async () => {
-  const gameStats = await getResource("/acquire/game-stats");
-  await startTurn(gameStats.isMyTurn);
-};
-
-const updateTiles = (tiles, values) => {
-  tiles.forEach((tile, i) => (tile.textContent = values[i] || ""));
-};
-
-const renderStocks = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
+const renderStockRow = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
   const nameCell = document.createElement("th");
   nameCell.textContent = hotel;
   const shareCell = document.createElement("td");
@@ -61,88 +61,83 @@ const renderStocks = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
   sharesRow.appendChild(shareCell);
 };
 
-const updateStocks = (stocks) => {
+const renderStocks = (stocks) => {
   const hotelNamesRow = document.getElementById("hotel-names-row");
   const sharesRow = document.getElementById("shares-row");
 
   hotelNamesRow.innerHTML = "";
   sharesRow.innerHTML = "";
 
-  Object.entries(stocks).forEach(renderStocks(hotelNamesRow, sharesRow));
+  Object.entries(stocks).forEach(renderStockRow(hotelNamesRow, sharesRow));
 };
 
-const updateCash = (cash) => {
+const renderCash = (cash) => {
   document.getElementById("cash-info").textContent = `$${cash}`;
 };
 
-const updatePortfolio = async () => {
-  try {
-    const data = await getResource("/acquire/player-details");
-    const tiles = document.querySelectorAll("#portfolio-tiles .player-tile");
-    updateTiles(tiles, [...data.tiles]);
-    updateStocks(data.stocks);
-    updateCash(data.cash);
-  } catch (error) {
-    console.error("Failed to update portfolio:", error);
-  }
+const renderPortfolio = ({ tiles, stocks, cash }) => {
+  const tilesContainer = document.querySelector("#portfolio-tiles");
+  renderPlayerTiles(tilesContainer, tiles);
+  renderStocks(stocks);
+  renderCash(cash);
 };
 
-const startPortfolioPolling = (interval = 500) => {
-  updatePortfolio();
-  setInterval(updatePortfolio, interval);
-};
-
-const removeActivePlayer = (playersName) => {
-  playersName.map((player) => {
-    document.querySelector(`#${player}`).classList.remove("active-player");
+const renderIndependentTiles = (tiles) => {
+  tiles.forEach((tile) => {
+    const tileNode = document.getElementById(tile);
+    tileNode.classList.add("place-tile");
   });
 };
 
-const renderGame = () => {
+const renderPlaceTilesBoard = (board) => {
+  const { independentTiles } = board;
+
+  renderIndependentTiles(independentTiles);
+};
+
+const startGamePolling = () => {
   setInterval(async () => {
-    const res = await fetch("/acquire/game-stats");
-    const stats = await res.json();
-    const { currentPlayer, isMyTurn, playersName } = stats;
+    const stats = await getResource("/acquire/game-stats");
+    const { players, board, isMyTurn, currentPlayer, playerPortfolio } = stats;
+    const { tiles } = playerPortfolio;
 
-    removeActivePlayer(playersName);
-
-    const avatar = isMyTurn
-      ? document.querySelector("#you")
-      : document.querySelector(`#${currentPlayer}`);
-
-    avatar.classList.add("active-player");
+    showStartingTilesPopup(tiles);
+    renderPlayers(players, currentPlayer);
+    handlePlayerTurn(isMyTurn, tiles);
+    renderPortfolio(playerPortfolio);
+    renderPlaceTilesBoard(board);
   }, 2000);
 };
 
-const applyPlayerTemplate = (player) => {
-  const playerTemplate = cloneTemplates("players-template");
-  const avatar = playerTemplate.querySelector(".player-avatar");
+const createPlayerAvatar = ({ name, isYou }, currentPlayer) => {
+  const playerIcon = cloneTemplates("players-template");
+  const avatar = playerIcon.querySelector(".player-avatar");
 
   avatar.setAttribute("src", "/images/avatars/avatar1.jpeg");
-  avatar.id = `${player}`;
-  playerTemplate.querySelector(".player-name").textContent = player;
+  playerIcon.querySelector(".player-name").textContent = isYou
+    ? `${name} (YOU)`
+    : name;
+  currentPlayer === name && avatar.classList.add("active-player");
 
-  return playerTemplate;
+  return playerIcon;
 };
 
-const renderPlayers = async () => {
-  const players = await getResource("/acquire/players");
+const renderPlayers = (players, currentPlayer) => {
   const playerSection = document.getElementById("players");
-  players.forEach((p) => {
-    playerSection.appendChild(applyPlayerTemplate(p));
+  playerSection.innerText = "";
+  players.forEach((player) => {
+    playerSection.appendChild(createPlayerAvatar(player, currentPlayer));
   });
 };
 
-const setup = async () => {
-  const player = await getResource("/acquire/player-details");
-  const parent = document.getElementById("tiles");
-  const tiles = [...parent.children];
-  updateTiles(tiles, [...player.tiles]);
+const showStartingTilesPopup = (tiles) => {
+  const container = document.getElementById("tiles-container");
+  renderPlayerTiles(container, tiles);
 
   setTimeout(() => {
     const popup = document.getElementById("tiles-popup");
     popup.style.display = "none";
-  }, 5000);
+  }, 4000);
 };
 
 const cloneTemplates = (id) => {
@@ -150,7 +145,7 @@ const cloneTemplates = (id) => {
   return template.content.cloneNode(true);
 };
 
-const renderTile = (tileLabel) => {
+const createTile = (tileLabel) => {
   const board = cloneTemplates("board");
   const tile = board.querySelector(".tile");
   tile.innerText = tileLabel;
@@ -159,30 +154,24 @@ const renderTile = (tileLabel) => {
 };
 
 const renderGameBoard = () => {
-  const gameBoard = document.querySelector("#gameBoard");
   const tiles = [];
-
+  const gameBoard = document.querySelector("#gameBoard");
   const rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 
   rows.forEach((row) => {
     for (let col = 1; col <= 12; col++) {
       const tileLabel = `${col}${row}`;
-      tiles.push(renderTile(tileLabel));
+      tiles.push(createTile(tileLabel));
     }
   });
 
   gameBoard.replaceChildren(...tiles);
 };
 
-
-const main = async () => {
+const main = () => {
   new Collapse("portfolio-header", "portfolio-body");
   renderGameBoard();
-  await setup();
-  await renderPlayers();
-  startPortfolioPolling();
-  renderGame();
-  await updateGameStats();
+  startGamePolling();
 };
 
 globalThis.onload = main;

@@ -8,14 +8,13 @@
     <script src="/script/game.js" type="module"></script>
   </head>
   <body>
-    <div id="players">
-      <template id="players-template">
-        <div id="player">
-          <img class="player-avatar" />
-          <p class="player-name"></p>
-        </div>
-      </template>
-    </div>
+    <div id="players"></div>
+    <template id="players-template">
+      <div id="player">
+        <img class="player-avatar" />
+        <p class="player-name"></p>
+      </div>
+    </template>
 
     <div id="gameBoard"></div>
     <template id="board">
@@ -24,29 +23,19 @@
 
     <div id="tiles-popup">
       <h1>You were assigned 6 tiles and $6000</h1>
-      <div id="tiles">
-        <div class="player-tile"></div>
-        <div class="player-tile"></div>
-        <div class="player-tile"></div>
-        <div class="player-tile"></div>
-        <div class="player-tile"></div>
-        <div class="player-tile"></div>
-      </div>
+      <div id="tiles-container"></div>
     </div>
+
+    <template id="assigned-tile">
+      <div class="player-tile"></div>
+    </template>
 
     <div id="portfolio-panel">
       <div id="portfolio-header">PORTFOLIO</div>
-      <div id="portfolio-body" class="hidden">
+      <div id="portfolio-body" class="display">
         <div class="portfolio-section">
           <h2>TILES</h2>
-          <div id="portfolio-tiles">
-            <div class="player-tile"></div>
-            <div class="player-tile"></div>
-            <div class="player-tile"></div>
-            <div class="player-tile"></div>
-            <div class="player-tile"></div>
-            <div class="player-tile"></div>
-          </div>
+          <div id="portfolio-tiles"></div>
         </div>
         <div class="portfolio-section">
           <h2>STOCKS</h2>

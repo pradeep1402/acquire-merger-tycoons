@@ -70,20 +70,20 @@ export const serveGame = (ctx: Context): Response => {
   const game: Game = ctx.get("game");
   const sessions: Sessions = ctx.get("sessions");
   const sessionId: string = ctx.get("sessionId");
-  const { board, playersId, currentPlayerId } = game.getGameStats();
-  const currentPlayerName = sessions.getPlayerName(currentPlayerId);
-  const playersName = playersId.map((playerId: string) => {
-    if (playerId === sessionId) return "you";
-    return sessions.getPlayerName(playerId);
-  });
-  const isMyTurn = currentPlayerId === sessionId;
 
-  return ctx.json({
-    board,
-    playersName,
-    isMyTurn,
-    currentPlayer: currentPlayerName,
+  const { board, playersId, currentPlayerId } = game.getGameStats();
+  const playerPortfolio = game.getPlayerDetails(sessionId);
+  const isMyTurn = sessionId === currentPlayerId;
+  const currentPlayer = sessions.getPlayerName(currentPlayerId);
+
+  const players = playersId.map((playerId: string) => {
+    const isYou = sessionId === playerId;
+    const name = sessions.getPlayerName(playerId);
+
+    return { name, isYou };
   });
+
+  return ctx.json({ board, players, isMyTurn, currentPlayer, playerPortfolio });
 };
 
 export const handlePlaceTile = (ctx: Context) => {
