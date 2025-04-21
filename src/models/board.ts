@@ -71,7 +71,7 @@ export class Board {
 
     const tilesFound = tilesAdjacent.filter(
       (adjTile: Tile) =>
-        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile),
+        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile)
     );
 
     for (const adjTile of tilesFound) {
