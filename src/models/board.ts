@@ -28,29 +28,29 @@ export class Board {
     return { independentTiles: this.independentTiles, hotels: [] };
   }
 
-  parseTile(tile: Tile): number[] {
+  private parseTile(tile: Tile): number[] {
     return [+tile.slice(0, -1), tile.charCodeAt(tile.length - 1)];
   }
 
-  leftOf(tile: Tile) {
+  private leftOf(tile: Tile) {
     const [col, row] = this.parseTile(tile);
     if (col === 1) return "";
     return `${col - 1}${String.fromCharCode(row)}`;
   }
 
-  rightOf(tile: Tile) {
+  private rightOf(tile: Tile) {
     const [col, row] = this.parseTile(tile);
     if (col === 12) return "";
     return `${col + 1}${String.fromCharCode(row)}`;
   }
 
-  topOf(tile: Tile) {
+  private topOf(tile: Tile) {
     const [col, row] = this.parseTile(tile);
     if (row === 65) return "";
     return `${col}${String.fromCharCode(row - 1)}`;
   }
 
-  bottomOf(tile: Tile) {
+  private bottomOf(tile: Tile) {
     const [col, row] = this.parseTile(tile);
     if (row === 73) return "";
     return `${col}${String.fromCharCode(row + 1)}`;
@@ -67,7 +67,7 @@ export class Board {
     return _.compact(adjacent);
   }
 
-  isPlaced(tile: Tile) {
+  private isPlaced(tile: Tile) {
     return this.independentTiles.includes(tile);
     // this.hotels.some((h) => h.isTileBelongs(tile))
   }
@@ -85,7 +85,9 @@ export class Board {
   // dependentHotels(tile: Tile): Hotel[] {
   //   const adjacentTiles = this.getAdjacentTilesOf(tile);
   //   const hotels = [];
+
   //   for (const tile of adjacentTiles) {
+  //     getSignedCookie;
   //     const hotel = this.hotels.find((hotel) => hotel.isTileBelongs(tile));
   //     if (hotel) hotels.push(hotel);
   //   }

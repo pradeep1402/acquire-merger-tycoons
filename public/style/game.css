@@ -26,7 +26,7 @@ body {
   height: 21vh;
   width: 50vw;
   height: 70vh;
-  border: 1px solid var(--color);
+  /* border: 1px solid var(--color); */
   background-color: #f9fafb;
   justify-content: space-evenly;
   align-items: center;

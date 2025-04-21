@@ -96,7 +96,7 @@ const renderIndependentTiles = (tiles) => {
 
 const hotelColor = (name) => {
   const colors = {
-    tower: "yellow",
+    tower: "#fab92a",
     sackson: "red",
     festival: "green",
     continental: "skyblue",
