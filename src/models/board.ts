@@ -111,16 +111,16 @@ export class Board {
     return _.compact(adjacent);
   }
 
-  // private isPlaced(tile: Tile) {
-  //   return this.independentTiles.has(tile);
-  //   this.hotels.some((h) => h.isTileBelongs(tile))
-  // }
+  private isPlaced(tile: Tile) {
+    return this.independentTiles.has(tile);
+    // this.hotels.some((h) => h.isTileBelongs(tile))
+  }
 
-  // getAdjacentTilesOf(tile: Tile): Tile[] {
-  //   const adjacent = this.getAdjacentOf(tile);
+  getAdjacentTilesOf(tile: Tile): Tile[] {
+    const adjacent = this.getAdjacentOf(tile);
 
-  //   return adjacent.filter((t: Tile) => this.isPlaced(t));
-  // }
+    return adjacent.filter((t: Tile) => this.isPlaced(t));
+  }
 
   // isDependent(tile: Tile) {
   //   return this.dependentHotels(tile).length === 1;
