@@ -4,7 +4,7 @@ const applyPlayerTemplate = (player) => {
 
   clone
     .getElementById("player-avatar")
-    .setAttribute("src", "/images/avatars/avatar3.jpeg");
+    .setAttribute("src", "/images/avatars/avatar1.jpeg");
   clone.getElementById("player-name").textContent = player.name;
 
   return clone;

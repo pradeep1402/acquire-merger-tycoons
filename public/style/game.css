@@ -39,6 +39,7 @@ body {
   align-items: center;
   color: var(--color);
   border: 1px solid var(--color);
+  background-color: #e2f3f8;
 }
 
 #tiles-popup {
@@ -160,13 +161,25 @@ body {
 }
 
 .highlight {
-  background-color: #1e2a38;
-  color: #b1d4e0;
+  background-color: #84dbf8;
+  color: #1e2a38;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  animation: pulse-scale 2s infinite ease-in-out;
+}
+
+@keyframes pulse-scale {
+  0%,
+  100% {
+    transform: scaleX(0.9) scaleY(0.9);
+  }
+  50% {
+    transform: scaleX(1) scaleY(1);
+  }
 }
 
 .place-tile {
-  background-color: #b1d4e0;
-  color: #1e2a38;
+  background-color: #1e2a38;
+  color: #b1d4e0;
 }
 
 .active-player {
@@ -174,9 +187,4 @@ body {
   box-shadow:
     2px 2px 10px rgba(0, 100, 0, 0.8),
     -2px -2px 10px rgba(0, 100, 0, 0.8);
-}
-
-.place-tile {
-  background-color: #b1d4e0;
-  color: #1e2a38;
 }

@@ -137,7 +137,7 @@ const showStartingTilesPopup = (tiles) => {
   setTimeout(() => {
     const popup = document.getElementById("tiles-popup");
     popup.style.display = "none";
-  }, 4000);
+  }, 100);
 };
 
 const cloneTemplates = (id) => {
