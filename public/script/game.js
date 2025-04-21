@@ -169,6 +169,7 @@ const renderGameBoard = () => {
 };
 
 const main = () => {
+  new Collapse("tray-header", "tray-body");
   new Collapse("portfolio-header", "portfolio-body");
   renderGameBoard();
   startGamePolling();
