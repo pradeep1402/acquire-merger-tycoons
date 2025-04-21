@@ -13,14 +13,16 @@ const createTileClickHandler = async (event) => {
   const stats = await getResource("/acquire/game-stats");
   const tiles = stats.playerPortfolio.tiles;
 
+  console.log(event.target);
   const id = event.target.id;
+
   if (!tiles.includes(id)) return;
 
   await fetch(`/acquire/place-tile/${id}`, { method: "PATCH" });
   const tile = document.getElementById(id);
   tile.classList.add("place-tile");
   removeHighlight(tiles);
-  const board = document.getElementById("gameBoard");
+  const board = document.querySelector(".gameBoard");
   board.removeEventListener("click", createTileClickHandler);
 };
 
@@ -43,7 +45,7 @@ const renderPlayerTurn = (isMyTurn, tiles) => {
 
   highlight(tiles);
   const board = document.querySelector(".gameBoard");
-  board.addEventListener("click", createTileClickHandler(tiles));
+  board.addEventListener("click", createTileClickHandler);
 };
 
 const renderPlayerTiles = (tilesContainer, tiles) => {

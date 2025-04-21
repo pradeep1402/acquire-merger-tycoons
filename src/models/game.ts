@@ -24,7 +24,14 @@ export class Game {
     });
   }
 
+  private assignTile() {
+    const currentPlayer = this.players[this.currentPlayerIndex];
+    const [tile] = this.getTiles(1);
+    currentPlayer.addTile(tile);
+  }
+
   private updateCurrentPlayerIndex() {
+    this.assignTile();
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
       this.players.length;
   }

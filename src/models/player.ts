@@ -44,6 +44,10 @@ export class Player {
     };
   }
 
+  addTile(tile: string) {
+    return this.tiles.add(tile);
+  }
+
   isTileExits(tile: string) {
     return this.tiles.has(tile);
   }
