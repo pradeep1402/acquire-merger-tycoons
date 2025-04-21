@@ -33,20 +33,25 @@ const renderSelectHotel = (inActiveHotels, tileLabel) => {
   });
 };
 
-const createTileClickHandler = (tiles) => async (event) => {
-  const tileLabel = event.target.id;
-  if (!tiles.includes(tileLabel)) return;
+const createTileClickHandler = async (event) => {
+  const stats = await getResource("/acquire/game-stats");
+  const tiles = stats.playerPortfolio.tiles;
+  const id = event.target.id;
 
-  const res = await fetch(`/acquire/place-tile/${tileLabel}`, {
+  if (!tiles.includes(id)) return;
+  // if (!tiles.includes(tileLabel)) return;
+
+  const res = await fetch(`/acquire/place-tile/${id}`, {
     method: "PATCH",
   });
 
   const playerInfo = await res.json();
   if (playerInfo.type === "Build") {
-    renderSelectHotel(playerInfo.inActiveHotels, tileLabel);
+    renderSelectHotel(playerInfo.inActiveHotels, id);
   }
 
-  const tile = document.getElementById(tileLabel);
+  await fetch(`/acquire/place-tile/${id}`, { method: "PATCH" });
+  const tile = document.getElementById(id);
   tile.classList.add("place-tile");
   removeHighlight(tiles);
   const board = document.querySelector(".gameBoard");
@@ -78,23 +83,22 @@ const renderPlayerTurn = (isMyTurn, tiles) => {
 const renderPlayerTiles = (tilesContainer, tiles) => {
   tilesContainer.innerText = "";
   tiles.forEach((tile) => {
-    const playerTile =
-      cloneTemplates("assigned-tile").querySelector(".player-tile");
+    const playerTile = cloneTemplates("assigned-tile").querySelector(
+      ".player-tile",
+    );
     playerTile.innerText = tile;
     tilesContainer.appendChild(playerTile);
   });
 };
 
-const renderStockRow =
-  (hotelNamesRow, sharesRow) =>
-  ([hotel, shares]) => {
-    const nameCell = document.createElement("th");
-    nameCell.textContent = hotel;
-    const shareCell = document.createElement("td");
-    shareCell.textContent = shares;
-    hotelNamesRow.appendChild(nameCell);
-    sharesRow.appendChild(shareCell);
-  };
+const renderStockRow = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
+  const nameCell = document.createElement("th");
+  nameCell.textContent = hotel;
+  const shareCell = document.createElement("td");
+  shareCell.textContent = shares;
+  hotelNamesRow.appendChild(nameCell);
+  sharesRow.appendChild(shareCell);
+};
 
 const renderStocks = (stocks) => {
   const hotelNamesRow = document.getElementById("hotel-names-row");
