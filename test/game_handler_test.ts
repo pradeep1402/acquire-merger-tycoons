@@ -259,6 +259,88 @@ describe("App: /", () => {
     assertEquals(res.status, 303);
     assertEquals(res.headers.get("location"), "/game.html");
   });
+  it("should redirect to game page when accessing lobby", async () => {
+    let i = 0;
+    const idGenerator = () => `${i++}`;
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.addPlayer("Krishna");
+    sessions.addPlayer("Sudheer");
+    sessions.addPlayer("Adi");
+    sessions.addToWaitingList("1", gameManager);
+    sessions.addToWaitingList("2", gameManager);
+    sessions.addToWaitingList("3", gameManager);
+
+    sessions.createRoom(gameManager);
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/lobby.html", {
+      headers: {
+        cookie: "sessionId=1;gameId=0",
+      },
+    });
+
+    assertEquals(res.status, 303);
+    assertEquals(res.headers.get("location"), "/game.html");
+  });
+  it("should redirect to game page when accessing game", async () => {
+    let i = 0;
+    const idGenerator = () => `${i++}`;
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.addPlayer("Krishna");
+    sessions.addPlayer("Sudheer");
+    sessions.addPlayer("Adi");
+    sessions.addToWaitingList("1", gameManager);
+    sessions.addToWaitingList("2", gameManager);
+    sessions.addToWaitingList("3", gameManager);
+
+    sessions.createRoom(gameManager);
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/game.html", {
+      headers: {
+        cookie: "sessionId=1;gameId=0",
+      },
+    });
+    await res.text();
+
+    assertEquals(res.status, 200);
+  });
+
+  it("should redirect to lobby when accessing game page", async () => {
+    let i = 0;
+    const idGenerator = () => `${i++}`;
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.addPlayer("Krishna");
+    sessions.addToWaitingList("1", gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/game.html", {
+      headers: {
+        cookie: "sessionId=1;gameId=0",
+      },
+    });
+
+    assertEquals(res.status, 303);
+    assertEquals(res.headers.get("location"), "/lobby.html");
+  });
+  it("should redirect to lobby when accessing lobby page", async () => {
+    let i = 0;
+    const idGenerator = () => `${i++}`;
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.addPlayer("Krishna");
+    sessions.addToWaitingList("1", gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/lobby.html", {
+      headers: {
+        cookie: "sessionId=1;gameId=0",
+      },
+    });
+    await res.text();
+    assertEquals(res.status, 200);
+  });
 
   it("should return the home page", async () => {
     const idGenerator = () => "1";
@@ -275,6 +357,40 @@ describe("App: /", () => {
     await res.text();
 
     assertEquals(res.status, 200);
+  });
+
+  it("should return to index page when accesing game", async () => {
+    const idGenerator = () => "1";
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.addPlayer("Krishna");
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/game.html", {
+      headers: {
+        cookie: "sessionId=1",
+      },
+    });
+    await res.text();
+
+    assertEquals(res.status, 303);
+  });
+
+  it("should return to index page when accesing lobby", async () => {
+    const idGenerator = () => "1";
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.addPlayer("Krishna");
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/lobby.html", {
+      headers: {
+        cookie: "sessionId=1",
+      },
+    });
+    await res.text();
+
+    assertEquals(res.status, 303);
   });
 });
 

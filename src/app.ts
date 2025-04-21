@@ -81,9 +81,36 @@ const ensureGameId = async (ctx: Context, next: Next) => {
   await next();
 };
 
+const ensureGamePage = async (ctx: Context, next: Next) => {
+  const gameId = getCookie(ctx, "gameId");
+  const gameManager = ctx.get("gameManager");
+  const gameStatus = gameManager.getGame(gameId);
+
+  if (!gameId) return ctx.redirect("/", 303);
+  if (gameId && !gameStatus) {
+    return ctx.redirect("/lobby.html", 303);
+  }
+
+  await next();
+};
+
+const ensureLobbyPage = async (ctx: Context, next: Next) => {
+  const gameId = getCookie(ctx, "gameId");
+  const gameManager = ctx.get("gameManager");
+  const gameStatus = gameManager.getGame(gameId);
+
+  if (!gameId) return ctx.redirect("/", 303);
+  if (gameId && gameStatus) {
+    return ctx.redirect("/game.html", 303);
+  }
+
+  await next();
+};
+
 const createAuthenticatedRoutes = () => {
   const authenticatedRoutes = new Hono();
-
+  authenticatedRoutes.use("/game.html", ensureGamePage);
+  authenticatedRoutes.use("/lobby.html", ensureLobbyPage);
   authenticatedRoutes.use(ensureAuthenticated);
   authenticatedRoutes.use(authenticatedContext);
   authenticatedRoutes.use("/", ensureGameId);
