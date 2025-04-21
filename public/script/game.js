@@ -5,11 +5,14 @@ const getResource = async (path) => {
     const res = await fetch(path);
     return await res.json();
   } catch (error) {
-    console.error(`In getResourse: ${path}, ${error}`);
+    console.error(`In getResource: ${path}, ${error}`);
   }
 };
 
-const createTileClickHandler = (tiles) => async (event) => {
+const createTileClickHandler = async (event) => {
+  const stats = await getResource("/acquire/game-stats");
+  const tiles = stats.playerPortfolio.tiles;
+
   const id = event.target.id;
   if (!tiles.includes(id)) return;
 
@@ -17,6 +20,8 @@ const createTileClickHandler = (tiles) => async (event) => {
   const tile = document.getElementById(id);
   tile.classList.add("place-tile");
   removeHighlight(tiles);
+  const board = document.getElementById("gameBoard");
+  board.removeEventListener("click", createTileClickHandler);
 };
 
 const highlight = (tiles) => {
@@ -33,22 +38,22 @@ const removeHighlight = (tiles) => {
   });
 };
 
-const handlePlayerTurn = (isMyTurn, tiles) => {
+const renderPlayerTurn = (isMyTurn, tiles) => {
   if (!isMyTurn) return;
 
   highlight(tiles);
   const board = document.getElementById("gameBoard");
-  board.addEventListener("click", createTileClickHandler(tiles));
+  board.addEventListener("click", createTileClickHandler);
 };
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   tilesContainer.innerText = "";
   tiles.forEach((tile) => {
-    const playertile = cloneTemplates("assigned-tile").querySelector(
+    const playerTile = cloneTemplates("assigned-tile").querySelector(
       ".player-tile",
     );
-    playertile.innerText = tile;
-    tilesContainer.appendChild(playertile);
+    playerTile.innerText = tile;
+    tilesContainer.appendChild(playerTile);
   });
 };
 
@@ -89,10 +94,42 @@ const renderIndependentTiles = (tiles) => {
   });
 };
 
+const hotelColor = (name) => {
+  const colors = {
+    tower: "yellow",
+    sackson: "red",
+    festival: "green",
+    continental: "skyblue",
+    imperial: "orange",
+    worldwide: "purple",
+    american: "blue",
+  };
+
+  return colors[name];
+};
+
+const renderAHotel = ({ name, tiles }) => {
+  tiles.forEach((t) => {
+    const tile = document.getElementById(t);
+    tile.style.backgroundColor = hotelColor(name);
+    console.log(tile);
+  });
+};
+
+const renderHotels = (hotels) => {
+  hotels.forEach((h) => {
+    renderAHotel(h);
+  });
+};
+
 const renderPlaceTilesBoard = (board) => {
   const { independentTiles } = board;
-
   renderIndependentTiles(independentTiles);
+  const hotels = [
+    { name: "tower", tiles: ["1A", "2A", "2B"] },
+    { name: "imperial", tiles: ["12F", "11F", "11E"] },
+  ];
+  renderHotels(hotels);
 };
 
 const startGamePolling = () => {
@@ -103,7 +140,7 @@ const startGamePolling = () => {
 
     showStartingTilesPopup(tiles);
     renderPlayers(players, currentPlayer);
-    handlePlayerTurn(isMyTurn, tiles);
+    renderPlayerTurn(isMyTurn, tiles);
     renderPortfolio(playerPortfolio);
     renderPlaceTilesBoard(board);
   }, 2000);
