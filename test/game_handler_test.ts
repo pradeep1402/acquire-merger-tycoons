@@ -324,6 +324,25 @@ describe("App: /", () => {
     assertEquals(res.status, 303);
     assertEquals(res.headers.get("location"), "/lobby.html");
   });
+
+  it("should remove cookies when logout", async () => {
+    let i = 0;
+    const idGenerator = () => `${i++}`;
+    const sessions = new Sessions(idGenerator);
+    const gameManager = new GameManager(["A1", "A2"]);
+    sessions.addPlayer("Krishna");
+    sessions.addToWaitingList("1", gameManager);
+
+    const app = createApp(sessions, gameManager);
+    const res = await app.request("/logout", {
+      headers: {
+        cookie: "sessionId=1;gameId=0",
+      },
+    });
+
+    assertEquals(res.status, 200);
+  });
+
   it("should redirect to lobby when accessing lobby page", async () => {
     let i = 0;
     const idGenerator = () => `${i++}`;

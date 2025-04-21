@@ -16,7 +16,7 @@ body {
   align-items: center;
 }
 
-#gameBoard {
+.gameBoard {
   position: fixed;
   top: 5%;
   left: 20%;
@@ -31,6 +31,15 @@ body {
   justify-content: space-evenly;
   align-items: center;
   gap: 0.5% 0.5%;
+}
+
+.minimap .gameBoard {
+  width: 15vw;
+  height: 21vh;
+  font-size: 0;
+}
+.minimap .tile {
+  border: 0.5px;
 }
 
 .tile {

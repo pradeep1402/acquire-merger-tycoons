@@ -42,8 +42,8 @@ const renderPlayerTurn = (isMyTurn, tiles) => {
   if (!isMyTurn) return;
 
   highlight(tiles);
-  const board = document.getElementById("gameBoard");
-  board.addEventListener("click", createTileClickHandler);
+  const board = document.querySelector(".gameBoard");
+  board.addEventListener("click", createTileClickHandler(tiles));
 };
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
@@ -143,7 +143,7 @@ const startGamePolling = () => {
     renderPlayerTurn(isMyTurn, tiles);
     renderPortfolio(playerPortfolio);
     renderPlaceTilesBoard(board);
-  }, 2000);
+  }, 500);
 };
 
 const createPlayerAvatar = ({ name, isYou }, currentPlayer) => {
@@ -174,7 +174,7 @@ const showStartingTilesPopup = (tiles) => {
   setTimeout(() => {
     const popup = document.getElementById("tiles-popup");
     popup.style.display = "none";
-  }, 100);
+  }, 2000);
 };
 
 const cloneTemplates = (id) => {
@@ -192,7 +192,7 @@ const createTile = (tileLabel) => {
 
 const renderGameBoard = () => {
   const tiles = [];
-  const gameBoard = document.querySelector("#gameBoard");
+  const gameBoard = document.querySelector(".gameBoard");
   const rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 
   rows.forEach((row) => {

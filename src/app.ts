@@ -12,7 +12,7 @@ import {
   servePlayerDetails,
   servePlayers,
 } from "./handlers/game_handler.ts";
-import { getCookie } from "hono/cookie";
+import { deleteCookie, getCookie } from "hono/cookie";
 import { Sessions } from "./models/sessions.ts";
 
 const setContext =
@@ -133,6 +133,11 @@ export const createApp = (sessions: Sessions, gameManager: GameManager) => {
 
   app.use(logger());
   app.use(setContext(sessions, gameManager));
+  app.get("/logout", (ctx) => {
+    deleteCookie(ctx, "sessionId");
+    deleteCookie(ctx, "gameId");
+    return ctx.text("Logged out. Cookie removed.");
+  });
 
   app.route("/", guestRoutes);
   app.route("/", authenticatedRoutes);

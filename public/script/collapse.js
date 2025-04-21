@@ -13,5 +13,9 @@ export default class Collapse {
   toggle() {
     this.target.classList.toggle("hidden");
     this.target.classList.toggle("display");
+    const trayHeader = this.trigger;
+    const toggleHide = (sel) =>
+      trayHeader.querySelector(sel).classList.toggle("hidden");
+    ".collapse .open".split(" ").forEach(toggleHide);
   }
 }
