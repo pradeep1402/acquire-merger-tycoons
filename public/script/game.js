@@ -9,53 +9,49 @@ const getResource = async (path) => {
   }
 };
 
-const handleFoundHotel = (tileLabel) => async (event) => {
+const handleFoundHotel = (tileLabel, playerTiles) => async (event) => {
   await fetch(`/acquire/place-tile/${tileLabel}/${event.target.textContent}`, {
     method: "PATCH",
   });
 
   const container = document.querySelector("#popup");
   container.style.display = "none";
-  const board = document.querySelector(".gameBoard");
-  board.removeEventListener("click", createTileClickHandler);
+  removeHighlight(playerTiles);
 };
 
-const renderSelectHotel = (inActiveHotels, tileLabel) => {
+const renderSelectHotel = (inActiveHotels, tileLabel, playerTiles) => {
   const container = document.querySelector("#popup");
   const hotelList = document.querySelector("#hotel-container");
   container.style.display = "block";
+  hotelList.textContent = "";
 
   inActiveHotels.forEach((hotel) => {
     const div = document.createElement("div");
     div.textContent = hotel.name;
-    div.addEventListener("click", handleFoundHotel(tileLabel));
+    div.addEventListener("click", handleFoundHotel(tileLabel, playerTiles), {
+      once: true,
+    });
     hotelList.appendChild(div);
   });
 };
 
-const createTileClickHandler = async (event) => {
-  const stats = await getResource("/acquire/game-stats");
-  const tiles = stats.playerPortfolio.tiles;
+const createTileClickHandler = (tiles) => async (event) => {
   const id = event.target.id;
 
   if (!tiles.includes(id)) return;
-  // if (!tiles.includes(tileLabel)) return;
 
   const res = await fetch(`/acquire/place-tile/${id}`, {
     method: "PATCH",
   });
-
   const playerInfo = await res.json();
-  if (playerInfo.type === "Build") {
-    renderSelectHotel(playerInfo.inActiveHotels, id);
-  }
 
-  await fetch(`/acquire/place-tile/${id}`, { method: "PATCH" });
   const tile = document.getElementById(id);
   tile.classList.add("place-tile");
   removeHighlight(tiles);
-  const board = document.querySelector(".gameBoard");
-  board.removeEventListener("click", createTileClickHandler);
+
+  if (playerInfo.type === "Build") {
+    renderSelectHotel(playerInfo.inActiveHotels, id, tiles);
+  }
 };
 
 const highlight = (tiles) => {
@@ -77,7 +73,9 @@ const renderPlayerTurn = (isMyTurn, tiles) => {
 
   highlight(tiles);
   const board = document.querySelector(".gameBoard");
-  board.addEventListener("click", createTileClickHandler);
+  board.addEventListener("click", createTileClickHandler(tiles), {
+    once: true,
+  });
 };
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
@@ -130,13 +128,13 @@ const renderIndependentTiles = (tiles) => {
 
 const hotelColor = (name) => {
   const colors = {
-    tower: "#fab92a",
-    sackson: "red",
-    festival: "green",
-    Continental: "skyblue",
+    Tower: "#fab92a",
+    Sackson: "red",
+    Festival: "green",
+    Continental: "yellow",
     Imperial: "orange",
-    worldwide: "purple",
-    american: "blue",
+    Worldwide: "purple",
+    American: "blue",
   };
 
   return colors[name];

@@ -3,18 +3,6 @@ import _ from "lodash";
 
 type Tile = string;
 
-// const letterToNumberMap = new Map<string, number>([
-//   ["A", 0],
-//   ["B", 1],
-//   ["C", 2],
-//   ["D", 3],
-//   ["E", 4],
-//   ["F", 5],
-//   ["G", 6],
-//   ["H", 7],
-//   ["I", 8],
-// ]);
-
 export class Board {
   hotels: Hotel[];
   independentTiles: Set<Tile>;
@@ -32,8 +20,9 @@ export class Board {
 
   placeTile(tile: Tile) {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
+    const inActiveHotels = this.getInActiveHotels();
 
-    if (adjacentTiles.size === 0) {
+    if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
       this.independentTiles.add(tile);
       return { tile, type: "Independent" };
     }
@@ -125,7 +114,6 @@ export class Board {
 
   private isPlaced(tile: Tile) {
     return this.independentTiles.has(tile);
-    // this.hotels.some((h) => h.isTileBelongs(tile))
   }
 
   getAdjacentTilesOf(tile: Tile): Tile[] {
@@ -133,21 +121,4 @@ export class Board {
 
     return adjacent.filter((t: Tile) => this.isPlaced(t));
   }
-
-  // isDependent(tile: Tile) {
-  //   return this.dependentHotels(tile).length === 1;
-  // }
-
-  // dependentHotels(tile: Tile): Hotel[] {
-  //   const adjacentTiles = this.getAdjacentTilesOf(tile);
-  //   const hotels = [];
-
-  //   for (const tile of adjacentTiles) {
-  //     getSignedCookie;
-  //     const hotel = this.hotels.find((hotel) => hotel.isTileBelongs(tile));
-  //     if (hotel) hotels.push(hotel);
-  //   }
-
-  //   return hotels;
-  // }
 }
