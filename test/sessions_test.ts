@@ -32,7 +32,7 @@ describe("Session model", () => {
     const sessions = new Sessions(idGenerator);
 
     const tiles = ["1A", "2A"];
-    const gameManager = new GameManager(tiles);
+    const gameManager = new GameManager(tiles, []);
     sessions.addPlayer("Sudheer");
     assertEquals(sessions.addToWaitingList("1", gameManager), {
       playerId: "1",
@@ -46,7 +46,7 @@ describe("Session model", () => {
     const sessions = new Sessions(idGenerator);
 
     const tiles = ["1A", "2A"];
-    const gameManager = new GameManager(tiles);
+    const gameManager = new GameManager(tiles, []);
     sessions.addPlayer("Sudheer");
     sessions.addPlayer("Pradeep");
     sessions.addPlayer("Likhi");

@@ -5,7 +5,7 @@ import { Hotel } from "../src/models/hotel.ts";
 
 describe("Board class", () => {
   it("should return the tile which placed", () => {
-    const hotels = [new Hotel("Impireal", "blue")];
+    const hotels = [new Hotel("Imperial", "blue")];
     const board = new Board(hotels);
 
     assertEquals(board.placeTile("1A"), {
@@ -15,21 +15,38 @@ describe("Board class", () => {
   });
 
   it("should return the empty board", () => {
-    const hotels = [new Hotel("Impireal", "blue")];
+    const hotels = [new Hotel("Imperial", "orange")];
     const board = new Board(hotels);
 
-    assertEquals(board.getBoard(), { independentTiles: [], hotels: [] });
+    assertEquals(board.getBoard(), {
+      independentTiles: [],
+      activeHotels: [],
+      inActiveHotels: [
+        {
+          color: "orange",
+          name: "Imperial",
+          tiles: [],
+        },
+      ],
+    });
   });
 
   it("should return the board", () => {
-    const hotels = [new Hotel("Impireal", "blue")];
+    const hotels = [new Hotel("Imperial", "orange")];
     const board = new Board(hotels);
     board.placeTile("1A");
     board.placeTile("4A");
 
     assertEquals(board.getBoard(), {
       independentTiles: ["1A", "4A"],
-      hotels: [],
+      activeHotels: [],
+      inActiveHotels: [
+        {
+          color: "orange",
+          name: "Imperial",
+          tiles: [],
+        },
+      ],
     });
   });
 
@@ -43,7 +60,8 @@ describe("Board class", () => {
 
     assertEquals(board.getBoard(), {
       independentTiles: ["4A"],
-      hotels: [{ name: "Imperial", tiles: ["2A", "1A"], color: "blue" }],
+      activeHotels: [{ name: "Imperial", tiles: ["2A", "1A"], color: "blue" }],
+      inActiveHotels: [],
     });
   });
 

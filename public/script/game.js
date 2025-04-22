@@ -81,23 +81,22 @@ const renderPlayerTurn = (isMyTurn, tiles) => {
 const renderPlayerTiles = (tilesContainer, tiles) => {
   tilesContainer.innerText = "";
   tiles.forEach((tile) => {
-    const playerTile =
-      cloneTemplates("assigned-tile").querySelector(".player-tile");
+    const playerTile = cloneTemplates("assigned-tile").querySelector(
+      ".player-tile",
+    );
     playerTile.innerText = tile;
     tilesContainer.appendChild(playerTile);
   });
 };
 
-const renderStockRow =
-  (hotelNamesRow, sharesRow) =>
-  ([hotel, shares]) => {
-    const nameCell = document.createElement("th");
-    nameCell.textContent = hotel;
-    const shareCell = document.createElement("td");
-    shareCell.textContent = shares;
-    hotelNamesRow.appendChild(nameCell);
-    sharesRow.appendChild(shareCell);
-  };
+const renderStockRow = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
+  const nameCell = document.createElement("th");
+  nameCell.textContent = hotel;
+  const shareCell = document.createElement("td");
+  shareCell.textContent = shares;
+  hotelNamesRow.appendChild(nameCell);
+  sharesRow.appendChild(shareCell);
+};
 
 const renderStocks = (stocks) => {
   const hotelNamesRow = document.getElementById("hotel-names-row");
@@ -164,12 +163,16 @@ const renderStocksOfAllHotels = (activeHotels, inActiveHotels) => {
   console.log("InActive Hotels:", inActiveHotels);
   console.log("Active Hotels:", activeHotels);
   const stocksSection = document.querySelector("#stocks-section");
-  console.log("Section");
+  console.log("Section", stocksSection);
 };
 
 const renderInActiveHotels = (inActiveHotels) => {
   const inActiveHotelsSection = document.querySelector("#inactive-hotels");
-  console.log("InActive Hotels:", inActiveHotels);
+  for (const hotel of inActiveHotels) {
+    const div = document.createElement("div");
+    div.innerText = hotel.name;
+  }
+  console.log("InActive Hotels:", inActiveHotels, inActiveHotelsSection);
 };
 
 const renderStocksAndInactiveHotels = (inActiveHotels, activeHotels) => {

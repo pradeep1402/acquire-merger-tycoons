@@ -5,32 +5,14 @@ import { Hotel } from "./hotel.ts";
 
 type Tile = string;
 
-const Imperial = new Hotel("Imperial", "orange");
-const Continental = new Hotel("Continental", "sky-blue");
-const Worldwide = new Hotel("Worldwide", "purple");
-const Tower = new Hotel("Tower", "yellow");
-const Sackson = new Hotel("Sackson", "red");
-const Festival = new Hotel("Festival", "green");
-const American = new Hotel("American", "violet");
-
-const Hotels = [
-  Imperial,
-  Continental,
-  Worldwide,
-  Tower,
-  Sackson,
-  Festival,
-  American,
-];
-
 export class Game {
   private board: Board;
   private pile: Tile[];
   private players: Player[];
   private currentPlayerIndex: number;
 
-  constructor(tiles: Tile[], playerIds: string[]) {
-    this.board = new Board(Hotels);
+  constructor(tiles: Tile[], playerIds: string[], hotels: Hotel[]) {
+    this.board = new Board(hotels);
     this.pile = _.shuffle(tiles);
     this.players = this.setPlayers(playerIds);
     this.currentPlayerIndex = 0;
@@ -51,8 +33,8 @@ export class Game {
 
   updateCurrentPlayerIndex() {
     this.assignTile();
-    this.currentPlayerIndex =
-      (this.currentPlayerIndex + 1) % this.players.length;
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
+      this.players.length;
   }
 
   placeTile(tile: Tile) {

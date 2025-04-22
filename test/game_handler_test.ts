@@ -3,13 +3,14 @@ import { describe, it } from "testing/bdd";
 import { createApp } from "../src/app.ts";
 import { Sessions } from "../src/models/sessions.ts";
 import { GameManager } from "../src/models/game_manager.ts";
+import { Hotel } from "../src/models/hotel.ts";
 
 describe("App: /login", () => {
   it("should receive a cookie and redirect to index page", async () => {
     const idGenerator = () => "1";
     const formData = new FormData();
     formData.set("playerName", "Adhi");
-    const gameManager = new GameManager(["1A"]);
+    const gameManager = new GameManager(["1A"], []);
     const sessions = new Sessions(idGenerator);
     const app = createApp(sessions, gameManager);
     const res = await app.request("/login", { method: "POST", body: formData });
@@ -19,7 +20,7 @@ describe("App: /login", () => {
   });
 
   it("should redirect to index page if already loggedin", async () => {
-    const gameManager = new GameManager(["1A"]);
+    const gameManager = new GameManager(["1A"], []);
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
     sessions.addPlayer("likhi");
@@ -33,7 +34,7 @@ describe("App: /login", () => {
 
   it("should open login.html if not logged in .", async () => {
     const idGenerator = () => "1";
-    const gameManager = new GameManager(["1A"]);
+    const gameManager = new GameManager(["1A"], []);
     const sessions = new Sessions(idGenerator);
     const app = createApp(sessions, gameManager);
 
@@ -48,7 +49,7 @@ describe("App: acquire/game-status", () => {
   it("should return the game status when only one player", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A"]);
+    const gameManager = new GameManager(["1A"], []);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     sessions.addToWaitingList(player1, gameManager);
@@ -69,7 +70,7 @@ describe("App: acquire/game-status", () => {
   it("should return the game status as START when required number of players join the game", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A"]);
+    const gameManager = new GameManager(["1A"], []);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("Bdi");
@@ -93,7 +94,7 @@ describe("App: acquire/home/quick-play", () => {
   it("should add player in waiting list", async () => {
     const sessions = new Sessions(() => "1");
     sessions.addPlayer("Krishna");
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     const app = createApp(sessions, gameManager);
     const res = await app.request("/acquire/home/quick-play", {
       method: "POST",
@@ -109,7 +110,7 @@ describe("App: acquire/home/quick-play", () => {
   it("should set gameId to a player", async () => {
     const sessions = new Sessions(() => "1");
     sessions.addPlayer("Krishna");
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     const app = createApp(sessions, gameManager);
     const res = await app.request("/acquire/home/quick-play", {
       method: "POST",
@@ -126,7 +127,7 @@ describe("App: /", () => {
   it("should redirect to waiting page when player already have gameId and is waiting", async () => {
     const sessions = new Sessions(() => "1");
     sessions.addPlayer("Krishna");
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     const app = createApp(sessions, gameManager);
     const res = await app.request("/", {
       headers: {
@@ -142,7 +143,7 @@ describe("App: /", () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
     sessions.addPlayer("Sudheer");
     sessions.addPlayer("Adi");
@@ -165,7 +166,7 @@ describe("App: /", () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
     sessions.addPlayer("Sudheer");
     sessions.addPlayer("Adi");
@@ -188,7 +189,7 @@ describe("App: /", () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
     sessions.addPlayer("Sudheer");
     sessions.addPlayer("Adi");
@@ -212,7 +213,7 @@ describe("App: /", () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
     sessions.addToWaitingList("1", gameManager);
 
@@ -231,7 +232,7 @@ describe("App: /", () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
     sessions.addToWaitingList("1", gameManager);
 
@@ -249,7 +250,7 @@ describe("App: /", () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
     sessions.addToWaitingList("1", gameManager);
 
@@ -266,7 +267,7 @@ describe("App: /", () => {
   it("should return the home page", async () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
 
     const app = createApp(sessions, gameManager);
@@ -283,7 +284,7 @@ describe("App: /", () => {
   it("should return to index page when accesing game", async () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
 
     const app = createApp(sessions, gameManager);
@@ -300,7 +301,7 @@ describe("App: /", () => {
   it("should return to index page when accesing lobby", async () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["A1", "A2"]);
+    const gameManager = new GameManager(["A1", "A2"], []);
     sessions.addPlayer("Krishna");
 
     const app = createApp(sessions, gameManager);
@@ -317,7 +318,7 @@ describe("App: /", () => {
   it("should return the login page", async () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
-    const gameManager = new GameManager(["1A"]);
+    const gameManager = new GameManager(["1A"], []);
 
     const app = createApp(sessions, gameManager);
     const res = await app.request("/");
@@ -331,7 +332,7 @@ describe("App: /game-stats", () => {
   it("should return game stats when game starts", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A"]);
+    const gameManager = new GameManager(["1A"], []);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
@@ -346,7 +347,7 @@ describe("App: /game-stats", () => {
       headers: { cookie: "sessionId=1;gameId=0" },
     });
     const expected = {
-      board: { independentTiles: [], hotels: [] },
+      board: { independentTiles: [], activeHotels: [], inActiveHotels: [] },
       playerPortfolio: {
         cash: 6000,
         playerId: "1",
@@ -377,7 +378,7 @@ describe("App: /game-stats", () => {
   it("should return the first player as current player when game starts", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A"]);
+    const gameManager = new GameManager(["1A"], []);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
@@ -406,7 +407,7 @@ describe("App: /acquire/place-tile/:tile", () => {
   it("should return true if tile placed", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A", "2A"]);
+    const gameManager = new GameManager(["1A", "2A"], []);
     const sessions = new Sessions(idGenerator);
 
     const player1 = sessions.addPlayer("Adi");
@@ -430,7 +431,7 @@ describe("App: /acquire/place-tile/:tile", () => {
   it("should return true if tile placed", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["1A", "2A"]);
+    const gameManager = new GameManager(["1A", "2A"], []);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
@@ -454,7 +455,10 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
   it("should return the new hotel info when the hotel build request is send with the hotel name", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
-    const gameManager = new GameManager(["2A", "3A"]);
+    const gameManager = new GameManager(
+      ["2A", "3A"],
+      [new Hotel("Imperial", "orange")],
+    );
     const sessions = new Sessions(idGenerator);
 
     const player1 = sessions.addPlayer("Adi");

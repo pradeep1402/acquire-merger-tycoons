@@ -1,11 +1,11 @@
 type Tile = string;
 
 export class Hotel {
-  name: string;
-  tiles: Tile[];
-  stocksAvailable: number;
-  status: boolean;
-  color: string;
+  private name: string;
+  private tiles: Tile[];
+  private stocksAvailable: number;
+  private status: boolean;
+  private color: string;
 
   constructor(name: string, color: string = "blue") {
     this.name = name;
@@ -19,6 +19,10 @@ export class Hotel {
     this.tiles.push(tile);
 
     return this.tiles;
+  }
+
+  isAMatch(hotelName: string): boolean {
+    return this.name === hotelName;
   }
 
   isActive() {

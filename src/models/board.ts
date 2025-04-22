@@ -50,7 +50,7 @@ export class Board {
   }
 
   buildHotel(tile: Tile, hotelName: string) {
-    const hotel = this.hotels.find((hotel) => hotel.name === hotelName);
+    const hotel = this.hotels.find((hotel) => hotel.isAMatch(hotelName));
     const tiles = [...this.getAdjacentTiles(tile, new Set()), tile];
 
     hotel?.toggleStatus();
@@ -76,7 +76,7 @@ export class Board {
 
     const tilesFound = tilesAdjacent.filter(
       (adjTile: Tile) =>
-        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile)
+        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile),
     );
 
     for (const adjTile of tilesFound) {
