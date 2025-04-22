@@ -93,6 +93,7 @@ export class Hotel {
       tiles: [...this.tiles],
       color: this.color,
       stocksAvailable: this.stocksAvailable,
+      stockPrice: this.getStockPrice(),
     };
   }
 }

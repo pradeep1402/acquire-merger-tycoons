@@ -39,6 +39,7 @@ describe("Hotel class", () => {
       tiles: ["1A", "2A"],
       color: "blue",
       stocksAvailable: 25,
+      stockPrice: 400,
     });
   });
 

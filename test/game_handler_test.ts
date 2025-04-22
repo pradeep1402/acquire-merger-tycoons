@@ -509,6 +509,7 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
       tiles: ["3A", "2A"],
       color: "orange",
       stocksAvailable: 24,
+      stockPrice: 400,
     });
     assertEquals(res.status, 200);
   });

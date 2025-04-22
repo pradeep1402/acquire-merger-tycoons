@@ -167,9 +167,9 @@ const renderStocksOfAllHotels = (activeHotels, inActiveHotels) => {
   const stocksSection = document.querySelector("#stocks-section");
   stocksSection.innerText = "";
 
-  for (const { name, stocksAvailable } of hotels) {
+  for (const { name, stocksAvailable, stockPrice } of hotels) {
     const div = document.createElement("div");
-    div.innerText = `${name} : ${stocksAvailable}`;
+    div.innerText = `${name} : ${stocksAvailable} ($${stockPrice})`;
     stocksSection.appendChild(div);
   }
 };

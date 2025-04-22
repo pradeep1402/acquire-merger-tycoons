@@ -24,6 +24,7 @@ describe("Board class", () => {
           name: "Imperial",
           tiles: [],
           stocksAvailable: 25,
+          stockPrice: 0,
         },
       ],
     });
@@ -44,6 +45,7 @@ describe("Board class", () => {
           name: "Imperial",
           tiles: [],
           stocksAvailable: 25,
+          stockPrice: 0,
         },
       ],
     });
@@ -65,6 +67,7 @@ describe("Board class", () => {
           tiles: ["2A", "1A"],
           color: "blue",
           stocksAvailable: 24,
+          stockPrice: 400,
         },
       ],
       inActiveHotels: [],
@@ -83,6 +86,7 @@ describe("Board class", () => {
       tiles: ["2A", "1A"],
       color: "blue",
       stocksAvailable: 24,
+      stockPrice: 400,
     });
   });
 
@@ -100,6 +104,7 @@ describe("Board class", () => {
       tiles: ["4B", "4D", "4C"],
       color: "blue",
       stocksAvailable: 24,
+      stockPrice: 500,
     });
   });
 });
@@ -240,7 +245,13 @@ describe("getPlaceTileType(tile) method", () => {
     assertEquals(board.getPlaceTileType("2A"), {
       type: PlaceType.Build,
       inActiveHotels: [
-        { name: "Imperial", tiles: [], color: "blue", stocksAvailable: 25 },
+        {
+          name: "Imperial",
+          tiles: [],
+          color: "blue",
+          stocksAvailable: 25,
+          stockPrice: 0,
+        },
       ],
     });
   });
