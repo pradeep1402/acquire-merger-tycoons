@@ -1,4 +1,12 @@
 type Tile = string;
+export type HotelName =
+  | "Sackson"
+  | "Tower"
+  | "Festival"
+  | "Worldwide"
+  | "American"
+  | "Continental"
+  | "Imperial";
 
 type StocksCount = {
   Sackson: number;
@@ -33,6 +41,12 @@ export class Player {
     this.cash = 6000;
     this.tiles = new Set(tiles);
     this.stocks = allZeroStockCounts();
+  }
+
+  addStock(delta: number, stockName: HotelName) {
+    this.stocks[stockName] += delta;
+
+    return this.stocks[stockName];
   }
 
   getPlayerDetails() {

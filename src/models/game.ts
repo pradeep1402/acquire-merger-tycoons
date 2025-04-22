@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Board, PlaceType } from "./board.ts";
-import { Player } from "./player.ts";
+import { HotelName, Player } from "./player.ts";
 import { Hotel } from "./hotel.ts";
 
 type Tile = string;
@@ -31,10 +31,10 @@ export class Game {
     currentPlayer.addTile(tile);
   }
 
-  updateCurrentPlayerIndex() {
+  private updateCurrentPlayerIndex() {
     this.assignTile();
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
-      this.players.length;
+    this.currentPlayerIndex =
+      (this.currentPlayerIndex + 1) % this.players.length;
   }
 
   placeTile(tile: Tile) {
@@ -51,8 +51,12 @@ export class Game {
     return { status: false };
   }
 
-  foundHotel(tile: Tile, hotel: string) {
+  // getHotelDetails();
+
+  foundHotel(tile: Tile, hotel: HotelName) {
     const buildHotel = this.board.buildHotel(tile, hotel);
+    const currentPlayer = this.players[this.currentPlayerIndex];
+    currentPlayer.addStock(1, hotel);
     this.updateCurrentPlayerIndex();
 
     return buildHotel;
