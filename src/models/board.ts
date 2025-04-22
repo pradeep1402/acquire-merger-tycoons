@@ -66,10 +66,11 @@ export class Board {
 
   buildHotel(tile: Tile, hotelName: string) {
     const hotel = this.hotels.find((hotel) => hotel.isAMatch(hotelName));
-    const tiles = [...this.getAdjacentTiles(tile, new Set()), tile];
+    const tiles = [...this.getAdjacentTiles(tile, new Set())];
 
     hotel?.toggleStatus();
     hotel?.decrementStocks(1);
+    hotel?.storeBaseTile(tile);
     this.moveToHotel(tiles, hotel);
 
     return hotel?.getHotel();

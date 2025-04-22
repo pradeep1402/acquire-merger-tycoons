@@ -383,9 +383,9 @@ describe("App: /game-stats", () => {
         tiles: ["1A"],
       },
       players: [
-        { isYou: true, name: "Adi" },
-        { isYou: false, name: "bisht" },
-        { isYou: false, name: "malli" },
+        { isTheSamePlayer: true, name: "Adi" },
+        { isTheSamePlayer: false, name: "bisht" },
+        { isTheSamePlayer: false, name: "malli" },
       ],
       currentPlayer: "Adi",
       isMyTurn: true,
@@ -416,9 +416,9 @@ describe("App: /game-stats", () => {
     const gameStats = await res.json();
     assertEquals(gameStats.currentPlayer, "Adi");
     assertEquals(gameStats.players, [
-      { isYou: false, name: "Adi" },
-      { isYou: true, name: "bisht" },
-      { isYou: false, name: "malli" },
+      { isTheSamePlayer: false, name: "Adi" },
+      { isTheSamePlayer: true, name: "bisht" },
+      { isTheSamePlayer: false, name: "malli" },
     ]);
     assertEquals(res.status, 200);
   });
@@ -506,10 +506,11 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
 
     assertEquals(await res.json(), {
       name: "Imperial",
-      tiles: ["3A", "2A"],
+      tiles: ["3A"],
       color: "orange",
       stocksAvailable: 24,
       stockPrice: 400,
+      baseTile: "2A",
     });
     assertEquals(res.status, 200);
   });

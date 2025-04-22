@@ -125,24 +125,51 @@ const renderIndependentTiles = (tiles) => {
   });
 };
 
-const hotelColor = (name) => {
+const hotelLookup = (name) => {
   const colors = {
-    Tower: "#fab92a",
-    Sackson: "red",
-    Festival: "green",
-    Continental: "yellow",
-    Imperial: "orange",
-    Worldwide: "purple",
-    American: "blue",
+    Tower: { backgroundColor: "yellow", color: "black", image: "/tower.png" },
+    Sackson: { backgroundColor: "red", color: "white", image: "/sackson.png" },
+    Festival: {
+      backgroundColor: "green",
+      color: "white",
+      image: "/festival.png",
+    },
+    Continental: {
+      backgroundColor: "skyblue",
+      color: "white",
+      image: "/continental.png",
+    },
+    Imperial: {
+      backgroundColor: "orange",
+      color: "white",
+      image: "/imperial.png",
+    },
+    Worldwide: {
+      backgroundColor: "violate",
+      color: "white",
+      image: "/worldwide.png",
+    },
+    American: {
+      backgroundColor: "blue",
+      color: "white",
+      image: "/american.png",
+    },
   };
 
   return colors[name];
 };
 
-const renderAHotel = ({ name, tiles }) => {
+const displayHotelIcon = (name, tile) => {
+  const tileElem = document.getElementById(tile);
+  tileElem.style.backgroundImage = "/images/hotels" + hotelLookup(name).image;
+};
+
+const renderAHotel = ({ name, tiles, baseTile }) => {
+  displayHotelIcon(name, baseTile);
   tiles.forEach((t) => {
     const tile = document.getElementById(t);
-    tile.style.backgroundColor = hotelColor(name);
+    tile.style.backgroundColor = hotelLookup(name).backgroundColor;
+    tile.style.color = hotelLookup(name).color;
   });
 };
 
@@ -204,12 +231,12 @@ const startGamePolling = () => {
   }, 500);
 };
 
-const createPlayerAvatar = ({ name, isYou }, currentPlayer) => {
+const createPlayerAvatar = ({ name, isTheSamePlayer }, currentPlayer) => {
   const playerIcon = cloneTemplates("players-template");
   const avatar = playerIcon.querySelector(".player-avatar");
 
   avatar.setAttribute("src", "/images/avatars/avatar1.jpeg");
-  playerIcon.querySelector(".player-name").textContent = isYou
+  playerIcon.querySelector(".player-name").textContent = isTheSamePlayer
     ? `${name} (YOU)`
     : name;
   currentPlayer === name && avatar.classList.add("active-player");

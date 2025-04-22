@@ -7,6 +7,7 @@ export class Hotel {
   private status: boolean;
   private color: string;
   private offset: number;
+  private baseTile: Tile;
 
   constructor(name: string, color: string = "blue", offset: number) {
     this.name = name;
@@ -15,6 +16,7 @@ export class Hotel {
     this.stocksAvailable = 25;
     this.status = false;
     this.offset = offset;
+    this.baseTile = "";
   }
 
   private static stockInfo() {
@@ -33,7 +35,7 @@ export class Hotel {
 
   getStockPrice() {
     const stockPrice = Hotel.stockInfo().find(
-      (s) => this.tiles.size >= s.from && this.tiles.size <= s.to,
+      (s) => this.getSize() >= s.from && this.getSize() <= s.to,
     );
 
     return stockPrice?.value ? stockPrice?.value + 100 * this.offset : 0;
@@ -80,11 +82,16 @@ export class Hotel {
   }
 
   getSize() {
-    return this.tiles.size;
+    return this.tiles.size + (this.isActive() ? 1 : 0);
   }
 
   isTileBelongs(tile: Tile) {
-    return this.tiles.has(tile);
+    return this.tiles.has(tile) || this.baseTile === tile;
+  }
+
+  storeBaseTile(tile: Tile) {
+    this.baseTile = tile;
+    return this.baseTile;
   }
 
   getHotel() {
@@ -94,6 +101,7 @@ export class Hotel {
       color: this.color,
       stocksAvailable: this.stocksAvailable,
       stockPrice: this.getStockPrice(),
+      baseTile: this.baseTile,
     };
   }
 }

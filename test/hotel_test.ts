@@ -40,6 +40,7 @@ describe("Hotel class", () => {
       color: "blue",
       stocksAvailable: 25,
       stockPrice: 400,
+      baseTile: "",
     });
   });
 

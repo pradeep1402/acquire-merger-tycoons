@@ -100,6 +100,7 @@ describe("Game model", () => {
             tiles: [],
             stocksAvailable: 25,
             stockPrice: 0,
+            baseTile: "",
           },
         ],
         type: PlaceType.Build,
@@ -116,10 +117,11 @@ describe("Game model", () => {
 
       assertEquals(game.foundHotel("3A", "Imperial"), {
         name: "Imperial",
-        tiles: ["3A"],
+        tiles: [],
         color: "orange",
         stocksAvailable: 24,
         stockPrice: 0,
+        baseTile: "3A",
       });
     });
   });
@@ -183,8 +185,8 @@ describe("Game model", () => {
     });
   });
 
-  describe("getTiles(number) method", () => {
-    it("should return first n number of tiles", () => {
+  describe("getGameStats() method", () => {
+    it("should return game stats", () => {
       const players: string[] = ["Adi", "Malli"];
       const game = new Game(
         ["1A", "2A", "3A", "4A", "5A", "6A", "7A", "8A", "9A"],

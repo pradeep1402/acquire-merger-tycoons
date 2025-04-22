@@ -60,7 +60,6 @@ export class Game {
         currentPlayer.addStock(count, hotel);
       }
     }
-    console.log(currentPlayer.getPlayerDetails());
 
     return currentPlayer.getPlayerDetails();
   }

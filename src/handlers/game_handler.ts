@@ -49,10 +49,10 @@ export const serveGame = (ctx: Context): Response => {
   const currentPlayer = sessions.getPlayerName(currentPlayerId);
 
   const players = playersId.map((playerId: string) => {
-    const isYou = sessionId === playerId;
+    const isTheSamePlayer = sessionId === playerId;
     const name = sessions.getPlayerName(playerId);
 
-    return { name, isYou };
+    return { name, isTheSamePlayer };
   });
 
   return ctx.json({ board, players, isMyTurn, currentPlayer, playerPortfolio });
