@@ -4,6 +4,7 @@ import { createApp } from "../src/app.ts";
 import { Sessions } from "../src/models/sessions.ts";
 import { GameManager } from "../src/models/game_manager.ts";
 import { Hotel } from "../src/models/hotel.ts";
+import { buyStocks } from "../src/models/game.ts";
 // import { Game } from "../src/models/game.ts";
 
 describe("App: /login", () => {
@@ -516,37 +517,54 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
   });
 });
 
-// describe("buyStocks() method", () => {
-//   it("should update cash and stocks after buying", async () => {
-//     let id = 0;
-//     const idGenerator = () => `${id++}`;
-//     const tileGenerator = () => ["2A", "3A"];
-//     const gameManager = new GameManager(tileGenerator, [
-//       new Hotel("Imperial", "orange"),
-//     ]);
-//     const sessions = new Sessions(idGenerator);
+describe("buyStocks() method", () => {
+  it("should update cash and stocks after buying", async () => {
+    let id = 0;
+    const idGenerator = () => `${id++}`;
+    const tileGenerator = () => ["2A", "3A"];
+    const gameManager = new GameManager(tileGenerator, [
+      new Hotel("Imperial", "orange", 2),
+    ]);
+    const sessions = new Sessions(idGenerator);
 
-//     const player1 = sessions.addPlayer("Adi");
-//     const player2 = sessions.addPlayer("bisht");
-//     const player3 = sessions.addPlayer("malli");
+    const player1 = sessions.addPlayer("Adi");
+    const player2 = sessions.addPlayer("bisht");
+    const player3 = sessions.addPlayer("malli");
 
-//     sessions.addToWaitingList(player1, gameManager);
-//     sessions.addToWaitingList(player2, gameManager);
-//     sessions.addToWaitingList(player3, gameManager);
+    sessions.addToWaitingList(player1, gameManager);
+    sessions.addToWaitingList(player2, gameManager);
+    sessions.addToWaitingList(player3, gameManager);
 
-//     const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager);
 
-//     await app.request("/acquire/place-tile/3A", {
-//       method: "PATCH",
-//       headers: { cookie: "sessionId=1;gameId=0" },
-//     });
+    await app.request("/acquire/place-tile/3A", {
+      method: "PATCH",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
 
-//     const res = await fetch("/acquire/buy-stocks", {
-//       method: "PATCH",
-//       body: stocks,
-//       headers: {
-//         "content-type": "application/json",
-//       },
-//     });
-//   });
-// });
+    const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
+    const res = await app.request("/acquire/buy-stocks", {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+        cookie: "sessionId=1;gameId=0",
+        body: JSON.stringify(stocks),
+      },
+    });
+
+    assertEquals(await res.json(), {
+      cash: 6000,
+      playerId: "2",
+      stocks: {
+        American: 0,
+        Continental: 0,
+        Festival: 0,
+        Imperial: 3,
+        Sackson: 0,
+        Tower: 0,
+        Worldwide: 0,
+      },
+      tiles: [],
+    });
+  });
+});

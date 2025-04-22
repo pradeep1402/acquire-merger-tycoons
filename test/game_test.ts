@@ -132,8 +132,8 @@ describe("Game model", () => {
       const game = new Game(["1A", "2A", "5A"], players, [
         new Hotel("Imperial", "orange", 2),
       ]);
+      game.placeTile("3A");
       game.foundHotel("3A", "Imperial");
-      game.placeTile("1A");
       const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
       const result = game.buyStocks(stocks);
 
@@ -191,7 +191,7 @@ describe("Game model", () => {
       const game = new Game(
         ["1A", "2A", "3A", "4A", "5A", "6A", "7A", "8A", "9A"],
         players,
-        [],
+        []
       );
 
       const board = {
