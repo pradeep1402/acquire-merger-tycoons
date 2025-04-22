@@ -2,20 +2,20 @@ import { Game } from "./game.ts";
 import { Hotel } from "./hotel.ts";
 class GameManager {
   private gamesMap: Map<string, Game>;
-  private tiles: string[];
+  private tileGenerator: () => string[];
   private hotels: Hotel[];
 
-  constructor(tiles: string[], hotels: Hotel[]) {
-    this.tiles = tiles;
+  constructor(tileGenerator: () => string[], hotels: Hotel[]) {
+    this.tileGenerator = tileGenerator;
     this.gamesMap = new Map();
     this.hotels = hotels;
   }
 
   createGame(gameId: string, playerIds: string[]): Game {
-    const acquire = new Game(this.tiles, playerIds, this.hotels);
-    this.gamesMap.set(gameId, acquire);
+    const game = new Game(this.tileGenerator(), playerIds, this.hotels);
+    this.gamesMap.set(gameId, game);
 
-    return acquire;
+    return game;
   }
 
   getGame(gameId: string): Game | undefined {

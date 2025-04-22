@@ -38,6 +38,7 @@ describe("Hotel class", () => {
       name: "Imperial",
       tiles: ["1A", "2A"],
       color: "blue",
+      stocksAvailable: 25,
     });
   });
 

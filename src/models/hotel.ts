@@ -2,23 +2,23 @@ type Tile = string;
 
 export class Hotel {
   private name: string;
-  private tiles: Tile[];
+  private tiles: Set<Tile>;
   private stocksAvailable: number;
   private status: boolean;
   private color: string;
 
   constructor(name: string, color: string = "blue") {
     this.name = name;
-    this.tiles = [];
+    this.tiles = new Set();
     this.color = color;
     this.stocksAvailable = 25;
     this.status = false;
   }
 
   addTile(tile: Tile) {
-    this.tiles.push(tile);
+    this.tiles.add(tile);
 
-    return this.tiles;
+    return [...this.tiles];
   }
 
   isAMatch(hotelName: string): boolean {
@@ -40,14 +40,19 @@ export class Hotel {
   }
 
   getSize() {
-    return this.tiles.length;
+    return this.tiles.size;
   }
 
   isTileBelongs(tile: Tile) {
-    return this.tiles.includes(tile);
+    return this.tiles.has(tile);
   }
 
   getHotel() {
-    return { name: this.name, tiles: this.tiles, color: this.color };
+    return {
+      name: this.name,
+      tiles: [...this.tiles],
+      color: this.color,
+      stocksAvailable: this.stocksAvailable,
+    };
   }
 }

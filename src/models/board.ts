@@ -34,6 +34,13 @@ export class Board {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInActiveHotels();
 
+    if (this.isDependent(tile)) {
+      const [hotel] = this.dependentHotels(tile);
+      [...adjacentTiles].forEach((t) => hotel.addTile(t));
+      hotel.addTile(tile);
+      return { tile, type: "Dependent" };
+    }
+
     if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
       this.independentTiles.add(tile);
       return { tile, type: PlaceType.Independent };
@@ -76,7 +83,7 @@ export class Board {
 
     const tilesFound = tilesAdjacent.filter(
       (adjTile: Tile) =>
-        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile)
+        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile),
     );
 
     for (const adjTile of tilesFound) {
@@ -129,12 +136,31 @@ export class Board {
   }
 
   private isPlaced(tile: Tile) {
-    return this.independentTiles.has(tile);
+    return (
+      this.independentTiles.has(tile) ||
+      this.hotels.some((h) => h.isTileBelongs(tile))
+    );
   }
 
   getAdjacentTilesOf(tile: Tile): Tile[] {
     const adjacent = this.getAdjacentOf(tile);
 
     return adjacent.filter((t: Tile) => this.isPlaced(t));
+  }
+
+  isDependent(tile: Tile) {
+    return this.dependentHotels(tile).length === 1;
+  }
+
+  dependentHotels(tile: Tile): Hotel[] {
+    const adjacentTiles = this.getAdjacentTilesOf(tile);
+    const hotels = [];
+
+    for (const tile of adjacentTiles) {
+      const hotel = this.hotels.find((hotel) => hotel.isTileBelongs(tile));
+      if (hotel) hotels.push(hotel);
+    }
+
+    return hotels;
   }
 }

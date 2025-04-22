@@ -16,15 +16,16 @@ describe("Game model", () => {
     });
   });
 
-  describe("getPlayer(player) method", () => {
+  describe("getPlayerDetails(playerId) method", () => {
     it("should return a specific player info", () => {
       const players: string[] = ["123"];
       const tiles = ["1A"];
-      const game = new Game(tiles, players, []);
+      const game = new Game([...tiles], players, []);
       const actual = game.getPlayerDetails("123");
 
       assertEquals(actual?.playerId, "123");
       assertEquals(actual?.cash, 6000);
+
       assertEquals(actual?.tiles, tiles);
     });
   });
@@ -41,7 +42,7 @@ describe("Game model", () => {
       assertEquals(game.getBoard(), board);
     });
 
-    it("should return independtent tiles when one tile is placed", () => {
+    it("should return independent tiles when one tile is placed", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new Game(["1A", "2A"], players, []);
       const board = {
@@ -53,7 +54,7 @@ describe("Game model", () => {
       assertEquals(game.getBoard(), board);
     });
 
-    it("should return independtent tiles when two tile is placed", () => {
+    it("should return independent tiles when two tile is placed", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new Game(["1A", "2A"], players, []);
       const board = {
@@ -97,7 +98,22 @@ describe("Game model", () => {
         name: "Imperial",
         tiles: ["3A"],
         color: "orange",
+        stocksAvailable: 24,
       });
+    });
+  });
+
+  describe("getTiles(number) method", () => {
+    it("should return first n number of tiles", () => {
+      const players: string[] = ["Adi"];
+      const game = new Game(
+        ["1A", "2A", "3A", "4A", "5A", "6A", "7A", "8A", "9A"],
+        players,
+        [],
+      );
+
+      assertEquals(game.getTiles(1), ["7A"]);
+      assertEquals(game.getTiles(2), ["8A", "9A"]);
     });
   });
 });

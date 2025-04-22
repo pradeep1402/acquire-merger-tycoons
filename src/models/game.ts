@@ -13,7 +13,7 @@ export class Game {
 
   constructor(tiles: Tile[], playerIds: string[], hotels: Hotel[]) {
     this.board = new Board(hotels);
-    this.pile = _.shuffle(tiles);
+    this.pile = [...tiles];
     this.players = this.setPlayers(playerIds);
     this.currentPlayerIndex = 0;
   }
@@ -33,8 +33,8 @@ export class Game {
 
   private updateCurrentPlayerIndex() {
     this.assignTile();
-    this.currentPlayerIndex =
-      (this.currentPlayerIndex + 1) % this.players.length;
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
+      this.players.length;
   }
 
   placeTile(tile: Tile) {

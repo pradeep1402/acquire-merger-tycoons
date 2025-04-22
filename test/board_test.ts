@@ -1,4 +1,4 @@
-import { assertEquals } from "assert";
+import { assert, assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
 import { Board, PlaceType } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
@@ -26,6 +26,7 @@ describe("Board class", () => {
           color: "orange",
           name: "Imperial",
           tiles: [],
+          stocksAvailable: 25,
         },
       ],
     });
@@ -45,6 +46,7 @@ describe("Board class", () => {
           color: "orange",
           name: "Imperial",
           tiles: [],
+          stocksAvailable: 25,
         },
       ],
     });
@@ -60,7 +62,14 @@ describe("Board class", () => {
 
     assertEquals(board.getBoard(), {
       independentTiles: ["4A"],
-      activeHotels: [{ name: "Imperial", tiles: ["2A", "1A"], color: "blue" }],
+      activeHotels: [
+        {
+          name: "Imperial",
+          tiles: ["2A", "1A"],
+          color: "blue",
+          stocksAvailable: 24,
+        },
+      ],
       inActiveHotels: [],
     });
   });
@@ -76,6 +85,7 @@ describe("Board class", () => {
       name: "Imperial",
       tiles: ["2A", "1A"],
       color: "blue",
+      stocksAvailable: 24,
     });
   });
 
@@ -92,6 +102,7 @@ describe("Board class", () => {
       name: "Imperial",
       tiles: ["4B", "4D", "4C"],
       color: "blue",
+      stocksAvailable: 24,
     });
   });
 });
@@ -163,5 +174,93 @@ describe("getAdjacentTilesOf(tile)", () => {
     const board = new Board([hotel]);
 
     assertEquals(board.getAdjacentTilesOf("12I"), []);
+  });
+});
+
+describe("dependentHotels(tile) method", () => {
+  it("should return the adjacent hotels of a tile", () => {
+    const imperial = new Hotel("Imperial", "blue");
+    const board = new Board([imperial]);
+
+    board.placeTile("2A");
+    board.placeTile("1A");
+    board.placeTile("4B");
+    board.placeTile("4D");
+    board.buildHotel("4C", "Imperial");
+    assertEquals(board.dependentHotels("3C"), [imperial]);
+  });
+
+  it("should return the adjacent hotels of a tile", () => {
+    const imperial = new Hotel("Imperial", "blue");
+    const tower = new Hotel("Tower", "yellow");
+
+    const board = new Board([imperial, tower]);
+
+    board.placeTile("1A");
+    board.buildHotel("2A", "Imperial");
+    board.placeTile("3B");
+    board.buildHotel("3C", "Tower");
+    assertEquals(board.dependentHotels("3A"), [imperial, tower]);
+  });
+});
+
+describe("isDependent(tile) method", () => {
+  it("should return the adjacent hotels of a tile", () => {
+    const imperial = new Hotel("Imperial", "blue");
+    const board = new Board([imperial]);
+
+    board.placeTile("2A");
+    board.placeTile("1A");
+    board.placeTile("4B");
+    board.placeTile("4D");
+    board.buildHotel("4C", "Imperial");
+    assert(board.isDependent("3C"));
+  });
+
+  it("should return the adjacent hotels of a tile", () => {
+    const imperial = new Hotel("Imperial", "blue");
+    const tower = new Hotel("Tower", "yellow");
+
+    const board = new Board([imperial, tower]);
+
+    board.placeTile("1A");
+    board.buildHotel("2A", "Imperial");
+    board.placeTile("3B");
+    board.buildHotel("3C", "Tower");
+    assertFalse(board.isDependent("3A"));
+  });
+});
+
+describe("isDependent(tile) method", () => {
+  it("should return the adjacent hotels of a tile", () => {
+    const imperial = new Hotel("Imperial", "blue");
+    const board = new Board([imperial]);
+
+    board.placeTile("1A");
+    board.placeTile("3B");
+    board.placeTile("4A");
+    board.buildHotel("2A", "Imperial");
+    board.placeTile("3A");
+    assertEquals(imperial.getHotel(), {
+      name: "Imperial",
+      tiles: ["1A", "2A", "4A", "3B", "3A"],
+      color: "blue",
+      stocksAvailable: 24,
+    });
+  });
+
+  it("should return the adjacent hotels of a tile", () => {
+    const imperial = new Hotel("Imperial", "blue");
+    const board = new Board([imperial]);
+
+    board.placeTile("1A");
+    board.buildHotel("2A", "Imperial");
+    board.placeTile("3A");
+    assertEquals(imperial.getHotel(), {
+      name: "Imperial",
+      tiles: ["1A", "2A", "3A"],
+      color: "blue",
+      stocksAvailable: 24,
+    });
   });
 });
