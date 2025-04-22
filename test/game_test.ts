@@ -132,14 +132,14 @@ describe("Game model", () => {
       const game = new Game(["1A", "2A", "5A"], players, [
         new Hotel("Imperial", "orange", 2),
       ]);
-      game.placeTile("3A");
-      game.foundHotel("3A", "Imperial");
+      game.placeTile("1A");
+      game.foundHotel("2A", "Imperial");
       const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
       const result = game.buyStocks(stocks);
 
       assertEquals(result, {
-        playerId: "Malli",
-        cash: 5700,
+        cash: 4800,
+        playerId: "Aman",
         tiles: [],
         stocks: {
           Sackson: 0,
@@ -155,13 +155,39 @@ describe("Game model", () => {
 
     it("should return updated player details when buying multiple kind of stocks", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
-      const game = new Game(["1A", "2A", "5A"], players, [
-        new Hotel("Imperial", "orange", 2),
-        new Hotel("Continental", "sky-blue", 2),
-      ]);
-      game.foundHotel("3A", "Imperial");
-      game.foundHotel("6A", "Continental");
-      game.placeTile("1A");
+      const game = new Game(
+        [
+          "1A",
+          "2A",
+          "5A",
+          "6A",
+          "7A",
+          "8A",
+          "9A",
+          "10A",
+          "11A",
+          "12A",
+          "1B",
+          "2B",
+          "3B",
+          "4B",
+          "5B",
+          "6B",
+          "7B",
+          "9B",
+          "10B",
+          "11B",
+        ],
+        players,
+        [
+          new Hotel("Imperial", "orange", 2),
+          new Hotel("Continental", "sky-blue", 2),
+        ],
+      );
+      game.placeTile("8A");
+      game.foundHotel("7A", "Imperial");
+      game.placeTile("9B");
+      game.foundHotel("10B", "Continental");
       const stocks: buyStocks[] = [
         { hotel: "Imperial", count: 1 },
         { hotel: "Continental", count: 2 },
@@ -169,9 +195,9 @@ describe("Game model", () => {
       const result = game.buyStocks(stocks);
 
       assertEquals(result, {
-        playerId: "Aman",
-        cash: 5700,
-        tiles: [],
+        playerId: "Malli",
+        cash: 4800,
+        tiles: ["9A", "10A", "11A", "12A", "1B", "2B", "11B"],
         stocks: {
           Sackson: 0,
           Tower: 0,
@@ -179,7 +205,7 @@ describe("Game model", () => {
           Worldwide: 0,
           American: 0,
           Continental: 2,
-          Imperial: 1,
+          Imperial: 2,
         },
       });
     });
@@ -191,7 +217,7 @@ describe("Game model", () => {
       const game = new Game(
         ["1A", "2A", "3A", "4A", "5A", "6A", "7A", "8A", "9A"],
         players,
-        []
+        [],
       );
 
       const board = {

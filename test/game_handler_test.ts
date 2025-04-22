@@ -542,6 +542,11 @@ describe("buyStocks() method", () => {
       headers: { cookie: "sessionId=1;gameId=0" },
     });
 
+    await app.request("/acquire/place-tile/2A/Imperial", {
+      method: "PATCH",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+
     const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
     const res = await app.request("/acquire/buy-stocks", {
       method: "PATCH",
@@ -553,8 +558,8 @@ describe("buyStocks() method", () => {
     });
 
     assertEquals(await res.json(), {
-      cash: 6000,
-      playerId: "2",
+      cash: 4800,
+      playerId: "3",
       stocks: {
         American: 0,
         Continental: 0,

@@ -120,7 +120,7 @@ const createAuthenticatedRoutes = () => {
   authenticatedRoutes.patch("/acquire/place-tile/:tile", handlePlaceTile);
   authenticatedRoutes.patch(
     "/acquire/place-tile/:tile/:hotel",
-    handleFoundingHotel
+    handleFoundingHotel,
   );
 
   authenticatedRoutes.get("/*", serveStatic({ root: "./public" }));

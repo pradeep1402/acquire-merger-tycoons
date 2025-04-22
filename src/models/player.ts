@@ -63,6 +63,7 @@ export class Player {
   }
 
   addTile(tile: string) {
+    if (!tile) return;
     return this.tiles.add(tile);
   }
 

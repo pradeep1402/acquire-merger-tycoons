@@ -54,6 +54,7 @@ export class Game {
 
     for (const { hotel, count } of hotels) {
       const [hotelInstance] = this.board.getHotel(hotel);
+
       if (hotelInstance.areStocksEnough(count)) {
         const price = hotelInstance.calculatePrice(count);
         currentPlayer.deductCash(price);
