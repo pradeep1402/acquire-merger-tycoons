@@ -44,7 +44,6 @@ const createTileClickHandler = (tiles) => async (event) => {
     method: "PATCH",
   });
   const playerInfo = await res.json();
-
   const tile = document.getElementById(id);
   tile.classList.add("place-tile");
   removeHighlight(tiles);
@@ -154,12 +153,12 @@ const renderHotels = (hotels) => {
 };
 
 const renderPlaceTilesBoard = (board) => {
-  const { independentTiles, hotels } = board;
+  const { independentTiles, activeHotels } = board;
   renderIndependentTiles(independentTiles);
 
-  if (!hotels) return;
+  if (!activeHotels) return;
 
-  renderHotels(hotels);
+  renderHotels(activeHotels);
 };
 
 const renderStocksOfAllHotels = (activeHotels, inActiveHotels) => {

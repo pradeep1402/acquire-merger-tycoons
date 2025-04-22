@@ -72,8 +72,10 @@ export class Game {
 
     const placeInfo = this.board.getPlaceTileType(tile);
 
-    if (placeInfo.type === PlaceType.Independent) {
-      this.board.placeIndependentTile(tile);
+    if (
+      placeInfo.type === PlaceType.Dependent ||
+      placeInfo.type === PlaceType.Independent
+    ) {
       this.updateCurrentPlayerIndex(tile, currentPlayer);
       return placeInfo;
     }

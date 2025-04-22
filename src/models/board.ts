@@ -41,12 +41,12 @@ export class Board {
 
     if (this.isDependent(tile)) {
       const [hotel] = this.dependentHotels(tile);
-      [...adjacentTiles].forEach((t) => hotel.addTile(t));
-      hotel.addTile(tile);
-      return { tile, type: "Dependent" };
+      this.moveToHotel([...adjacentTiles, tile], hotel);
+      return { tile, type: PlaceType.Dependent };
     }
 
     if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
+      this.placeIndependentTile(tile);
       return { tile, type: PlaceType.Independent };
     }
 
@@ -162,13 +162,13 @@ export class Board {
 
   dependentHotels(tile: Tile): Hotel[] {
     const adjacentTiles = this.getAdjacentTilesOf(tile);
-    const hotels = [];
+    const hotels: Set<Hotel> = new Set();
 
     for (const tile of adjacentTiles) {
       const hotel = this.hotels.find((hotel) => hotel.isTileBelongs(tile));
-      if (hotel) hotels.push(hotel);
+      if (hotel) hotels.add(hotel);
     }
 
-    return hotels;
+    return [...hotels];
   }
 }
