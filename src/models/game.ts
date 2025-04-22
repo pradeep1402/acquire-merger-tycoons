@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Board } from "./board.ts";
+import { Board, PlaceType } from "./board.ts";
 import { Player } from "./player.ts";
 import { Hotel } from "./hotel.ts";
 
@@ -61,6 +61,8 @@ export class Game {
     if (currentPlayer.isTileExits(tile)) {
       const placeInfo = this.board.placeTile(tile);
       currentPlayer.removeTile(tile);
+      placeInfo.type === PlaceType.Independent &&
+        this.updateCurrentPlayerIndex();
       return placeInfo;
     }
 
@@ -70,7 +72,10 @@ export class Game {
   // getHotelDetails();
 
   foundHotel(tile: Tile, hotel: string) {
-    return this.board.buildHotel(tile, hotel);
+    const buildHotel = this.board.buildHotel(tile, hotel);
+    this.updateCurrentPlayerIndex();
+
+    return buildHotel;
   }
 
   getPlayerIds() {

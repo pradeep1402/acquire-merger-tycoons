@@ -1,6 +1,7 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
 import { Game } from "../src/models/game.ts";
+import { PlaceType } from "../src/models/board.ts";
 
 describe("Game model", () => {
   describe("getPlayerIds(", () => {
@@ -65,7 +66,10 @@ describe("Game model", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new Game(["1A", "2A"], players);
 
-      assertEquals(game.placeTile("1A"), { tile: "1A", type: "Independent" });
+      assertEquals(game.placeTile("1A"), {
+        tile: "1A",
+        type: PlaceType.Independent,
+      });
     });
   });
 

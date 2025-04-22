@@ -3,6 +3,12 @@ import _ from "lodash";
 
 type Tile = string;
 
+export enum PlaceType {
+  Build = "Build",
+  Dependent = "Dependent",
+  Independent = "Independent",
+}
+
 export class Board {
   hotels: Hotel[];
   independentTiles: Set<Tile>;
@@ -24,10 +30,10 @@ export class Board {
 
     if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
       this.independentTiles.add(tile);
-      return { tile, type: "Independent" };
+      return { tile, type: PlaceType.Independent };
     }
 
-    return { inActiveHotels: this.getInActiveHotels(), type: "Build" };
+    return { inActiveHotels: this.getInActiveHotels(), type: PlaceType.Build };
   }
 
   private moveToHotel(tiles: Tile[], hotel: Hotel | undefined) {

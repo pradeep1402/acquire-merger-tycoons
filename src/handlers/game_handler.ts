@@ -63,8 +63,6 @@ export const handlePlaceTile = (ctx: Context) => {
   const id = ctx.req.param("tile");
   const placeInfo = game.placeTile(id);
 
-  placeInfo.type === "Independent" && game.updateCurrentPlayerIndex();
-
   return ctx.json(placeInfo);
 };
 
@@ -72,9 +70,7 @@ export const handleFoundingHotel = (ctx: Context) => {
   const game = ctx.get("game");
   const tile = ctx.req.param("tile");
   const hotel = ctx.req.param("hotel");
-
   const foundedHotel = game.foundHotel(tile, hotel);
-  game.updateCurrentPlayerIndex();
 
   return ctx.json(foundedHotel);
 };

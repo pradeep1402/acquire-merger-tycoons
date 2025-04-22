@@ -1,6 +1,6 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
-import { Board } from "../src/models/board.ts";
+import { Board, PlaceType } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
 
 describe("Board class", () => {
@@ -8,7 +8,10 @@ describe("Board class", () => {
     const hotels = [new Hotel("Impireal", "blue")];
     const board = new Board(hotels);
 
-    assertEquals(board.placeTile("1A"), { tile: "1A", type: "Independent" });
+    assertEquals(board.placeTile("1A"), {
+      tile: "1A",
+      type: PlaceType.Independent,
+    });
   });
 
   it("should return the empty board", () => {
