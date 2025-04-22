@@ -1,6 +1,6 @@
 import { assert, assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
-import { Board } from "../src/models/board.ts";
+import { Board, PlaceType } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
 
 describe("Board class", () => {
@@ -179,10 +179,10 @@ describe("dependentHotels(tile) method", () => {
     const imperial = new Hotel("Imperial", "blue");
     const board = new Board([imperial]);
 
-    board.placeTile("2A");
-    board.placeTile("1A");
-    board.placeTile("4B");
-    board.placeTile("4D");
+    board.placeIndependentTile("2A");
+    board.placeIndependentTile("1A");
+    board.placeIndependentTile("4B");
+    board.placeIndependentTile("4D");
     board.buildHotel("4C", "Imperial");
     assertEquals(board.dependentHotels("3C"), [imperial]);
   });
@@ -193,9 +193,9 @@ describe("dependentHotels(tile) method", () => {
 
     const board = new Board([imperial, tower]);
 
-    board.placeTile("1A");
+    board.placeIndependentTile("1A");
     board.buildHotel("2A", "Imperial");
-    board.placeTile("3B");
+    board.placeIndependentTile("3B");
     board.buildHotel("3C", "Tower");
     assertEquals(board.dependentHotels("3A"), [imperial, tower]);
   });
@@ -206,10 +206,10 @@ describe("isDependent(tile) method", () => {
     const imperial = new Hotel("Imperial", "blue");
     const board = new Board([imperial]);
 
-    board.placeTile("2A");
-    board.placeTile("1A");
-    board.placeTile("4B");
-    board.placeTile("4D");
+    board.placeIndependentTile("2A");
+    board.placeIndependentTile("1A");
+    board.placeIndependentTile("4B");
+    board.placeIndependentTile("4D");
     board.buildHotel("4C", "Imperial");
     assert(board.isDependent("3C"));
   });
@@ -220,29 +220,28 @@ describe("isDependent(tile) method", () => {
 
     const board = new Board([imperial, tower]);
 
-    board.placeTile("1A");
+    board.placeIndependentTile("1A");
     board.buildHotel("2A", "Imperial");
-    board.placeTile("3B");
+    board.placeIndependentTile("3B");
     board.buildHotel("3C", "Tower");
     assertFalse(board.isDependent("3A"));
   });
 });
 
-describe("isDependent(tile) method", () => {
+describe("getPlaceTileType(tile) method", () => {
   it("should return the adjacent hotels of a tile", () => {
     const imperial = new Hotel("Imperial", "blue");
     const board = new Board([imperial]);
 
-    board.placeTile("1A");
-    board.placeTile("3B");
-    board.placeTile("4A");
-    board.buildHotel("2A", "Imperial");
-    board.placeTile("3A");
-    assertEquals(imperial.getHotel(), {
-      name: "Imperial",
-      tiles: ["1A", "2A", "4A", "3B", "3A"],
-      color: "blue",
-      stocksAvailable: 24,
+    board.placeIndependentTile("1A");
+    board.placeIndependentTile("3B");
+    board.placeIndependentTile("4A");
+    board.placeIndependentTile("3A");
+    assertEquals(board.getPlaceTileType("2A"), {
+      type: PlaceType.Build,
+      inActiveHotels: [
+        { name: "Imperial", tiles: [], color: "blue", stocksAvailable: 25 },
+      ],
     });
   });
 
@@ -250,14 +249,11 @@ describe("isDependent(tile) method", () => {
     const imperial = new Hotel("Imperial", "blue");
     const board = new Board([imperial]);
 
-    board.placeTile("1A");
+    board.placeIndependentTile("1A");
     board.buildHotel("2A", "Imperial");
-    board.placeTile("3A");
-    assertEquals(imperial.getHotel(), {
-      name: "Imperial",
-      tiles: ["1A", "2A", "3A"],
-      color: "blue",
-      stocksAvailable: 24,
+    assertEquals(board.getPlaceTileType("3A"), {
+      type: PlaceType.Dependent,
+      tile: "3A",
     });
   });
 });

@@ -93,7 +93,9 @@ describe("Game model", () => {
       game.placeTile("2A");
 
       assertEquals(game.placeTile("1A"), {
-        inActiveHotels: [{ color: "blue", name: "Imperial", tiles: [] }],
+        inActiveHotels: [
+          { color: "blue", name: "Imperial", tiles: [], stocksAvailable: 25 },
+        ],
         type: PlaceType.Build,
       });
     });
@@ -131,6 +133,7 @@ describe("Game model", () => {
             name: "Imperial",
             tiles: ["1A", "2A"],
             color: "orange",
+            stocksAvailable: 24,
           },
         ],
         inActiveHotels: [],
