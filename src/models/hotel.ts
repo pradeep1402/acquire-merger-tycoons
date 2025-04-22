@@ -48,6 +48,11 @@ export class Hotel {
   }
 
   getHotel() {
-    return { name: this.name, tiles: this.tiles, color: this.color };
+    return {
+      name: this.name,
+      tiles: this.tiles,
+      color: this.color,
+      stocksAvailable: this.stocksAvailable,
+    };
   }
 }

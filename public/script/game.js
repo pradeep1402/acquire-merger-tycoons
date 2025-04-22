@@ -156,23 +156,33 @@ const renderHotels = (hotels) => {
 const renderPlaceTilesBoard = (board) => {
   const { independentTiles, hotels } = board;
   renderIndependentTiles(independentTiles);
+
+  if (!hotels) return;
+
   renderHotels(hotels);
 };
 
 const renderStocksOfAllHotels = (activeHotels, inActiveHotels) => {
-  console.log("InActive Hotels:", inActiveHotels);
-  console.log("Active Hotels:", activeHotels);
+  const hotels = [...activeHotels, ...inActiveHotels];
   const stocksSection = document.querySelector("#stocks-section");
-  console.log("Section", stocksSection);
+  stocksSection.innerText = "";
+
+  for (const { name, stocksAvailable } of hotels) {
+    const div = document.createElement("div");
+    div.innerText = `${name} : ${stocksAvailable}`;
+    stocksSection.appendChild(div);
+  }
 };
 
 const renderInActiveHotels = (inActiveHotels) => {
   const inActiveHotelsSection = document.querySelector("#inactive-hotels");
-  for (const hotel of inActiveHotels) {
+  inActiveHotelsSection.innerText = "";
+
+  for (const { name } of inActiveHotels) {
     const div = document.createElement("div");
-    div.innerText = hotel.name;
+    div.innerText = name;
+    inActiveHotelsSection.appendChild(div);
   }
-  console.log("InActive Hotels:", inActiveHotels, inActiveHotelsSection);
 };
 
 const renderStocksAndInactiveHotels = (inActiveHotels, activeHotels) => {

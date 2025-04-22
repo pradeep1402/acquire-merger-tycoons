@@ -26,6 +26,7 @@ describe("Board class", () => {
           color: "orange",
           name: "Imperial",
           tiles: [],
+          stocksAvailable: 25,
         },
       ],
     });
@@ -45,6 +46,7 @@ describe("Board class", () => {
           color: "orange",
           name: "Imperial",
           tiles: [],
+          stocksAvailable: 25,
         },
       ],
     });
@@ -60,7 +62,14 @@ describe("Board class", () => {
 
     assertEquals(board.getBoard(), {
       independentTiles: ["4A"],
-      activeHotels: [{ name: "Imperial", tiles: ["2A", "1A"], color: "blue" }],
+      activeHotels: [
+        {
+          name: "Imperial",
+          tiles: ["2A", "1A"],
+          color: "blue",
+          stocksAvailable: 24,
+        },
+      ],
       inActiveHotels: [],
     });
   });
@@ -76,6 +85,7 @@ describe("Board class", () => {
       name: "Imperial",
       tiles: ["2A", "1A"],
       color: "blue",
+      stocksAvailable: 24,
     });
   });
 
@@ -92,6 +102,7 @@ describe("Board class", () => {
       name: "Imperial",
       tiles: ["4B", "4D", "4C"],
       color: "blue",
+      stocksAvailable: 24,
     });
   });
 });

@@ -97,6 +97,7 @@ describe("Game model", () => {
         name: "Imperial",
         tiles: ["3A"],
         color: "orange",
+        stocksAvailable: 24,
       });
     });
   });

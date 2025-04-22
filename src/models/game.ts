@@ -33,8 +33,8 @@ export class Game {
 
   private updateCurrentPlayerIndex() {
     this.assignTile();
-    this.currentPlayerIndex =
-      (this.currentPlayerIndex + 1) % this.players.length;
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
+      this.players.length;
   }
 
   placeTile(tile: Tile) {
