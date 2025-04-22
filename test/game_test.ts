@@ -1,6 +1,6 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
-import { Game } from "../src/models/game.ts";
+import { buyStocks, Game } from "../src/models/game.ts";
 import { PlaceType } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
 
@@ -117,25 +117,77 @@ describe("Game model", () => {
     });
   });
 
-  describe("getGameStats() method", () => {
-    it("should return the game stats", () => {
-      const players: string[] = ["Adi", "Malli"];
-      const game = new Game(["1A", "2A", "4A", "3B"], players, [
+  describe("buyStocks() method", () => {
+    it("should return updated player details when buying only one kind of stocks", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(["1A", "2A", "5A"], players, [
         new Hotel("Imperial", "orange", 2),
       ]);
+      game.foundHotel("3A", "Imperial");
       game.placeTile("1A");
-      game.foundHotel("2A", "Imperial");
+      const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
+      const result = game.buyStocks(stocks);
+
+      assertEquals(result, {
+        playerId: "Malli",
+        cash: 5700,
+        tiles: [],
+        stocks: {
+          Sackson: 0,
+          Tower: 0,
+          Festival: 0,
+          Worldwide: 0,
+          American: 0,
+          Continental: 0,
+          Imperial: 3,
+        },
+      });
+    });
+
+    it("should return updated player details when buying multiple kind of stocks", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(["1A", "2A", "5A"], players, [
+        new Hotel("Imperial", "orange", 2),
+        new Hotel("Continental", "sky-blue", 2),
+      ]);
+      game.foundHotel("3A", "Imperial");
+      game.foundHotel("6A", "Continental");
+      game.placeTile("1A");
+      const stocks: buyStocks[] = [
+        { hotel: "Imperial", count: 1 },
+        { hotel: "Continental", count: 2 },
+      ];
+      const result = game.buyStocks(stocks);
+
+      assertEquals(result, {
+        playerId: "Aman",
+        cash: 5700,
+        tiles: [],
+        stocks: {
+          Sackson: 0,
+          Tower: 0,
+          Festival: 0,
+          Worldwide: 0,
+          American: 0,
+          Continental: 2,
+          Imperial: 1,
+        },
+      });
+    });
+  });
+
+  describe("getTiles(number) method", () => {
+    it("should return first n number of tiles", () => {
+      const players: string[] = ["Adi", "Malli"];
+      const game = new Game(
+        ["1A", "2A", "3A", "4A", "5A", "6A", "7A", "8A", "9A"],
+        players,
+        [],
+      );
 
       const board = {
         independentTiles: [],
-        activeHotels: [
-          {
-            name: "Imperial",
-            tiles: ["1A", "2A"],
-            color: "orange",
-            stocksAvailable: 24,
-          },
-        ],
+        activeHotels: [],
         inActiveHotels: [],
       };
       const playersId = ["Adi", "Malli"];

@@ -49,6 +49,10 @@ export class Player {
     return this.stocks[stockName];
   }
 
+  deductCash(price: number) {
+    return (this.cash = this.cash - price);
+  }
+
   getPlayerDetails() {
     return {
       playerId: this.playerId,

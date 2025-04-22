@@ -66,6 +66,14 @@ export class Hotel {
     return this.status;
   }
 
+  areStocksEnough(delta: number) {
+    return this.stocksAvailable >= delta;
+  }
+
+  calculatePrice(delta: number) {
+    return delta * 100;
+  }
+
   decrementStocks(delta: number) {
     this.stocksAvailable -= delta;
     return this.stocksAvailable;

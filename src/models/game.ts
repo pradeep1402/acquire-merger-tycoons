@@ -4,6 +4,17 @@ import { HotelName, Player } from "./player.ts";
 import { Hotel } from "./hotel.ts";
 
 type Tile = string;
+export type buyStocks = {
+  hotel:
+    | "Imperial"
+    | "Continental"
+    | "Festival"
+    | "Worldwide"
+    | "American"
+    | "Tower"
+    | "Sackson";
+  count: number;
+};
 
 export class Game {
   private board: Board;
@@ -36,6 +47,22 @@ export class Game {
     this.assignTile();
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
       this.players.length;
+  }
+
+  buyStocks(hotels: buyStocks[]) {
+    const currentPlayer = this.players[this.currentPlayerIndex];
+
+    for (const { hotel, count } of hotels) {
+      const [hotelInstance] = this.board.getHotel(hotel);
+      if (hotelInstance.areStocksEnough(count)) {
+        const price = hotelInstance.calculatePrice(count);
+        currentPlayer.deductCash(price);
+        currentPlayer.addStock(count, hotel);
+      }
+    }
+    console.log(currentPlayer.getPlayerDetails());
+
+    return currentPlayer.getPlayerDetails();
   }
 
   placeTile(tile: Tile) {

@@ -4,6 +4,7 @@ import { createApp } from "../src/app.ts";
 import { Sessions } from "../src/models/sessions.ts";
 import { GameManager } from "../src/models/game_manager.ts";
 import { Hotel } from "../src/models/hotel.ts";
+// import { Game } from "../src/models/game.ts";
 
 describe("App: /login", () => {
   it("should receive a cookie and redirect to index page", async () => {
@@ -512,3 +513,38 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
     assertEquals(res.status, 200);
   });
 });
+
+// describe("buyStocks() method", () => {
+//   it("should update cash and stocks after buying", async () => {
+//     let id = 0;
+//     const idGenerator = () => `${id++}`;
+//     const tileGenerator = () => ["2A", "3A"];
+//     const gameManager = new GameManager(tileGenerator, [
+//       new Hotel("Imperial", "orange"),
+//     ]);
+//     const sessions = new Sessions(idGenerator);
+
+//     const player1 = sessions.addPlayer("Adi");
+//     const player2 = sessions.addPlayer("bisht");
+//     const player3 = sessions.addPlayer("malli");
+
+//     sessions.addToWaitingList(player1, gameManager);
+//     sessions.addToWaitingList(player2, gameManager);
+//     sessions.addToWaitingList(player3, gameManager);
+
+//     const app = createApp(sessions, gameManager);
+
+//     await app.request("/acquire/place-tile/3A", {
+//       method: "PATCH",
+//       headers: { cookie: "sessionId=1;gameId=0" },
+//     });
+
+//     const res = await fetch("/acquire/buy-stocks", {
+//       method: "PATCH",
+//       body: stocks,
+//       headers: {
+//         "content-type": "application/json",
+//       },
+//     });
+//   });
+// });

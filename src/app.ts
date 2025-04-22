@@ -3,6 +3,7 @@ import { serveStatic } from "hono/deno";
 import { logger } from "hono/logger";
 import { GameManager } from "./models/game_manager.ts";
 import {
+  // handleBuyStocks,
   handleFoundingHotel,
   handleLogin,
   handlePlaceTile,
@@ -114,6 +115,7 @@ const createAuthenticatedRoutes = () => {
   authenticatedRoutes.use("/", ensureGameId);
   authenticatedRoutes.post("acquire/home/quick-play", handleQuickPlay);
   authenticatedRoutes.get("/acquire/game-status", serveGameStatus);
+  // authenticatedRoutes.patch("/acquire/buy-stocks", handleBuyStocks);
   authenticatedRoutes.get("/acquire/game-stats", serveGame);
   authenticatedRoutes.patch("/acquire/place-tile/:tile", handlePlaceTile);
   authenticatedRoutes.patch(

@@ -74,3 +74,9 @@ export const handleFoundingHotel = (ctx: Context) => {
 
   return ctx.json(foundedHotel);
 };
+
+// export const handleBuyStocks = (ctx: Context) => {
+//   console.log("HIII");
+
+//   return ctx.json("heelo");
+// };

@@ -53,6 +53,10 @@ export class Board {
     return { inActiveHotels: this.getInActiveHotels(), type: PlaceType.Build };
   }
 
+  getHotel(hotelName: string) {
+    return this.hotels.filter((hotel) => hotel.isAMatch(hotelName));
+  }
+
   private moveToHotel(tiles: Tile[], hotel: Hotel | undefined) {
     tiles.forEach((tile) => {
       this.independentTiles.delete(tile);
