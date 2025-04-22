@@ -31,7 +31,8 @@ export class Game {
     currentPlayer.addTile(tile);
   }
 
-  private updateCurrentPlayerIndex() {
+  private updateCurrentPlayerIndex(tile: Tile, currentPlayer: Player) {
+    currentPlayer.removeTile(tile);
     this.assignTile();
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
       this.players.length;
@@ -40,24 +41,24 @@ export class Game {
   placeTile(tile: Tile) {
     const currentPlayer = this.players[this.currentPlayerIndex];
 
-    if (currentPlayer.isTileExits(tile)) {
-      const placeInfo = this.board.placeTile(tile);
-      currentPlayer.removeTile(tile);
-      placeInfo.type === PlaceType.Independent &&
-        this.updateCurrentPlayerIndex();
+    if (!currentPlayer.isTileExits(tile)) return { status: false };
+
+    const placeInfo = this.board.getPlaceTileType(tile);
+
+    if (placeInfo.type === PlaceType.Independent) {
+      this.board.placeIndependentTile(tile);
+      this.updateCurrentPlayerIndex(tile, currentPlayer);
       return placeInfo;
     }
 
-    return { status: false };
+    return placeInfo;
   }
-
-  // getHotelDetails();
 
   foundHotel(tile: Tile, hotel: HotelName) {
     const buildHotel = this.board.buildHotel(tile, hotel);
     const currentPlayer = this.players[this.currentPlayerIndex];
     currentPlayer.addStock(1, hotel);
-    this.updateCurrentPlayerIndex();
+    this.updateCurrentPlayerIndex(tile, currentPlayer);
 
     return buildHotel;
   }
@@ -66,7 +67,7 @@ export class Game {
     return this.players.map((player) => player.getPlayerDetails().playerId);
   }
 
-  getTiles(count: number): string[] {
+  private getTiles(count: number): string[] {
     return this.pile.splice(0, count);
   }
 
@@ -82,7 +83,7 @@ export class Game {
     return playerInfo?.getPlayerDetails();
   }
 
-  getCurrentPlayer() {
+  private getCurrentPlayer() {
     return this.players[this.currentPlayerIndex].getPlayerDetails().playerId;
   }
 

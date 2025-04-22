@@ -1,6 +1,6 @@
 import { assert, assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
-import { Board, PlaceType } from "../src/models/board.ts";
+import { Board } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
 
 describe("Board class", () => {
@@ -8,10 +8,7 @@ describe("Board class", () => {
     const hotels = [new Hotel("Imperial", "blue")];
     const board = new Board(hotels);
 
-    assertEquals(board.placeTile("1A"), {
-      tile: "1A",
-      type: PlaceType.Independent,
-    });
+    assertEquals(board.placeIndependentTile("1A"), "1A");
   });
 
   it("should return the empty board", () => {
@@ -35,8 +32,8 @@ describe("Board class", () => {
   it("should return the board", () => {
     const hotels = [new Hotel("Imperial", "orange")];
     const board = new Board(hotels);
-    board.placeTile("1A");
-    board.placeTile("4A");
+    board.placeIndependentTile("1A");
+    board.placeIndependentTile("4A");
 
     assertEquals(board.getBoard(), {
       independentTiles: ["1A", "4A"],
@@ -56,8 +53,8 @@ describe("Board class", () => {
     const hotel = new Hotel("Imperial", "blue");
     const board = new Board([hotel]);
 
-    board.placeTile("2A");
-    board.placeTile("4A");
+    board.placeIndependentTile("2A");
+    board.placeIndependentTile("4A");
     board.buildHotel("1A", "Imperial");
 
     assertEquals(board.getBoard(), {
@@ -78,8 +75,8 @@ describe("Board class", () => {
     const hotel = new Hotel("Imperial", "blue");
     const board = new Board([hotel]);
 
-    board.placeTile("2A");
-    board.placeTile("4A");
+    board.placeIndependentTile("2A");
+    board.placeIndependentTile("4A");
 
     assertEquals(board.buildHotel("1A", "Imperial"), {
       name: "Imperial",
@@ -93,10 +90,10 @@ describe("Board class", () => {
     const hotel = new Hotel("Imperial", "blue");
     const board = new Board([hotel]);
 
-    board.placeTile("2A");
-    board.placeTile("1A");
-    board.placeTile("4B");
-    board.placeTile("4D");
+    board.placeIndependentTile("2A");
+    board.placeIndependentTile("1A");
+    board.placeIndependentTile("4B");
+    board.placeIndependentTile("4D");
 
     assertEquals(board.buildHotel("4C", "Imperial"), {
       name: "Imperial",
@@ -148,7 +145,7 @@ describe("getAdjacentTilesOf(tile)", () => {
   it("should return all the adjacent tile which is placed of top left", () => {
     const hotel = new Hotel("Imperial", "blue");
     const board = new Board([hotel]);
-    board.placeTile("2A");
+    board.placeIndependentTile("2A");
 
     assertEquals(board.getAdjacentTilesOf("1A"), ["2A"]);
   });
@@ -156,7 +153,7 @@ describe("getAdjacentTilesOf(tile)", () => {
   it("should return all the adjacent tiles which is placed of a top right", () => {
     const hotel = new Hotel("Imperial", "blue");
     const board = new Board([hotel]);
-    board.placeTile("11A");
+    board.placeIndependentTile("11A");
 
     assertEquals(board.getAdjacentTilesOf("12A"), ["11A"]);
   });
@@ -164,7 +161,7 @@ describe("getAdjacentTilesOf(tile)", () => {
   it("should return all the adjacent tiles which is placed of bottom left", () => {
     const hotel = new Hotel("Imperial", "blue");
     const board = new Board([hotel]);
-    board.placeTile("2I");
+    board.placeIndependentTile("2I");
 
     assertEquals(board.getAdjacentTilesOf("1I"), ["2I"]);
   });

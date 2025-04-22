@@ -85,6 +85,18 @@ describe("Game model", () => {
         type: PlaceType.Independent,
       });
     });
+
+    it("should return the tile info when tile type is build", () => {
+      const players: string[] = ["Adi"];
+      const hotel = new Hotel("Imperial", "blue");
+      const game = new Game(["1A", "2A"], players, [hotel]);
+      game.placeTile("2A");
+
+      assertEquals(game.placeTile("1A"), {
+        inActiveHotels: [{ color: "blue", name: "Imperial", tiles: [] }],
+        type: PlaceType.Build,
+      });
+    });
   });
 
   describe("foundHotel() method", () => {
@@ -103,17 +115,29 @@ describe("Game model", () => {
     });
   });
 
-  describe("getTiles(number) method", () => {
-    it("should return first n number of tiles", () => {
-      const players: string[] = ["Adi"];
-      const game = new Game(
-        ["1A", "2A", "3A", "4A", "5A", "6A", "7A", "8A", "9A"],
-        players,
-        [],
-      );
+  describe("getGameStats() method", () => {
+    it("should return the game stats", () => {
+      const players: string[] = ["Adi", "Malli"];
+      const game = new Game(["1A", "2A", "4A", "3B"], players, [
+        new Hotel("Imperial", "orange"),
+      ]);
+      game.placeTile("1A");
+      game.foundHotel("2A", "Imperial");
 
-      assertEquals(game.getTiles(1), ["7A"]);
-      assertEquals(game.getTiles(2), ["8A", "9A"]);
+      const board = {
+        independentTiles: [],
+        activeHotels: [
+          {
+            name: "Imperial",
+            tiles: ["1A", "2A"],
+            color: "orange",
+          },
+        ],
+        inActiveHotels: [],
+      };
+      const playersId = ["Adi", "Malli"];
+      const currentPlayerId = "Adi";
+      assertEquals(game.getGameStats(), { board, playersId, currentPlayerId });
     });
   });
 });

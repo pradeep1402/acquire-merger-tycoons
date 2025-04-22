@@ -30,7 +30,12 @@ export class Board {
       .map((hotel) => hotel.getHotel());
   }
 
-  placeTile(tile: Tile) {
+  placeIndependentTile(tile: Tile) {
+    this.independentTiles.add(tile);
+    return tile;
+  }
+
+  getPlaceTileType(tile: Tile) {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInActiveHotels();
 
@@ -42,7 +47,6 @@ export class Board {
     }
 
     if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
-      this.independentTiles.add(tile);
       return { tile, type: PlaceType.Independent };
     }
 
