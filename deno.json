@@ -22,10 +22,14 @@
     "test": "deno test -A",
     "test-watch": "deno test --watch -A",
     "lint": "deno lint",
+    "fmt": "deno fmt",
     "test-coverage": "deno test -A --coverage --clean",
     "coverage": {
       "command": "deno run -A jsr:@ashishkujoy/deno-coverage-checker --lines=100 --functions=100 --branches=100",
       "dependencies": ["test-coverage"]
+    },
+    "dev-check": {
+      "dependencies": ["lint", "fmt", "coverage"]
     },
     "prod-deploy": "deployctl deploy --project=acquire-prod-1 --entrypoint=main.ts --org='Acquire-TheMergerTycoons'",
     "qa-deploy": "deployctl deploy --project=acquire-qa-51 --entrypoint=main.ts --org='Acquire-TheMergerTycoons'"
