@@ -18,9 +18,15 @@ export class Board {
     this.independentTiles = new Set();
   }
 
-  getInActiveHotels() {
+  private getInActiveHotels() {
     return this.hotels
       .filter((hotel) => !hotel.isActive())
+      .map((hotel) => hotel.getHotel());
+  }
+
+  private getActiveHotels() {
+    return this.hotels
+      .filter((hotel) => hotel.isActive())
       .map((hotel) => hotel.getHotel());
   }
 
@@ -55,10 +61,14 @@ export class Board {
   }
 
   getBoard() {
-    const activeHotels = this.hotels.filter((hotel) => hotel.isActive());
-    const hotels = activeHotels.map((hotel) => hotel.getHotel());
+    const activeHotels = this.getActiveHotels();
+    const inActiveHotels = this.getInActiveHotels();
 
-    return { independentTiles: [...this.independentTiles], hotels };
+    return {
+      independentTiles: [...this.independentTiles],
+      activeHotels,
+      inActiveHotels,
+    };
   }
 
   private getAdjacentTiles(tile: Tile, adjacentTiles: Set<Tile>): Set<Tile> {
@@ -66,7 +76,7 @@ export class Board {
 
     const tilesFound = tilesAdjacent.filter(
       (adjTile: Tile) =>
-        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile),
+        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile)
     );
 
     for (const adjTile of tilesFound) {

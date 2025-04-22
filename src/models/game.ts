@@ -51,8 +51,8 @@ export class Game {
 
   updateCurrentPlayerIndex() {
     this.assignTile();
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
-      this.players.length;
+    this.currentPlayerIndex =
+      (this.currentPlayerIndex + 1) % this.players.length;
   }
 
   placeTile(tile: Tile) {
@@ -68,8 +68,6 @@ export class Game {
 
     return { status: false };
   }
-
-  // getHotelDetails();
 
   foundHotel(tile: Tile, hotel: string) {
     const buildHotel = this.board.buildHotel(tile, hotel);
@@ -106,8 +104,6 @@ export class Game {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();
-    // const inActiveHotels = this.getInactiveHotels()
-    // const activeHotels = this.getInactiveHotels()
     return { board, playersId, currentPlayerId };
   }
 }
