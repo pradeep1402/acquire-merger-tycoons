@@ -479,7 +479,7 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["2A", "3A"];
     const gameManager = new GameManager(tileGenerator, [
-      new Hotel("Imperial", "orange"),
+      new Hotel("Imperial", "orange", 2),
     ]);
     const sessions = new Sessions(idGenerator);
 

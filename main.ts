@@ -5,13 +5,13 @@ import { Hotel } from "./src/models/hotel.ts";
 import _ from "lodash";
 
 const getHotels = (): Hotel[] => {
-  const Imperial = new Hotel("Imperial", "orange");
-  const Continental = new Hotel("Continental", "sky-blue");
-  const Worldwide = new Hotel("Worldwide", "purple");
-  const Tower = new Hotel("Tower", "yellow");
-  const Sackson = new Hotel("Sackson", "red");
-  const Festival = new Hotel("Festival", "green");
-  const American = new Hotel("American", "violet");
+  const Imperial = new Hotel("Imperial", "orange", 2);
+  const Continental = new Hotel("Continental", "sky-blue", 2);
+  const Worldwide = new Hotel("Worldwide", "purple", 1);
+  const Tower = new Hotel("Tower", "yellow", 0);
+  const Sackson = new Hotel("Sackson", "red", 0);
+  const Festival = new Hotel("Festival", "green", 1);
+  const American = new Hotel("American", "violet", 1);
 
   return [Imperial, Continental, Worldwide, Tower, Sackson, Festival, American];
 };

@@ -88,7 +88,7 @@ describe("Game model", () => {
 
     it("should return the tile info when tile type is build", () => {
       const players: string[] = ["Adi"];
-      const hotel = new Hotel("Imperial", "blue");
+      const hotel = new Hotel("Imperial", "blue", 2);
       const game = new Game(["1A", "2A"], players, [hotel]);
       game.placeTile("2A");
 
@@ -105,7 +105,7 @@ describe("Game model", () => {
     it("should return false for wrong tile", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new Game(["1A", "2A"], players, [
-        new Hotel("Imperial", "orange"),
+        new Hotel("Imperial", "orange", 2),
       ]);
 
       assertEquals(game.foundHotel("3A", "Imperial"), {
@@ -121,7 +121,7 @@ describe("Game model", () => {
     it("should return the game stats", () => {
       const players: string[] = ["Adi", "Malli"];
       const game = new Game(["1A", "2A", "4A", "3B"], players, [
-        new Hotel("Imperial", "orange"),
+        new Hotel("Imperial", "orange", 2),
       ]);
       game.placeTile("1A");
       game.foundHotel("2A", "Imperial");

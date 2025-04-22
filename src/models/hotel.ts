@@ -6,13 +6,45 @@ export class Hotel {
   private stocksAvailable: number;
   private status: boolean;
   private color: string;
+  private offset: number;
 
-  constructor(name: string, color: string = "blue") {
+  constructor(name: string, color: string = "blue", offset: number) {
     this.name = name;
     this.tiles = new Set();
     this.color = color;
     this.stocksAvailable = 25;
     this.status = false;
+    this.offset = offset;
+  }
+
+  private static stockInfo() {
+    return [
+      { from: 2, to: 2, value: 200 },
+      { from: 3, to: 3, value: 300 },
+      { from: 4, to: 4, value: 400 },
+      { from: 5, to: 5, value: 500 },
+      { from: 6, to: 10, value: 600 },
+      { from: 11, to: 20, value: 700 },
+      { from: 21, to: 30, value: 800 },
+      { from: 31, to: 40, value: 900 },
+      { from: 41, to: 108, value: 1000 },
+    ];
+  }
+
+  getStockPrice() {
+    const stockPrice = Hotel.stockInfo().find(
+      (s) => this.tiles.size >= s.from && this.tiles.size <= s.to,
+    );
+
+    return stockPrice?.value ? stockPrice?.value + 100 * this.offset : 0;
+  }
+
+  getPrimaryBonus() {
+    return this.getStockPrice() * 10;
+  }
+
+  getSecondaryBonus() {
+    return this.getStockPrice() * 5;
   }
 
   addTile(tile: Tile) {
