@@ -135,7 +135,7 @@ const hotelLookup = (name) => {
       image: "/festival.png",
     },
     Continental: {
-      backgroundColor: "skyblue",
+      backgroundColor: "sky-blue",
       color: "white",
       image: "/continental.png",
     },
@@ -145,7 +145,7 @@ const hotelLookup = (name) => {
       image: "/imperial.png",
     },
     Worldwide: {
-      backgroundColor: "violate",
+      backgroundColor: "violet",
       color: "white",
       image: "/worldwide.png",
     },
@@ -161,11 +161,15 @@ const hotelLookup = (name) => {
 
 const displayHotelIcon = (name, tile) => {
   const tileElem = document.getElementById(tile);
-  tileElem.style.backgroundImage = "/images/hotels" + hotelLookup(name).image;
+  tileElem.textContent = "";
+  tileElem.style.backgroundColor = "smokewhite";
+  tileElem.style.backgroundImage = "url('/images/hotels" +
+    hotelLookup(name).image + "')";
 };
 
 const renderAHotel = ({ name, tiles, baseTile }) => {
   displayHotelIcon(name, baseTile);
+
   tiles.forEach((t) => {
     const tile = document.getElementById(t);
     tile.style.backgroundColor = hotelLookup(name).backgroundColor;
