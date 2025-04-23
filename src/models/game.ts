@@ -29,15 +29,19 @@ export class Game {
     });
   }
 
+  changeTurn() {
+    this.assignTile();
+    this.updateCurrentPlayerIndex();
+    return { status: this.getCurrentPlayer() };
+  }
+
   private assignTile() {
     const currentPlayer = this.players[this.currentPlayerIndex];
     const [tile] = this.getTiles(1);
     currentPlayer.addTile(tile);
   }
 
-  private updateCurrentPlayerIndex(tile: Tile, currentPlayer: Player) {
-    currentPlayer.removeTile(tile);
-    this.assignTile();
+  private updateCurrentPlayerIndex() {
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
       this.players.length;
   }
@@ -69,7 +73,7 @@ export class Game {
       placeInfo.type === PlaceType.Dependent ||
       placeInfo.type === PlaceType.Independent
     ) {
-      this.updateCurrentPlayerIndex(tile, currentPlayer);
+      currentPlayer.removeTile(tile);
       return placeInfo;
     }
 
@@ -81,7 +85,7 @@ export class Game {
     const currentPlayer = this.players[this.currentPlayerIndex];
 
     currentPlayer.addStock(1, hotel);
-    this.updateCurrentPlayerIndex(tile, currentPlayer);
+    currentPlayer.removeTile(tile);
 
     return buildHotel;
   }

@@ -58,15 +58,15 @@ describe("Game model", () => {
 
     it("should return independent tiles when two tile is placed", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
-      const game = new Game(["1A", "2A"], players, []);
+      const game = new Game(["1A", "4A"], players, []);
       const board = {
-        independentTiles: ["1A"],
+        independentTiles: ["1A", "4A"],
         activeHotels: [],
         inActiveHotels: [],
         mergerTile: [],
       };
       game.placeTile("1A");
-      game.placeTile("2A");
+      game.placeTile("4A");
       assertEquals(game.getBoard(), board);
     });
   });
@@ -106,6 +106,7 @@ describe("Game model", () => {
             baseTile: "",
           },
         ],
+        tile: "1A",
         type: PlaceType.Build,
       });
     });
@@ -136,13 +137,15 @@ describe("Game model", () => {
         new Hotel("Imperial", "orange", 2),
       ]);
       game.placeTile("1A");
+      game.changeTurn();
+
       game.foundHotel("2A", "Imperial");
       const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
       const result = game.buyStocks(stocks);
 
       assertEquals(result, {
         cash: 4800,
-        playerId: "Aman",
+        playerId: "Malli",
         tiles: [],
         stocks: {
           Sackson: 0,
@@ -151,7 +154,7 @@ describe("Game model", () => {
           Worldwide: 0,
           American: 0,
           Continental: 0,
-          Imperial: 3,
+          Imperial: 4,
         },
       });
     });
@@ -188,9 +191,13 @@ describe("Game model", () => {
         ],
       );
       game.placeTile("8A");
+      game.changeTurn();
       game.foundHotel("7A", "Imperial");
+      game.changeTurn();
       game.placeTile("9B");
+      game.changeTurn();
       game.foundHotel("10B", "Continental");
+      game.changeTurn();
       const stocks: buyStocks[] = [
         { hotel: "Imperial", count: 1 },
         { hotel: "Continental", count: 2 },

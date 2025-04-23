@@ -262,6 +262,7 @@ describe("getPlaceTileType(tile) method", () => {
           baseTile: "",
         },
       ],
+      tile: "2A",
     });
   });
 
@@ -272,6 +273,14 @@ describe("getPlaceTileType(tile) method", () => {
     board.placeIndependentTile("1A");
     board.buildHotel("2A", "Imperial");
     assertEquals(board.getPlaceTileType("3A"), {
+      hotel: {
+        baseTile: "2A",
+        color: "blue",
+        name: "Imperial",
+        stockPrice: 500,
+        stocksAvailable: 24,
+        tiles: ["1A", "3A"],
+      },
       type: PlaceType.Dependent,
       tile: "3A",
     });

@@ -10,6 +10,31 @@ const getResource = async (path) => {
   }
 };
 
+const placeIndependentTile = async (placeInfo, poller) => {
+  const placedTile = document.getElementById(placeInfo.tile);
+  placedTile.classList.add("place-tile");
+  const res = await changeTurn();
+  poller.start();
+  console.log(res);
+};
+
+const placeDependentTile = async ({ tile, hotel }, poller) => {
+  const placedTile = document.getElementById(tile);
+  placedTile.style.backgroundColor = hotelLookup(hotel.name).backgroundColor;
+  await buyStocks(poller);
+  const res = await changeTurn();
+  poller.start();
+  console.log(res);
+};
+
+const changeTurn = async () => {
+  const res = await fetch("/acquire/end-turn", {
+    method: "PATCH",
+  });
+
+  return await res.json();
+};
+
 const handleFoundHotel = (tileLabel, hotelName, poller) => async () => {
   await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
     method: "PATCH",
@@ -18,7 +43,7 @@ const handleFoundHotel = (tileLabel, hotelName, poller) => async () => {
   const container = document.querySelector("#popup");
   container.style.display = "none";
   renderGamerBoard();
-  buyStocks();
+  await changeTurn();
   poller.start();
 };
 
@@ -56,10 +81,7 @@ const renderSelectHotel = (inActiveHotels, tileLabel, poller) => {
     hotelName.textContent = hotel.name;
     const div = document.createElement("div");
 
-    // div.style.backgroundImage = "url('/images/hotels" +
-    //   hotelLookup(hotel.name).image + "')";
     div.classList.add(hotel.name.toLowerCase());
-
     div.classList.add("select-hotel");
 
     outerDiv.appendChild(hotelName);
@@ -85,14 +107,22 @@ const createTileClickHandler = (tiles, poller) => async (event) => {
     method: "PATCH",
   });
 
-  const playerInfo = await res.json();
+  const placeInfo = await res.json();
   removeHighlight(tiles);
 
-  if (playerInfo.type === "Build") {
-    poller.pause();
-    renderSelectHotel(playerInfo.inActiveHotels, id, poller);
+  if (placeInfo.type === "Independent") {
+    await placeIndependentTile(placeInfo, poller);
   }
-  if (playerInfo.type === "Merge") {
+
+  if (placeInfo.type === "Dependent") {
+    await placeDependentTile(placeInfo, poller);
+  }
+
+  if (placeInfo.type === "Build") {
+    renderSelectHotel(placeInfo.inActiveHotels, id, poller);
+  }
+
+  if (placeInfo.type === "Merge") {
     poller.pause();
     renderMergerTile(id);
     removeHighlight(tiles);
@@ -115,6 +145,7 @@ const removeHighlight = (tiles) => {
 
 const renderPlayerTurn = (isMyTurn, tiles, poller) => {
   if (!isMyTurn) return;
+  poller.pause();
 
   highlight(tiles);
   const board = document.querySelector(".gameBoard");

@@ -50,7 +50,7 @@ export class Board {
     if (this.isDependent(tile)) {
       const [hotel] = this.dependentHotels(tile);
       this.moveToHotel([...adjacentTiles, tile], hotel);
-      return { tile, type: PlaceType.Dependent };
+      return { tile, type: PlaceType.Dependent, hotel: hotel.getHotel() };
     }
 
     if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
@@ -58,7 +58,11 @@ export class Board {
       return { tile, type: PlaceType.Independent };
     }
 
-    return { inActiveHotels: this.getInActiveHotels(), type: PlaceType.Build };
+    return {
+      inActiveHotels: this.getInActiveHotels(),
+      type: PlaceType.Build,
+      tile,
+    };
   }
 
   getHotel(hotelName: string) {

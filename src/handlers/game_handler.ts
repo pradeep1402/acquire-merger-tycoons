@@ -79,8 +79,14 @@ export const handleBuyStocks = (ctx: Context) => {
   const game = ctx.get("game");
   const stocks = JSON.parse(ctx.req.header().body);
 
-  console.log(ctx.req.header().body);
-
   const result = game.buyStocks(stocks);
   return ctx.json(result);
+};
+
+export const handleEndTurn = (ctx: Context) => {
+  const game = ctx.get("game");
+  const response = game.changeTurn();
+  game;
+
+  return ctx.json(response);
 };

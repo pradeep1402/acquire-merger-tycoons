@@ -547,6 +547,11 @@ describe("buyStocks() method", () => {
       headers: { cookie: "sessionId=1;gameId=0" },
     });
 
+    await app.request("/acquire/end-turn", {
+      method: "PATCH",
+      headers: { cookie: "sessionId=1;gameId=0" },
+    });
+
     await app.request("/acquire/place-tile/2A/Imperial", {
       method: "PATCH",
       headers: { cookie: "sessionId=1;gameId=0" },
@@ -564,12 +569,12 @@ describe("buyStocks() method", () => {
 
     assertEquals(await res.json(), {
       cash: 4800,
-      playerId: "3",
+      playerId: "2",
       stocks: {
         American: 0,
         Continental: 0,
         Festival: 0,
-        Imperial: 3,
+        Imperial: 4,
         Sackson: 0,
         Tower: 0,
         Worldwide: 0,
