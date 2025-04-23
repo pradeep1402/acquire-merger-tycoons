@@ -1,10 +1,36 @@
+:root {
+  --dark-blue-shade: #1e2a38;
+  --light-shade: #f9fafb;
+}
+
 * {
-  font-family: sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: url("/style/login.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: system-ui;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(28, 28, 28, 0.7);
+  z-index: 1;
 }
 
 h1 {
+  z-index: 1;
   font-size: 50px;
-  color: rgb(29, 39, 48);
+  color: var(--light-shade);
 }
 
 #player-avatar {
@@ -15,24 +41,26 @@ h1 {
 }
 
 .player-container {
-  background-color: rgb(29, 39, 48);
+  background-color: rgba(28, 27, 27, 0.8);
   height: 130px;
   width: 150px;
   padding: 20px;
-  margin: 10px;
+  margin: 90px 10px 10px 10px;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 8px;
   color: antiquewhite;
-  font-size: 1.2rem;
 }
 
 #player-list {
-  border: 2px outset black;
+  z-index: 1;
   display: flex;
   justify-content: space-around;
   width: 70%;
   padding: 3%;
   height: 700px;
+  border-radius: 16px;
+  background-color: rgba(249, 250, 251, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .main-container {
@@ -40,4 +68,6 @@ h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
+  margin: 20px;
 }
