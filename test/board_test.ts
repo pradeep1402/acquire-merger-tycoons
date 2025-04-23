@@ -150,7 +150,7 @@ describe("getAdjacentOf(tile)", () => {
     const hotel = new Hotel("Imperial", "blue", 2);
     const board = new Board([hotel]);
 
-    assertEquals(board.getAdjacentOf("2B"), ["3B", "1B", "2A", "2C"]);
+    assertEquals(board.getAdjacentOf("2B"), ["1B", "3B", "2A", "2C"]);
   });
 });
 

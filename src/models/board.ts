@@ -118,39 +118,21 @@ export class Board {
     return [Number(value), letter.charCodeAt(0)];
   }
 
-  private leftOf(tile: Tile) {
+  getAdjacentOf(tile: Tile): Tile[] {
     const [col, row] = this.parseTile(tile);
-    if (col === 1) return "";
-    return `${col - 1}${String.fromCharCode(row)}`;
-  }
-
-  private rightOf(tile: Tile) {
-    const [col, row] = this.parseTile(tile);
-    if (col === 12) return "";
-    return `${col + 1}${String.fromCharCode(row)}`;
-  }
-
-  private topOf(tile: Tile) {
-    const [col, row] = this.parseTile(tile);
-    if (row === 65) return "";
-    return `${col}${String.fromCharCode(row - 1)}`;
-  }
-
-  private bottomOf(tile: Tile) {
-    const [col, row] = this.parseTile(tile);
-    if (row === 73) return "";
-    return `${col}${String.fromCharCode(row + 1)}`;
-  }
-
-  getAdjacentOf(tile: Tile) {
-    const adjacent = [
-      this.rightOf(tile),
-      this.leftOf(tile),
-      this.topOf(tile),
-      this.bottomOf(tile),
+    const candidates = [
+      [col - 1, row],
+      [col + 1, row],
+      [col, row - 1],
+      [col, row + 1],
     ];
 
-    return _.compact(adjacent);
+    return candidates
+      .filter(
+        ([num, letter]) =>
+          num >= 1 && num <= 12 && letter >= 65 && letter <= 73,
+      )
+      .map(([num, letter]) => `${num}${String.fromCharCode(letter)}`);
   }
 
   private isPlaced(tile: Tile) {

@@ -7,6 +7,7 @@ describe("Player model", () => {
     const tiles: string[] = ["1a", "2a", "3a", "4a", "3b", "6a"];
     const player = new Player("124", tiles);
     const person = player.getPlayerDetails();
+
     assertEquals(person.playerId, "124");
     assertEquals(person.tiles, tiles);
     assertEquals(person.cash, 6000);

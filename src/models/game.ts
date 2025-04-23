@@ -5,14 +5,7 @@ import { Hotel } from "./hotel.ts";
 
 type Tile = string;
 export type buyStocks = {
-  hotel:
-    | "Imperial"
-    | "Continental"
-    | "Festival"
-    | "Worldwide"
-    | "American"
-    | "Tower"
-    | "Sackson";
+  hotel: HotelName;
   count: number;
 };
 
@@ -25,11 +18,11 @@ export class Game {
   constructor(tiles: Tile[], playerIds: string[], hotels: Hotel[]) {
     this.board = new Board(hotels);
     this.pile = [...tiles];
-    this.players = this.setPlayers(playerIds);
+    this.players = this.initializePlayers(playerIds);
     this.currentPlayerIndex = 0;
   }
 
-  private setPlayers(playerIds: string[]) {
+  private initializePlayers(playerIds: string[]) {
     return playerIds.map((player: string): Player => {
       const tiles = this.getTiles(6);
       return new Player(player, tiles);
@@ -86,6 +79,7 @@ export class Game {
   foundHotel(tile: Tile, hotel: HotelName) {
     const buildHotel = this.board.buildHotel(tile, hotel);
     const currentPlayer = this.players[this.currentPlayerIndex];
+
     currentPlayer.addStock(1, hotel);
     this.updateCurrentPlayerIndex(tile, currentPlayer);
 
@@ -120,6 +114,7 @@ export class Game {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();
+
     return { board, playersId, currentPlayerId };
   }
 }
