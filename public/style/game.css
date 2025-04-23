@@ -4,7 +4,7 @@
   --light-color: white;
   --tray-color: #b49778;
   --tile-color: whitesmoke;
-  --independent-tile: rgba(0, 0, 0, 0.5);
+  --independent-tile: rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -28,15 +28,15 @@ body {
   left: 25%;
   display: flex;
   flex-wrap: wrap;
-  width: 15vw;
-  height: 21vh;
-  width: 50vw;
-  height: 70vh;
+  width: 46%;
+  height: 60%;
+  /* width: 46vw;
+  height: 60vh; */
   border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0.15%;
   justify-content: space-evenly;
   align-items: center;
-  gap: 0.5% 0.5%;
+  gap: 0.2% 0.2%;
 }
 
 .minimap {
@@ -54,12 +54,12 @@ body {
 }
 
 .tile {
-  width: 7.5%;
-  height: 10%;
+  width: 8%;
+  height: 10.5%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--color);
+  color: var(--dark-color);
   border: 1px solid rgba(0, 0, 0, 0.2);
   background-color: var(--tile-color);
   font-size: 1em;
@@ -80,6 +80,7 @@ body {
   font-family: "Times New Roman", serif;
   position: absolute;
   top: 23%;
+  left: 28.5%;
 }
 
 #tiles-container {
@@ -94,16 +95,20 @@ body {
 .player-avatar {
   height: 60px;
   width: 60px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 #players {
-  height: 100vh;
+  /* height: 80vh; */
+  background-color: var(--color);
+  padding: 20px 12px;
+  border-radius: 6px;
+  gap: 50px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   position: absolute;
   left: 2%;
+  border: 1px solid var(--tray-color);
 }
 
 #player {
@@ -111,8 +116,8 @@ body {
 }
 
 #portfolio-panel {
-  position: fixed;
-  left: 25%;
+  position: absolute;
+  left: 23.2%;
   bottom: 0;
   margin: auto;
   background-color: var(--tray-color);
@@ -227,15 +232,17 @@ body {
 }
 
 #game-tray {
-  position: fixed;
+  position: absolute;
+  top: 4%;
   right: 0;
+  height: 70vh;
   display: flex;
   flex-direction: row;
 }
 
 #tray-header {
   font-size: 1.5rem;
-  height: 80vh;
+  height: 100%;
   width: 1.3em;
   display: flex;
   justify-content: center;
@@ -249,6 +256,7 @@ body {
 
 #tray-body {
   padding: 1em;
+  height: 100%;
   width: 20vw;
   border-left: 3px solid var(--light-color);
   background-color: var(--color);

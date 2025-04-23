@@ -381,7 +381,7 @@ const cloneTemplates = (id) => {
 const createTile = (tileLabel) => {
   const board = cloneTemplates("board");
   const tile = board.querySelector(".tile");
-  tile.innerText = tileLabel;
+  tile.textContent = tileLabel;
   tile.id = tileLabel;
   return tile;
 };
@@ -545,17 +545,20 @@ const startGamePolling = async (poller) => {
   const { inActiveHotels, activeHotels } = board;
 
   renderStocksAndInactiveHotels(inActiveHotels, activeHotels);
-  showStartingTilesPopup(tiles);
+  // showStartingTilesPopup(tiles);
   renderPlayers(players, currentPlayer);
   renderPlayerTurn(isMyTurn, tiles, poller, activeHotels);
   renderPortfolio(playerPortfolio);
   renderPlaceTilesBoard(board);
 };
 
-const main = () => {
+const main = async () => {
   new Collapse("tray-header", "tray-body");
   new Collapse("portfolio-header", "portfolio-body");
-  showStartingTilesPopup();
+  const stats = await getResource("/acquire/game-stats");
+  const { playerPortfolio } = stats;
+  const { tiles } = playerPortfolio;
+  showStartingTilesPopup(tiles);
   renderGameBoard();
 
   const polling = new Poller(1000, startGamePolling);
