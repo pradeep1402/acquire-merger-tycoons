@@ -32,8 +32,8 @@ const renderSelectHotel = (inActiveHotels, tileLabel, poller) => {
     hotelName.textContent = hotel.name;
     const div = document.createElement("div");
 
-    div.style.backgroundImage =
-      "url('/images/hotels" + hotelLookup(hotel.name).image + "')";
+    div.style.backgroundImage = "url('/images/hotels" +
+      hotelLookup(hotel.name).image + "')";
     div.classList.add("select-hotel");
 
     outerDiv.appendChild(hotelName);
@@ -44,7 +44,7 @@ const renderSelectHotel = (inActiveHotels, tileLabel, poller) => {
       handleFoundHotel(tileLabel, hotel.name, poller),
       {
         once: true,
-      }
+      },
     );
     hotelList.appendChild(outerDiv);
   });
@@ -99,23 +99,22 @@ const renderPlayerTurn = (isMyTurn, tiles, poller) => {
 const renderPlayerTiles = (tilesContainer, tiles) => {
   tilesContainer.innerText = "";
   tiles.forEach((tile) => {
-    const playerTile =
-      cloneTemplates("assigned-tile").querySelector(".player-tile");
+    const playerTile = cloneTemplates("assigned-tile").querySelector(
+      ".player-tile",
+    );
     playerTile.innerText = tile;
     tilesContainer.appendChild(playerTile);
   });
 };
 
-const renderStockRow =
-  (hotelNamesRow, sharesRow) =>
-  ([hotel, shares]) => {
-    const nameCell = document.createElement("th");
-    nameCell.textContent = hotel;
-    const shareCell = document.createElement("td");
-    shareCell.textContent = shares;
-    hotelNamesRow.appendChild(nameCell);
-    sharesRow.appendChild(shareCell);
-  };
+const renderStockRow = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
+  const nameCell = document.createElement("th");
+  nameCell.textContent = hotel;
+  const shareCell = document.createElement("td");
+  shareCell.textContent = shares;
+  hotelNamesRow.appendChild(nameCell);
+  sharesRow.appendChild(shareCell);
+};
 
 const renderStocks = (stocks) => {
   const hotelNamesRow = document.getElementById("hotel-names-row");
@@ -187,8 +186,8 @@ const displayHotelIcon = (name, tile) => {
   const tileElem = document.getElementById(tile);
   tileElem.textContent = "";
   tileElem.style.backgroundColor = "smokewhite";
-  tileElem.style.backgroundImage =
-    "url('/images/hotels" + hotelLookup(name).image + "')";
+  tileElem.style.backgroundImage = "url('/images/hotels" +
+    hotelLookup(name).image + "')";
 };
 
 const renderAHotel = ({ name, tiles, baseTile }) => {
@@ -250,7 +249,7 @@ const renderStocksAndInactiveHotels = (inActiveHotels, activeHotels) => {
   renderInActiveHotels(inActiveHotels);
 };
 
-const createPlayerAvatar = ({ name }, currentPlayer) => {
+const createPlayerAvatar = ({ name, isTheSamePlayer }, currentPlayer) => {
   const playerIcon = cloneTemplates("players-template");
   const avatar = playerIcon.querySelector(".player-avatar");
 
