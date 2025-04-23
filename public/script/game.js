@@ -18,6 +18,7 @@ const handleFoundHotel = (tileLabel, hotelName, poller) => async () => {
   const container = document.querySelector("#popup");
   container.style.display = "none";
   renderGamerBoard();
+  buyStocks();
   poller.start();
 };
 
@@ -334,78 +335,143 @@ const renderGameBoard = () => {
   gameBoard.replaceChildren(...tiles);
 };
 
-const updateMax = (event) => {
-  const changedInput = event.target;
-  const parent = changedInput.closest("#active-hotels");
-  const allInputs = parent.querySelectorAll("input");
+const updateMax = () => {
+  const allInputs = document.querySelectorAll("#active-hotels input");
+  const maxAllowed = 3;
 
-  const total = Array.from(allInputs).reduce((sum, input) => {
+  const totalSelected = Array.from(allInputs).reduce((sum, input) => {
     return sum + parseInt(input.value || 0);
   }, 0);
 
-  const maxAllowed = 3;
-
   allInputs.forEach((input) => {
-    const otherTotal = total - parseInt(input.value || 0);
+    const currentValue = parseInt(input.value || 0);
+    const otherTotal = totalSelected - currentValue;
     input.max = Math.max(0, maxAllowed - otherTotal);
   });
 };
 
-const updateCash = (stockPrice) => {
-  const cashAvailable = document.getElementById("cash-available");
-  const currentCash = parseFloat(cashAvailable.textContent || 0);
-  cashAvailable.textContent = (currentCash - stockPrice).toFixed(2);
+const setHotelInfo = (template, name, price, maxStocks) => {
+  template.querySelector("#hotel-name").textContent = name;
+  template.querySelector("#stock-value").textContent = price;
+
+  const input = template.querySelector("input");
+  input.id = name;
+  input.max = maxStocks;
+  input.value = 0;
 };
 
-const renderHotel = ({ name, stocksAvailable, stockPrice }) => {
-  const hotelTemplate = cloneTemplates("hotel-template");
-  const hotelName = hotelTemplate.querySelector("#hotel-name");
-  const stockValue = hotelTemplate.querySelector("#stock-value");
-  const input = hotelTemplate.querySelector("input");
-  const [decrement, increment] = hotelTemplate.querySelectorAll("button");
-
-  hotelName.textContent = name;
-  stockValue.textContent = stockPrice;
-  input.id = name;
-  input.max = stocksAvailable >= 3 ? 3 : stocksAvailable;
-
+const attachInputHandlers = (input) => {
   input.addEventListener("input", (event) => {
     updateMax(event);
-    updateCash(stockPrice, event);
   });
+};
+
+const debitCash = (stockPrice) => {
+  const cash = document.getElementById("cash-available");
+  const amount = Number(cash.textContent);
+
+  cash.textContent = amount - stockPrice;
+};
+
+const creditCash = (stockPrice) => {
+  const cash = document.getElementById("cash-available");
+  const amount = Number(cash.textContent);
+
+  cash.textContent = amount + stockPrice;
+};
+
+const attachStepButtons = (stockPrice, template, input) => {
+  const [decrement, increment] = template.querySelectorAll("button");
 
   increment.addEventListener("click", () => {
+    const prevValue = parseInt(input.value);
     input.stepUp();
-    input.dispatchEvent(new Event("input"));
+    const newValue = parseInt(input.value);
+
+    if (newValue > prevValue) {
+      debitCash(stockPrice);
+      input.dispatchEvent(new Event("input"));
+    }
   });
 
   decrement.addEventListener("click", () => {
+    const prevValue = parseInt(input.value);
     input.stepDown();
-    input.dispatchEvent(new Event("input"));
+    const newValue = parseInt(input.value);
+
+    if (newValue < prevValue) {
+      creditCash(stockPrice);
+      input.dispatchEvent(new Event("input"));
+    }
   });
-  return hotelTemplate;
 };
 
-const buyStocks = () => {
-  const hotels = document.getElementById("active-hotels");
-  // const { board, playerPortfolio } = await getResource('/acquire/game-stats');
-  // const { activeHotels } = board;
-  // const {cash} = {playerPortfolio}
-  const cash = 5000;
-  const activeHotels = [
-    { name: "A", stocksAvailable: 10, stockPrice: "$200" },
-    { name: "B", stocksAvailable: 10, stockPrice: "$200" },
-    { name: "C", stocksAvailable: 10, stockPrice: "$200" },
-    { name: "D", stocksAvailable: 10, stockPrice: "$200" },
-    { name: "E", stocksAvailable: 10, stockPrice: "$200" },
-    { name: "F", stocksAvailable: 10, stockPrice: "$200" },
-    { name: "G", stocksAvailable: 10, stockPrice: "$200" },
-  ];
-  activeHotels.forEach((hotel) => {
-    hotels.appendChild(renderHotel(hotel));
+const renderHotel = ({ name, stocksAvailable, stockPrice }) => {
+  const template = cloneTemplates("hotel-template");
+  const maxStocks = stocksAvailable >= 3 ? 3 : stocksAvailable;
+  const input = template.querySelector("input");
+
+  setHotelInfo(template, name, stockPrice, maxStocks);
+  attachInputHandlers(input);
+  attachStepButtons(stockPrice, template, input);
+
+  return template;
+};
+
+const renderAllHotels = (hotelsData) => {
+  const hotelsContainer = document.getElementById("active-hotels");
+  hotelsContainer.textContent = "";
+  hotelsData.forEach((hotel) => {
+    const hotelEl = renderHotel(hotel);
+    hotelsContainer.appendChild(hotelEl);
   });
-  const cashHolder = document.getElementById("cash-available");
-  cashHolder.textContent = cash;
+};
+
+const setCash = (amount) => {
+  const cashAvailable = document.getElementById("cash-available");
+  cashAvailable.textContent = amount;
+};
+
+const handleBuy = async () => {
+  const activeHotels = document.getElementById("active-hotels");
+  console.log(activeHotels);
+  const children = activeHotels.children;
+  const stocksToBuy = [];
+
+  for (const child of children) {
+    const hotel = child.querySelector("#hotel-name").textContent;
+    const count = +child.querySelector("input").value;
+    if (count) stocksToBuy.push({ hotel, count });
+  }
+
+  console.log(stocksToBuy);
+  const buyStocksEle = document.getElementById("buy-stocks");
+  buyStocksEle.classList.remove("display");
+  const res = await fetch("/acquire/buy-stocks", {
+    method: "PATCH",
+    headers: {
+      "content-type": "application/json",
+      body: JSON.stringify(stocksToBuy),
+    },
+  });
+  console.log(await res.json());
+};
+
+const buyStocks = async (poller) => {
+  const { board, playerPortfolio } = await getResource("/acquire/game-stats");
+  const { activeHotels } = board;
+  const { cash } = playerPortfolio;
+  const buyStocksEle = document.getElementById("buy-stocks");
+  buyStocksEle.classList.add("display");
+
+  const submit = document.getElementById("buy");
+  submit.addEventListener("click", handleBuy);
+
+  setCash(cash);
+  renderAllHotels(activeHotels);
+  const response = await fetch("/acquire/endTurn", { method: "PATCH" });
+  console.log(await response.json());
+  poller.start();
 };
 
 const startGamePolling = async (poller) => {
@@ -426,7 +492,6 @@ const main = () => {
   new Collapse("tray-header", "tray-body");
   new Collapse("portfolio-header", "portfolio-body");
   showStartingTilesPopup();
-  buyStocks();
   renderGameBoard();
 
   const polling = new Poller(1000, startGamePolling);
