@@ -255,7 +255,15 @@ const renderInActiveHotels = (inActiveHotels) => {
 
   for (const { name } of inActiveHotels) {
     const div = document.createElement("div");
-    div.innerText = name;
+    const img = document.createElement("img");
+    const hotelName = document.createElement("p");
+
+    img.setAttribute("src", `/images/hotels/${name.toLowerCase()}.png`);
+    hotelName.textContent = name;
+    img.classList.add("inactive-hotels-img");
+    div.appendChild(img);
+    div.appendChild(hotelName);
+
     inActiveHotelsSection.appendChild(div);
   }
 };

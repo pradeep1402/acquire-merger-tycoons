@@ -354,3 +354,22 @@ summary {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.inactive-hotels-img {
+  height: 60px;
+  width: 60px;
+}
+
+#inactive-hotels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+#inactive-hotels > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
