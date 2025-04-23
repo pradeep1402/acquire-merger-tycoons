@@ -1,4 +1,5 @@
 import Collapse from "./collapse.js";
+import Poller from "./polling.js";
 
 const getResource = async (path) => {
   try {
@@ -9,17 +10,17 @@ const getResource = async (path) => {
   }
 };
 
-const handleFoundHotel = (tileLabel, playerTiles, hotelName) => async () => {
+const handleFoundHotel = (tileLabel, hotelName, poller) => async () => {
   await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
     method: "PATCH",
   });
 
   const container = document.querySelector("#popup");
   container.style.display = "none";
-  removeHighlight(playerTiles);
+  poller.start();
 };
 
-const renderSelectHotel = (inActiveHotels, tileLabel, playerTiles) => {
+const renderSelectHotel = (inActiveHotels, tileLabel, poller) => {
   const container = document.querySelector("#popup");
   const hotelList = document.querySelector("#hotel-container");
   container.style.display = "block";
@@ -31,8 +32,8 @@ const renderSelectHotel = (inActiveHotels, tileLabel, playerTiles) => {
     hotelName.textContent = hotel.name;
     const div = document.createElement("div");
 
-    div.style.backgroundImage = "url('/images/hotels" +
-      hotelLookup(hotel.name).image + "')";
+    div.style.backgroundImage =
+      "url('/images/hotels" + hotelLookup(hotel.name).image + "')";
     div.classList.add("select-hotel");
 
     outerDiv.appendChild(hotelName);
@@ -40,16 +41,16 @@ const renderSelectHotel = (inActiveHotels, tileLabel, playerTiles) => {
 
     outerDiv.addEventListener(
       "click",
-      handleFoundHotel(tileLabel, playerTiles, hotel.name),
+      handleFoundHotel(tileLabel, hotel.name, poller),
       {
         once: true,
-      },
+      }
     );
     hotelList.appendChild(outerDiv);
   });
 };
 
-const createTileClickHandler = (tiles) => async (event) => {
+const createTileClickHandler = (tiles, poller) => async (event) => {
   const id = event.target.id;
 
   if (!tiles.includes(id)) return;
@@ -62,7 +63,8 @@ const createTileClickHandler = (tiles) => async (event) => {
   removeHighlight(tiles);
 
   if (playerInfo.type === "Build") {
-    renderSelectHotel(playerInfo.inActiveHotels, id, tiles);
+    poller.pause();
+    renderSelectHotel(playerInfo.inActiveHotels, id, poller);
   }
   if (playerInfo.type === "Merge") {
     renderMergerTile(id);
@@ -84,12 +86,12 @@ const removeHighlight = (tiles) => {
   });
 };
 
-const renderPlayerTurn = (isMyTurn, tiles) => {
+const renderPlayerTurn = (isMyTurn, tiles, poller) => {
   if (!isMyTurn) return;
 
   highlight(tiles);
   const board = document.querySelector(".gameBoard");
-  board.addEventListener("click", createTileClickHandler(tiles), {
+  board.addEventListener("click", createTileClickHandler(tiles, poller), {
     once: true,
   });
 };
@@ -97,22 +99,23 @@ const renderPlayerTurn = (isMyTurn, tiles) => {
 const renderPlayerTiles = (tilesContainer, tiles) => {
   tilesContainer.innerText = "";
   tiles.forEach((tile) => {
-    const playerTile = cloneTemplates("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplates("assigned-tile").querySelector(".player-tile");
     playerTile.innerText = tile;
     tilesContainer.appendChild(playerTile);
   });
 };
 
-const renderStockRow = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
-  const nameCell = document.createElement("th");
-  nameCell.textContent = hotel;
-  const shareCell = document.createElement("td");
-  shareCell.textContent = shares;
-  hotelNamesRow.appendChild(nameCell);
-  sharesRow.appendChild(shareCell);
-};
+const renderStockRow =
+  (hotelNamesRow, sharesRow) =>
+  ([hotel, shares]) => {
+    const nameCell = document.createElement("th");
+    nameCell.textContent = hotel;
+    const shareCell = document.createElement("td");
+    shareCell.textContent = shares;
+    hotelNamesRow.appendChild(nameCell);
+    sharesRow.appendChild(shareCell);
+  };
 
 const renderStocks = (stocks) => {
   const hotelNamesRow = document.getElementById("hotel-names-row");
@@ -184,8 +187,8 @@ const displayHotelIcon = (name, tile) => {
   const tileElem = document.getElementById(tile);
   tileElem.textContent = "";
   tileElem.style.backgroundColor = "smokewhite";
-  tileElem.style.backgroundImage = "url('/images/hotels" +
-    hotelLookup(name).image + "')";
+  tileElem.style.backgroundImage =
+    "url('/images/hotels" + hotelLookup(name).image + "')";
 };
 
 const renderAHotel = ({ name, tiles, baseTile }) => {
@@ -247,22 +250,7 @@ const renderStocksAndInactiveHotels = (inActiveHotels, activeHotels) => {
   renderInActiveHotels(inActiveHotels);
 };
 
-const startGamePolling = () => {
-  setInterval(async () => {
-    const stats = await getResource("/acquire/game-stats");
-    const { players, board, isMyTurn, currentPlayer, playerPortfolio } = stats;
-    const { tiles } = playerPortfolio;
-    const { inActiveHotels, activeHotels } = board;
-    renderStocksAndInactiveHotels(inActiveHotels, activeHotels);
-    showStartingTilesPopup(tiles);
-    renderPlayers(players, currentPlayer);
-    renderPlayerTurn(isMyTurn, tiles);
-    renderPortfolio(playerPortfolio);
-    renderPlaceTilesBoard(board);
-  }, 500);
-};
-
-const createPlayerAvatar = ({ name, isTheSamePlayer }, currentPlayer) => {
+const createPlayerAvatar = ({ name }, currentPlayer) => {
   const playerIcon = cloneTemplates("players-template");
   const avatar = playerIcon.querySelector(".player-avatar");
 
@@ -321,11 +309,27 @@ const renderGameBoard = () => {
   gameBoard.replaceChildren(...tiles);
 };
 
+const startGamePolling = async (poller) => {
+  const stats = await getResource("/acquire/game-stats");
+  const { players, board, isMyTurn, currentPlayer, playerPortfolio } = stats;
+  const { tiles } = playerPortfolio;
+  const { inActiveHotels, activeHotels } = board;
+
+  renderStocksAndInactiveHotels(inActiveHotels, activeHotels);
+  showStartingTilesPopup(tiles);
+  renderPlayers(players, currentPlayer);
+  renderPlayerTurn(isMyTurn, tiles, poller);
+  renderPortfolio(playerPortfolio);
+  renderPlaceTilesBoard(board);
+};
+
 const main = () => {
   new Collapse("tray-header", "tray-body");
   new Collapse("portfolio-header", "portfolio-body");
   renderGameBoard();
-  startGamePolling();
+
+  const polling = new Poller(1000, startGamePolling);
+  polling.start();
 };
 
 globalThis.onload = main;
