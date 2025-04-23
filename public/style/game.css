@@ -196,10 +196,10 @@ body {
 @keyframes pulse-scale {
   0%,
   100% {
-    transform: scaleX(0.9) scaleY(0.9);
+    transform: scaleX(0.8) scaleY(0.8);
   }
   50% {
-    transform: scaleX(1.09) scaleY(1.09);
+    transform: scaleX(1) scaleY(1);
   }
 }
 
