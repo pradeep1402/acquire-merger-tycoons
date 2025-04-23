@@ -57,9 +57,8 @@ const createTileClickHandler = (tiles) => async (event) => {
   const res = await fetch(`/acquire/place-tile/${id}`, {
     method: "PATCH",
   });
+
   const playerInfo = await res.json();
-  // const tile = document.getElementById(id);
-  // tile.classList.add("place-tile");
   removeHighlight(tiles);
 
   if (playerInfo.type === "Build") {
@@ -67,7 +66,7 @@ const createTileClickHandler = (tiles) => async (event) => {
   }
   if (playerInfo.type === "Merge") {
     renderMergerTile(id);
-    removeHighlight(playerTiles);
+    removeHighlight(tiles);
   }
 };
 
@@ -145,30 +144,34 @@ const renderIndependentTiles = (tiles) => {
 
 const hotelLookup = (name) => {
   const colors = {
-    Tower: { backgroundColor: "yellow", color: "black", image: "/tower.png" },
-    Sackson: { backgroundColor: "red", color: "white", image: "/sackson.png" },
+    Tower: { backgroundColor: "#E7E559", color: "black", image: "/tower.png" },
+    Sackson: {
+      backgroundColor: "#CC5B45",
+      color: "white",
+      image: "/sackson.png",
+    },
     Festival: {
-      backgroundColor: "green",
+      backgroundColor: "#3C8A6A",
       color: "white",
       image: "/festival.png",
     },
     Continental: {
-      backgroundColor: "sky-blue",
+      backgroundColor: "#7ECDEE",
       color: "white",
       image: "/continental.png",
     },
     Imperial: {
-      backgroundColor: "orange",
+      backgroundColor: "#DA9306",
       color: "white",
       image: "/imperial.png",
     },
     Worldwide: {
-      backgroundColor: "violet",
+      backgroundColor: "#6C3E80",
       color: "white",
       image: "/worldwide.png",
     },
     American: {
-      backgroundColor: "blue",
+      backgroundColor: "#2360A5",
       color: "white",
       image: "/american.png",
     },
