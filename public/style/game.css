@@ -14,7 +14,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  position: relative;
 }
 
 .gameBoard {
@@ -36,17 +36,17 @@ body {
 }
 
 .minimap {
-  position: relative;
-  top: -30%;
-  left: 80%;
-  width: 15vw;
-  height: 22vh;
+  position: absolute;
+  top: 6%;
+  left: 10%;
+  width: 18vw;
+  height: 24vh;
   font-size: 0;
-  z-index: 10;
+  z-index: 1;
 }
 
-.minitile {
-  border: 0.1px solid var(--color);
+.minimap .mini-tile {
+  border: 0.01px solid rgba(0, 0, 0, 0.3);
 }
 
 .tile {
@@ -187,7 +187,7 @@ body {
 }
 
 .highlight {
-  background-color: #84dbf8;
+  background-color: #cee2f8;
   color: #1e2a38;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
   animation: pulse-scale 2s infinite ease-in-out;
@@ -199,7 +199,7 @@ body {
     transform: scaleX(0.9) scaleY(0.9);
   }
   50% {
-    transform: scaleX(1) scaleY(1);
+    transform: scaleX(1.09) scaleY(1.09);
   }
 }
 
@@ -255,7 +255,7 @@ summary {
   left: 50%;
   transform: translate(-50%, -30%);
   background-color: #fff;
-  border: 2px solid #333;
+  border: 0.5px solid rgba(0, 0, 0, 0.2);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);

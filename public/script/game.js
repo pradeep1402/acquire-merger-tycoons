@@ -27,7 +27,7 @@ const renderMinimap = () => {
   const children = minimap.children;
 
   for (const child of children) {
-    child.classList.add("minitile");
+    child.classList.add("mini-tile");
   }
 };
 
@@ -37,7 +37,7 @@ const renderGamerBoard = () => {
   const children = minimap.children;
 
   for (const child of children) {
-    child.classList.remove("minitile");
+    child.classList.remove("mini-tile");
   }
 };
 
@@ -173,26 +173,26 @@ const renderIndependentTiles = (tiles) => {
 
 const hotelLookup = (name) => {
   const colors = {
-    Tower: { backgroundColor: "yellow", color: "black" },
-    Sackson: { backgroundColor: "red", color: "white" },
+    Tower: { backgroundColor: "#ffb404", color: "black" },
+    Sackson: { backgroundColor: "#ff5454", color: "white" },
     Festival: {
-      backgroundColor: "#3C8A6A",
+      backgroundColor: "#48c454",
       color: "white",
     },
     Continental: {
-      backgroundColor: "#7ECDEE",
+      backgroundColor: "#28c4e4",
       color: "white",
     },
     Imperial: {
-      backgroundColor: "#DA9306",
+      backgroundColor: "#ff7c14",
       color: "white",
     },
     Worldwide: {
-      backgroundColor: "#6C3E80",
+      backgroundColor: "#8054f4",
       color: "white",
     },
     American: {
-      backgroundColor: "#2360A5",
+      backgroundColor: "#288ce4",
       color: "white",
     },
   };
