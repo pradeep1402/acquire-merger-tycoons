@@ -368,7 +368,12 @@ describe("App: /game-stats", () => {
       headers: { cookie: "sessionId=1;gameId=0" },
     });
     const expected = {
-      board: { independentTiles: [], activeHotels: [], inActiveHotels: [] },
+      board: {
+        independentTiles: [],
+        activeHotels: [],
+        inActiveHotels: [],
+        mergerTile: [],
+      },
       playerPortfolio: {
         cash: 6000,
         playerId: "1",

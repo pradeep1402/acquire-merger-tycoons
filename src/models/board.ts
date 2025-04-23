@@ -7,15 +7,18 @@ export enum PlaceType {
   Build = "Build",
   Dependent = "Dependent",
   Independent = "Independent",
+  Merge = "Merge",
 }
 
 export class Board {
   hotels: Hotel[];
   independentTiles: Set<Tile>;
+  mergerTile: Tile[];
 
   constructor(hotels: Hotel[]) {
     this.hotels = hotels;
     this.independentTiles = new Set();
+    this.mergerTile = [];
   }
 
   private getInActiveHotels() {
@@ -38,6 +41,11 @@ export class Board {
   getPlaceTileType(tile: Tile) {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInActiveHotels();
+
+    if (this.isMerger(tile)) {
+      this.mergerTile.push(tile);
+      return { tile, type: PlaceType.Merge };
+    }
 
     if (this.isDependent(tile)) {
       const [hotel] = this.dependentHotels(tile);
@@ -84,6 +92,7 @@ export class Board {
       independentTiles: [...this.independentTiles],
       activeHotels,
       inActiveHotels,
+      mergerTile: this.mergerTile,
     };
   }
 
@@ -159,6 +168,10 @@ export class Board {
 
   isDependent(tile: Tile) {
     return this.dependentHotels(tile).length === 1;
+  }
+
+  isMerger(tile: Tile) {
+    return this.dependentHotels(tile).length > 1;
   }
 
   dependentHotels(tile: Tile): Hotel[] {

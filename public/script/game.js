@@ -9,8 +9,8 @@ const getResource = async (path) => {
   }
 };
 
-const handleFoundHotel = (tileLabel, playerTiles) => async (event) => {
-  await fetch(`/acquire/place-tile/${tileLabel}/${event.target.textContent}`, {
+const handleFoundHotel = (tileLabel, playerTiles, hotelName) => async () => {
+  await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
     method: "PATCH",
   });
 
@@ -26,12 +26,26 @@ const renderSelectHotel = (inActiveHotels, tileLabel, playerTiles) => {
   hotelList.textContent = "";
 
   inActiveHotels.forEach((hotel) => {
+    const outerDiv = document.createElement("div");
+    const hotelName = document.createElement("span");
+    hotelName.textContent = hotel.name;
     const div = document.createElement("div");
-    div.textContent = hotel.name;
-    div.addEventListener("click", handleFoundHotel(tileLabel, playerTiles), {
-      once: true,
-    });
-    hotelList.appendChild(div);
+
+    div.style.backgroundImage = "url('/images/hotels" +
+      hotelLookup(hotel.name).image + "')";
+    div.classList.add("select-hotel");
+
+    outerDiv.appendChild(hotelName);
+    outerDiv.appendChild(div);
+
+    outerDiv.addEventListener(
+      "click",
+      handleFoundHotel(tileLabel, playerTiles, hotel.name),
+      {
+        once: true,
+      },
+    );
+    hotelList.appendChild(outerDiv);
   });
 };
 
@@ -44,12 +58,16 @@ const createTileClickHandler = (tiles) => async (event) => {
     method: "PATCH",
   });
   const playerInfo = await res.json();
-  const tile = document.getElementById(id);
-  tile.classList.add("place-tile");
+  // const tile = document.getElementById(id);
+  // tile.classList.add("place-tile");
   removeHighlight(tiles);
 
   if (playerInfo.type === "Build") {
     renderSelectHotel(playerInfo.inActiveHotels, id, tiles);
+  }
+  if (playerInfo.type === "Merge") {
+    renderMergerTile(id);
+    removeHighlight(playerTiles);
   }
 };
 
@@ -183,11 +201,17 @@ const renderHotels = (hotels) => {
   });
 };
 
+const renderMergerTile = (tile) => {
+  const tileElem = document.getElementById(tile);
+  tileElem.style.backgroundColor = "lightgrey";
+};
+
 const renderPlaceTilesBoard = (board) => {
-  const { independentTiles, activeHotels } = board;
+  const { independentTiles, activeHotels, mergerTile } = board;
   renderIndependentTiles(independentTiles);
 
   if (!activeHotels) return;
+  if (mergerTile.length) renderMergerTile(mergerTile[0]);
 
   renderHotels(activeHotels);
 };

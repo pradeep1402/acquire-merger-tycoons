@@ -38,6 +38,7 @@ describe("Game model", () => {
         independentTiles: [],
         activeHotels: [],
         inActiveHotels: [],
+        mergerTile: [],
       };
       assertEquals(game.getBoard(), board);
     });
@@ -49,6 +50,7 @@ describe("Game model", () => {
         independentTiles: ["1A"],
         activeHotels: [],
         inActiveHotels: [],
+        mergerTile: [],
       };
       game.placeTile("1A");
       assertEquals(game.getBoard(), board);
@@ -61,6 +63,7 @@ describe("Game model", () => {
         independentTiles: ["1A"],
         activeHotels: [],
         inActiveHotels: [],
+        mergerTile: [],
       };
       game.placeTile("1A");
       game.placeTile("2A");
@@ -193,6 +196,7 @@ describe("Game model", () => {
         { hotel: "Continental", count: 2 },
       ];
       const result = game.buyStocks(stocks);
+      assertEquals(game.placeTile("9A"), { tile: "9A", type: PlaceType.Merge });
 
       assertEquals(result, {
         playerId: "Malli",
@@ -224,6 +228,7 @@ describe("Game model", () => {
         independentTiles: [],
         activeHotels: [],
         inActiveHotels: [],
+        mergerTile: [],
       };
       const playersId = ["Adi", "Malli"];
       const currentPlayerId = "Adi";
