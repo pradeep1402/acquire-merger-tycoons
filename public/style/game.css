@@ -197,8 +197,7 @@ body {
 
 .active-player {
   border: 6px solid green;
-  box-shadow:
-    2px 2px 10px rgba(0, 100, 0, 0.5),
+  box-shadow: 2px 2px 10px rgba(0, 100, 0, 0.5),
     -2px -2px 10px rgba(0, 100, 0, 0.4);
 }
 
@@ -287,4 +286,60 @@ summary {
   background-position: center;
   border: 1px solid #ccc;
   margin: 8px;
+}
+
+.tower {
+  background-color: white;
+  background-image: url("/images/hotels/tower.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.imperial {
+  background-color: white;
+  background-image: url("/images/hotels/imperial.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.continental {
+  background-color: white;
+  background-image: url("/images/hotels/continental.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.sackson {
+  background-color: white;
+  background-image: url("/images/hotels/sackson.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.worldwide {
+  background-color: white;
+  background-image: url("/images/hotels/worldwide.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.american {
+  background-color: white;
+  background-image: url("/images/hotels/american.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.festival {
+  background-color: white;
+  background-image: url("/images/hotels/festival.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }

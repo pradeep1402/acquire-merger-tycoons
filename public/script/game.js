@@ -146,36 +146,27 @@ const renderIndependentTiles = (tiles) => {
 
 const hotelLookup = (name) => {
   const colors = {
-    Tower: { backgroundColor: "#E7E559", color: "black", image: "/tower.png" },
-    Sackson: {
-      backgroundColor: "#CC5B45",
-      color: "white",
-      image: "/sackson.png",
-    },
+    Tower: { backgroundColor: "yellow", color: "black" },
+    Sackson: { backgroundColor: "red", color: "white" },
     Festival: {
       backgroundColor: "#3C8A6A",
       color: "white",
-      image: "/festival.png",
     },
     Continental: {
       backgroundColor: "#7ECDEE",
       color: "white",
-      image: "/continental.png",
     },
     Imperial: {
       backgroundColor: "#DA9306",
       color: "white",
-      image: "/imperial.png",
     },
     Worldwide: {
       backgroundColor: "#6C3E80",
       color: "white",
-      image: "/worldwide.png",
     },
     American: {
       backgroundColor: "#2360A5",
       color: "white",
-      image: "/american.png",
     },
   };
 
@@ -184,10 +175,8 @@ const hotelLookup = (name) => {
 
 const displayHotelIcon = (name, tile) => {
   const tileElem = document.getElementById(tile);
+  tileElem.classList.add(name.toLowerCase());
   tileElem.textContent = "";
-  tileElem.style.backgroundColor = "smokewhite";
-  tileElem.style.backgroundImage = "url('/images/hotels" +
-    hotelLookup(name).image + "')";
 };
 
 const renderAHotel = ({ name, tiles, baseTile }) => {
