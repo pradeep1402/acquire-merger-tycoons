@@ -141,7 +141,7 @@ describe("Game model", () => {
 
       game.foundHotel("2A", "Imperial");
       const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
-      const result = game.buyStocks(stocks);
+      const result = game.buyStocks(stocks, "Malli");
 
       assertEquals(result, {
         cash: 4800,
@@ -202,7 +202,7 @@ describe("Game model", () => {
         { hotel: "Imperial", count: 1 },
         { hotel: "Continental", count: 2 },
       ];
-      const result = game.buyStocks(stocks);
+      const result = game.buyStocks(stocks, "Malli");
       assertEquals(game.placeTile("9A"), { tile: "9A", type: PlaceType.Merge });
 
       assertEquals(result, {

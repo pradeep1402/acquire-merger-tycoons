@@ -397,7 +397,6 @@ summary {
   background-color: #b1d4e0;
   color: #1e2a38;
   border-radius: 20px;
-  display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;

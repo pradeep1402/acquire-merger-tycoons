@@ -46,20 +46,23 @@ export class Game {
       this.players.length;
   }
 
-  buyStocks(hotels: buyStocks[]) {
-    const currentPlayer = this.players[this.currentPlayerIndex];
+  buyStocks(hotels: buyStocks[], playerId: string) {
+    const currentPlayer = this.players.find((player) =>
+      player.doesPlayerMatch(playerId)
+    );
 
     for (const { hotel, count } of hotels) {
       const [hotelInstance] = this.board.getHotel(hotel);
 
-      if (hotelInstance.areStocksEnough(count)) {
+      if (hotelInstance.areStocksEnough(count) && currentPlayer) {
         const price = hotelInstance.calculatePrice(count);
         currentPlayer.deductCash(price);
         currentPlayer.addStock(count, hotel);
+        hotelInstance.decrementStocks(count);
       }
     }
 
-    return currentPlayer.getPlayerDetails();
+    return currentPlayer?.getPlayerDetails();
   }
 
   placeTile(tile: Tile) {

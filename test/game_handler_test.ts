@@ -554,7 +554,7 @@ describe("buyStocks() method", () => {
 
     await app.request("/acquire/place-tile/2A/Imperial", {
       method: "PATCH",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=2;gameId=0" },
     });
 
     const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
@@ -562,7 +562,7 @@ describe("buyStocks() method", () => {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
-        cookie: "sessionId=1;gameId=0",
+        cookie: "sessionId=2;gameId=0",
         body: JSON.stringify(stocks),
       },
     });

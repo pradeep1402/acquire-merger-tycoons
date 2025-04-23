@@ -10,11 +10,11 @@ const getResource = async (path) => {
   }
 };
 
-const placeIndependentTile = async (placeInfo, poller) => {
+const placeIndependentTile = async (placeInfo, poller, activeHotels) => {
   const placedTile = document.getElementById(placeInfo.tile);
   placedTile.classList.add("place-tile");
-  const res = await changeTurn();
-  poller.start();
+  if (activeHotels.length) return await buyStocks(poller);
+  const res = await changeTurn(poller);
   console.log(res);
 };
 
@@ -22,15 +22,13 @@ const placeDependentTile = async ({ tile, hotel }, poller) => {
   const placedTile = document.getElementById(tile);
   placedTile.style.backgroundColor = hotelLookup(hotel.name).backgroundColor;
   await buyStocks(poller);
-  const res = await changeTurn();
-  poller.start();
-  console.log(res);
 };
 
-const changeTurn = async () => {
+const changeTurn = async (poller) => {
   const res = await fetch("/acquire/end-turn", {
     method: "PATCH",
   });
+  poller.start();
 
   return await res.json();
 };
@@ -43,8 +41,7 @@ const handleFoundHotel = (tileLabel, hotelName, poller) => async () => {
   const container = document.querySelector("#popup");
   container.style.display = "none";
   renderGamerBoard();
-  await changeTurn();
-  poller.start();
+  await buyStocks(poller);
 };
 
 const renderMinimap = () => {
@@ -67,7 +64,7 @@ const renderGamerBoard = () => {
   }
 };
 
-const renderSelectHotel = (inActiveHotels, tileLabel, poller) => {
+const renderSelectHotel = async (inActiveHotels, tileLabel, poller) => {
   const container = document.querySelector("#popup");
   renderMinimap();
 
@@ -96,38 +93,41 @@ const renderSelectHotel = (inActiveHotels, tileLabel, poller) => {
     );
     hotelList.appendChild(outerDiv);
   });
+
+  if (inActiveHotels.length === 0) return await buyStocks(poller);
 };
 
-const createTileClickHandler = (tiles, poller) => async (event) => {
-  const id = event.target.id;
+const createTileClickHandler =
+  (tiles, poller, activeHotels) => async (event) => {
+    const id = event.target.id;
 
-  if (!tiles.includes(id)) return;
+    if (!tiles.includes(id)) return;
 
-  const res = await fetch(`/acquire/place-tile/${id}`, {
-    method: "PATCH",
-  });
+    const res = await fetch(`/acquire/place-tile/${id}`, {
+      method: "PATCH",
+    });
 
-  const placeInfo = await res.json();
-  removeHighlight(tiles);
-
-  if (placeInfo.type === "Independent") {
-    await placeIndependentTile(placeInfo, poller);
-  }
-
-  if (placeInfo.type === "Dependent") {
-    await placeDependentTile(placeInfo, poller);
-  }
-
-  if (placeInfo.type === "Build") {
-    renderSelectHotel(placeInfo.inActiveHotels, id, poller);
-  }
-
-  if (placeInfo.type === "Merge") {
-    poller.pause();
-    renderMergerTile(id);
+    const placeInfo = await res.json();
     removeHighlight(tiles);
-  }
-};
+
+    if (placeInfo.type === "Independent") {
+      await placeIndependentTile(placeInfo, poller, activeHotels);
+    }
+
+    if (placeInfo.type === "Dependent") {
+      await placeDependentTile(placeInfo, poller);
+    }
+
+    if (placeInfo.type === "Build") {
+      renderSelectHotel(placeInfo.inActiveHotels, id, poller);
+    }
+
+    if (placeInfo.type === "Merge") {
+      poller.pause();
+      renderMergerTile(id);
+      removeHighlight(tiles);
+    }
+  };
 
 const highlight = (tiles) => {
   tiles.forEach((tile) => {
@@ -143,15 +143,19 @@ const removeHighlight = (tiles) => {
   });
 };
 
-const renderPlayerTurn = (isMyTurn, tiles, poller) => {
+const renderPlayerTurn = (isMyTurn, tiles, poller, activeHotels) => {
   if (!isMyTurn) return;
   poller.pause();
 
   highlight(tiles);
   const board = document.querySelector(".gameBoard");
-  board.addEventListener("click", createTileClickHandler(tiles, poller), {
-    once: true,
-  });
+  board.addEventListener(
+    "click",
+    createTileClickHandler(tiles, poller, activeHotels),
+    {
+      once: true,
+    },
+  );
 };
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
@@ -500,9 +504,7 @@ const buyStocks = async (poller) => {
 
   setCash(cash);
   renderAllHotels(activeHotels);
-  const response = await fetch("/acquire/endTurn", { method: "PATCH" });
-  console.log(await response.json());
-  poller.start();
+  await changeTurn(poller);
 };
 
 const startGamePolling = async (poller) => {
@@ -514,7 +516,7 @@ const startGamePolling = async (poller) => {
   renderStocksAndInactiveHotels(inActiveHotels, activeHotels);
   showStartingTilesPopup(tiles);
   renderPlayers(players, currentPlayer);
-  renderPlayerTurn(isMyTurn, tiles, poller);
+  renderPlayerTurn(isMyTurn, tiles, poller, activeHotels);
   renderPortfolio(playerPortfolio);
   renderPlaceTilesBoard(board);
 };
