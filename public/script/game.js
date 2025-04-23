@@ -128,7 +128,7 @@ const renderPlayerTiles = (tilesContainer, tiles) => {
     const playerTile = cloneTemplates("assigned-tile").querySelector(
       ".player-tile",
     );
-    playerTile.innerText = tile;
+    playerTile.textContent = tile;
     tilesContainer.appendChild(playerTile);
   });
 };
