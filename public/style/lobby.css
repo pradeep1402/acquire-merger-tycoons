@@ -11,13 +11,13 @@ h1 {
   height: 60px;
   width: 60px;
   border: 3px solid rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
+  /* border-radius: 50%; */
 }
 
 .player-container {
   background-color: rgb(29, 39, 48);
-  height: 200px;
-  width: 200px;
+  height: 130px;
+  width: 150px;
   padding: 20px;
   margin: 10px;
   text-align: center;
@@ -27,7 +27,7 @@ h1 {
 }
 
 #player-list {
-  border: 5px outset black;
+  border: 2px outset black;
   display: flex;
   justify-content: space-around;
   width: 70%;

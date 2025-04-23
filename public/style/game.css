@@ -26,8 +26,9 @@ body {
   height: 21vh;
   width: 50vw;
   height: 70vh;
-  /* border: 1px solid var(--color); */
-  background-color: #f9fafb;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.15%;
+  /* background-color: #f9fafb; */
   justify-content: space-evenly;
   align-items: center;
   gap: 0.5% 0.5%;
@@ -49,8 +50,8 @@ body {
   justify-content: center;
   align-items: center;
   color: var(--color);
-  border: 1px solid var(--color);
-  background-color: #e2f3f8;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: whitesmoke;
   font-size: 1em;
 }
 
@@ -88,14 +89,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
 .player-avatar {
   height: 60px;
   width: 60px;
-  border: 3px solid rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  /* border-radius: 50%; */
 }
 
 #players {
@@ -140,12 +141,14 @@ body {
 }
 
 .portfolio-section {
+  text-align: center;
   display: flex;
   flex-direction: column;
   padding: 1rem;
 }
 
 #portfolio-tiles {
+  padding-top: 1rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -163,6 +166,10 @@ body {
 #stock-info td {
   padding: 0.5em;
   border: none;
+}
+
+#cash-info {
+  padding-top: 0.6em;
 }
 
 .hidden {
@@ -196,9 +203,7 @@ body {
 }
 
 .active-player {
-  border: 6px solid green;
-  box-shadow: 2px 2px 10px rgba(0, 100, 0, 0.5),
-    -2px -2px 10px rgba(0, 100, 0, 0.4);
+  border: 4px solid limegreen;
 }
 
 #game-tray {
@@ -289,7 +294,7 @@ summary {
 }
 
 .tower {
-  background-color: white;
+  background-color: whitesmoke;
   background-image: url("/images/hotels/tower.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -297,7 +302,7 @@ summary {
 }
 
 .imperial {
-  background-color: white;
+  background-color: whitesmoke;
   background-image: url("/images/hotels/imperial.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -305,7 +310,7 @@ summary {
 }
 
 .continental {
-  background-color: white;
+  background-color: whitesmoke;
   background-image: url("/images/hotels/continental.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -313,7 +318,7 @@ summary {
 }
 
 .sackson {
-  background-color: white;
+  background-color: whitesmoke;
   background-image: url("/images/hotels/sackson.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -321,7 +326,7 @@ summary {
 }
 
 .worldwide {
-  background-color: white;
+  background-color: whitesmoke;
   background-image: url("/images/hotels/worldwide.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -329,7 +334,7 @@ summary {
 }
 
 .american {
-  background-color: white;
+  background-color: whitesmoke;
   background-image: url("/images/hotels/american.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -337,7 +342,7 @@ summary {
 }
 
 .festival {
-  background-color: white;
+  background-color: whitesmoke;
   background-image: url("/images/hotels/festival.png");
   background-position: center;
   background-repeat: no-repeat;

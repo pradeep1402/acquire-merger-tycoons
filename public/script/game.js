@@ -242,7 +242,7 @@ const createPlayerAvatar = ({ name, isTheSamePlayer }, currentPlayer) => {
   const playerIcon = cloneTemplates("players-template");
   const avatar = playerIcon.querySelector(".player-avatar");
 
-  avatar.setAttribute("src", "/images/avatars/avatar1.jpeg");
+  avatar.setAttribute("src", "/images/avatars/logo.png");
   playerIcon.querySelector(".player-name").textContent = isTheSamePlayer
     ? `${name} (YOU)`
     : name;
