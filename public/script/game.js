@@ -17,11 +17,34 @@ const handleFoundHotel = (tileLabel, hotelName, poller) => async () => {
 
   const container = document.querySelector("#popup");
   container.style.display = "none";
+  renderGamerBoard();
   poller.start();
+};
+
+const renderMinimap = () => {
+  const minimap = document.querySelector(".gameBoard");
+  minimap.classList.add("minimap");
+  const children = minimap.children;
+
+  for (const child of children) {
+    child.classList.add("minitile");
+  }
+};
+
+const renderGamerBoard = () => {
+  const minimap = document.querySelector(".gameBoard");
+  minimap.classList.remove("minimap");
+  const children = minimap.children;
+
+  for (const child of children) {
+    child.classList.remove("minitile");
+  }
 };
 
 const renderSelectHotel = (inActiveHotels, tileLabel, poller) => {
   const container = document.querySelector("#popup");
+  renderMinimap();
+
   const hotelList = document.querySelector("#hotel-container");
   container.style.display = "block";
   hotelList.textContent = "";
@@ -67,6 +90,7 @@ const createTileClickHandler = (tiles, poller) => async (event) => {
     renderSelectHotel(playerInfo.inActiveHotels, id, poller);
   }
   if (playerInfo.type === "Merge") {
+    poller.pause();
     renderMergerTile(id);
     removeHighlight(tiles);
   }
