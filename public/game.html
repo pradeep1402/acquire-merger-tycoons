@@ -80,5 +80,28 @@
         </details>
       </div>
     </div>
+
+    <div id="buy-stocks">
+      <h1>BUY STOCKS</h1>
+      <div id="active-hotels"></div>
+      <template id="hotel-template">
+        <div class="hotel">
+          <p id="hotel-name"></p>
+          <p id="stock-value"></p>
+          <button class="step-down">-</button>
+          <input
+            type="number"
+            name="stock-count"
+            class="count-input"
+            min="0"
+            max="3"
+            value="0"
+            disabled
+          />
+          <button class="step-up">+</button>
+        </div>
+      </template>
+      <h2>Cash available: <span id="cash-available"></span></h2>
+    </div>
   </body>
 </html>

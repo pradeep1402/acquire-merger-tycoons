@@ -134,7 +134,7 @@ export const createApp = (sessions: Sessions, gameManager: GameManager) => {
 
   app.use(logger());
   app.use(setContext(sessions, gameManager));
-  app.get("/logout", (ctx) => {
+  app.get("/logout", (ctx: Context) => {
     deleteCookie(ctx, "sessionId");
     deleteCookie(ctx, "gameId");
     return ctx.text("Logged out. Cookie removed.");
