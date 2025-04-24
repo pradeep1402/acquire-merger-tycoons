@@ -304,8 +304,7 @@ class HotelsView {
 
   renderStocks() {
     const stocksSection = document.querySelector("#stocks-section");
-    const hotelElements = this.#activeHotels
-      .concat(this.#inactiveHotels)
+    const hotelElements = this.#activeHotels.concat(this.#inactiveHotels)
       .map((hotel) => HotelView.fromHotel(hotel))
       .map((hotelView) => hotelView.renderStocks());
 
