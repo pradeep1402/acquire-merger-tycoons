@@ -1,14 +1,10 @@
-import { GameManager } from "./game_manager.ts";
-
 export class Sessions {
   private sessions: Map<string, { name: string; status: string }>;
-  private waiting: { gameId: string; players: string[] };
   private idGenerator: () => string;
 
   constructor(idGenerator: () => string) {
     this.idGenerator = idGenerator;
     this.sessions = new Map();
-    this.waiting = { gameId: this.idGenerator(), players: [] };
   }
 
   addPlayer(name: string): string {
@@ -19,38 +15,12 @@ export class Sessions {
     return playerId;
   }
 
-  addToWaitingList(playerId: string, gameManager: GameManager) {
-    const player = this.sessions.get(playerId);
-    if (player) player.status = "Waiting";
-
-    const gameId = this.waiting.gameId;
-
-    if (this.waiting.players.length < 2) {
-      this.waiting.players.push(playerId);
-      return { playerId, gameId };
-    }
-
-    this.waiting.players.push(playerId);
-    this.createRoom(gameManager);
-
-    return { playerId, gameId };
-  }
-
-  createRoom(gameManager: GameManager) {
-    const { players, gameId } = this.waiting;
-    gameManager.createGame(gameId, players);
-    this.waiting = { gameId: this.idGenerator(), players: [] };
-  }
-
-  getWaitingPlayers() {
-    const players = this.waiting.players.map((playerId) =>
-      this.sessions.get(playerId)
-    );
-    return { gameId: this.waiting.gameId, players };
-  }
-
   getPlayerName(playerId: string): string | null {
     return this.sessions.get(playerId)?.name || null;
+  }
+
+  getPlayer(playerId: string) {
+    return this.sessions.get(playerId);
   }
 
   isSessionIdExist(id: string) {
@@ -60,5 +30,9 @@ export class Sessions {
   removeSession(playerId: string) {
     this.sessions.delete(playerId);
     return "Removed Successfully";
+  }
+
+  getSessions(): Map<string, { name: string; status: string }> {
+    return this.sessions;
   }
 }

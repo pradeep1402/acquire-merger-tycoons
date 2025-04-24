@@ -6,15 +6,17 @@ import { GameManager } from "../src/models/game_manager.ts";
 import { Hotel } from "../src/models/hotel.ts";
 import { buyStocks } from "../src/models/game.ts";
 // import { assertSpyCallArgs, stub } from "testing/mock";
+import { Lobby } from "../src/models/lobby.ts";
 // import { Game } from "../src/models/game.ts";
 
 describe("App: /login", () => {
   it("should receive a cookie and redirect to index page", async () => {
     const idGenerator = () => "1";
+
     const formData = new FormData();
     formData.set("playerName", "Adhi");
     const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     const sessions = new Sessions(idGenerator);
     const app = createApp(sessions, gameManager);
     const res = await app.request("/login", { method: "POST", body: formData });
@@ -25,7 +27,7 @@ describe("App: /login", () => {
 
   it("should redirect to index page if already loggedin", async () => {
     const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
     sessions.addPlayer("likhi");
@@ -40,12 +42,11 @@ describe("App: /login", () => {
   it("should open login.html if not logged in .", async () => {
     const idGenerator = () => "1";
     const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     const sessions = new Sessions(idGenerator);
     const app = createApp(sessions, gameManager);
 
     const res = await app.request("/login.html");
-
     await res.text();
     assertEquals(res.status, 200);
   });
@@ -56,19 +57,20 @@ describe("App: acquire/game-status", () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     const sessions = new Sessions(idGenerator);
-    const player1 = sessions.addPlayer("Adi");
-    sessions.addToWaitingList(player1, gameManager);
+    const playerId = sessions.addPlayer("Adi");
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("0", gameManager, sessions.getPlayer(playerId));
 
-    const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/acquire/game-status", {
       method: "GET",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=0;gameId=1" },
     });
 
     assertEquals(await res.json(), {
-      gameId: "0",
+      gameId: "1",
       players: [{ name: "Adi", status: "Waiting" }],
     });
     assertEquals(res.status, 200);
@@ -77,20 +79,20 @@ describe("App: acquire/game-status", () => {
   it("should return the game status as START when required number of players join the game", async () => {
     let id = 0;
     const idGenerator = () => `${id++}`;
-    const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager();
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("Bdi");
     const player3 = sessions.addPlayer("Cdi");
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("0", gameManager, sessions.getPlayer(player1));
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(player2));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(player3));
 
     const app = createApp(sessions, gameManager);
     const res = await app.request("/acquire/game-status", {
       method: "GET",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=1;gameId=3" },
     });
 
     assertEquals(await res.json(), { status: "START" });
@@ -102,9 +104,9 @@ describe("App: acquire/home/quick-play", () => {
   it("should add player in waiting list", async () => {
     const sessions = new Sessions(() => "1");
     sessions.addPlayer("Krishna");
-    const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
-    const app = createApp(sessions, gameManager);
+    const gameManager = new GameManager();
+    const lobby = new Lobby(() => "1");
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/acquire/home/quick-play", {
       method: "POST",
       headers: {
@@ -120,8 +122,9 @@ describe("App: acquire/home/quick-play", () => {
     const sessions = new Sessions(() => "1");
     sessions.addPlayer("Krishna");
     const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
-    const app = createApp(sessions, gameManager);
+    const gameManager = new GameManager(tileGenerator);
+    const lobby = new Lobby(() => "1");
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/acquire/home/quick-play", {
       method: "POST",
       headers: {
@@ -138,7 +141,7 @@ describe("App: /", () => {
     const sessions = new Sessions(() => "1");
     sessions.addPlayer("Krishna");
     const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     const app = createApp(sessions, gameManager);
     const res = await app.request("/", {
       headers: {
@@ -151,71 +154,70 @@ describe("App: /", () => {
   });
 
   it("should redirect to game page when three players started the game", async () => {
-    let i = 0;
+    let i = 1;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
-    sessions.addPlayer("Krishna");
-    sessions.addPlayer("Sudheer");
-    sessions.addPlayer("Adi");
-    sessions.addToWaitingList("1", gameManager);
-    sessions.addToWaitingList("2", gameManager);
-    sessions.addToWaitingList("3", gameManager);
+    const gameManager = new GameManager();
+    const p1 = sessions.addPlayer("Krishna");
+    const p2 = sessions.addPlayer("Sudheer");
+    const p3 = sessions.addPlayer("Adi");
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(p1));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(p2));
+    lobby.addToWaitingList("3", gameManager, sessions.getPlayer(p3));
 
-    sessions.createRoom(gameManager);
-    const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/", {
       headers: {
-        cookie: "sessionId=1;gameId=0",
+        cookie: "sessionId=1;gameId=4",
       },
     });
 
     assertEquals(res.status, 303);
     assertEquals(res.headers.get("location"), "/game.html");
   });
+
   it("should redirect to game page when accessing lobby", async () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
-    sessions.addPlayer("Krishna");
-    sessions.addPlayer("Sudheer");
-    sessions.addPlayer("Adi");
-    sessions.addToWaitingList("1", gameManager);
-    sessions.addToWaitingList("2", gameManager);
-    sessions.addToWaitingList("3", gameManager);
+    const gameManager = new GameManager();
+    const p1 = sessions.addPlayer("Krishna");
+    const p2 = sessions.addPlayer("Sudheer");
+    const p3 = sessions.addPlayer("Adi");
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("0", gameManager, sessions.getPlayer(p1));
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(p2));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(p3));
 
-    sessions.createRoom(gameManager);
-    const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/lobby.html", {
       headers: {
-        cookie: "sessionId=1;gameId=0",
+        cookie: "sessionId=1;gameId=3",
       },
     });
 
     assertEquals(res.status, 303);
     assertEquals(res.headers.get("location"), "/game.html");
   });
+
   it("should redirect to game page when accessing game", async () => {
     let i = 0;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
-    sessions.addPlayer("Krishna");
-    sessions.addPlayer("Sudheer");
-    sessions.addPlayer("Adi");
-    sessions.addToWaitingList("1", gameManager);
-    sessions.addToWaitingList("2", gameManager);
-    sessions.addToWaitingList("3", gameManager);
+    const gameManager = new GameManager();
+    const p1 = sessions.addPlayer("Krishna");
+    const p2 = sessions.addPlayer("Sudheer");
+    const p3 = sessions.addPlayer("Adi");
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("0", gameManager, sessions.getPlayer(p1));
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(p2));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(p3));
 
-    sessions.createRoom(gameManager);
-    const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/game.html", {
       headers: {
-        cookie: "sessionId=1;gameId=0",
+        cookie: "sessionId=1;gameId=3",
       },
     });
     await res.text();
@@ -228,9 +230,13 @@ describe("App: /", () => {
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
     const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     sessions.addPlayer("Krishna");
-    sessions.addToWaitingList("1", gameManager);
+    const lobby = new Lobby();
+    lobby.addToWaitingList("1", gameManager, {
+      name: "Adi",
+      status: "Waiting",
+    });
 
     const app = createApp(sessions, gameManager);
     const res = await app.request("/game.html", {
@@ -248,9 +254,13 @@ describe("App: /", () => {
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
     const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     sessions.addPlayer("Krishna");
-    sessions.addToWaitingList("1", gameManager);
+    const lobby = new Lobby();
+    lobby.addToWaitingList("1", gameManager, {
+      name: "Adi",
+      status: "Waiting",
+    });
 
     const app = createApp(sessions, gameManager);
     const res = await app.request("/logout", {
@@ -263,20 +273,21 @@ describe("App: /", () => {
   });
 
   it("should redirect to lobby when accessing lobby page", async () => {
-    let i = 0;
+    let i = 1;
     const idGenerator = () => `${i++}`;
     const sessions = new Sessions(idGenerator);
-    const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
-    sessions.addPlayer("Krishna");
-    sessions.addToWaitingList("1", gameManager);
+    const gameManager = new GameManager();
+    const lobby = new Lobby();
+    const p1 = sessions.addPlayer("Krishna");
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(p1));
 
     const app = createApp(sessions, gameManager);
     const res = await app.request("/lobby.html", {
       headers: {
-        cookie: "sessionId=1;gameId=0",
+        cookie: "sessionId=1;gameId=2",
       },
     });
+
     await res.text();
     assertEquals(res.status, 200);
   });
@@ -285,7 +296,7 @@ describe("App: /", () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
     const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     sessions.addPlayer("Krishna");
 
     const app = createApp(sessions, gameManager);
@@ -303,7 +314,7 @@ describe("App: /", () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
     const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     sessions.addPlayer("Krishna");
 
     const app = createApp(sessions, gameManager);
@@ -321,7 +332,7 @@ describe("App: /", () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
     const tileGenerator = () => ["A1", "A2"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     sessions.addPlayer("Krishna");
 
     const app = createApp(sessions, gameManager);
@@ -339,7 +350,7 @@ describe("App: /", () => {
     const idGenerator = () => "1";
     const sessions = new Sessions(idGenerator);
     const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
 
     const app = createApp(sessions, gameManager);
     const res = await app.request("/");
@@ -351,22 +362,23 @@ describe("App: /", () => {
 
 describe("App: /game-stats", () => {
   it("should return game stats when game starts", async () => {
-    let id = 0;
+    let id = 1;
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator, () => []);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
     const player3 = sessions.addPlayer("malli");
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(player1));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(player2));
+    lobby.addToWaitingList("3", gameManager, sessions.getPlayer(player3));
 
-    const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/acquire/game-stats", {
       method: "GET",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=1;gameId=4" },
     });
     const expected = {
       board: {
@@ -398,27 +410,28 @@ describe("App: /game-stats", () => {
       isMyTurn: true,
     };
 
-    assertEquals(await res.json(), expected);
     assertEquals(res.status, 200);
+    assertEquals(await res.json(), expected);
   });
 
   it("should return the first player as current player when game starts", async () => {
-    let id = 0;
+    let id = 1;
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
     const player3 = sessions.addPlayer("malli");
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(player1));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(player2));
+    lobby.addToWaitingList("3", gameManager, sessions.getPlayer(player3));
 
-    const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/acquire/game-stats", {
       method: "GET",
-      headers: { cookie: "sessionId=2;gameId=0" },
+      headers: { cookie: "sessionId=2;gameId=4" },
     });
     const gameStats = await res.json();
     assertEquals(gameStats.currentPlayer, "Adi");
@@ -433,24 +446,23 @@ describe("App: /game-stats", () => {
 
 describe("App: /acquire/place-tile/:tile", () => {
   it("should return true if tile placed", async () => {
-    let id = 0;
+    let id = 1;
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["1A", "2A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     const sessions = new Sessions(idGenerator);
-
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
     const player3 = sessions.addPlayer("malli");
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(player1));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(player2));
+    lobby.addToWaitingList("3", gameManager, sessions.getPlayer(player3));
 
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
-
-    const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager, lobby);
     const res = await app.request("/acquire/place-tile/1A", {
       method: "PATCH",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=1;gameId=4" },
     });
 
     assertEquals(await res.json(), { type: "Independent", tile: "1A" });
@@ -458,22 +470,23 @@ describe("App: /acquire/place-tile/:tile", () => {
   });
 
   it("should return true if tile placed", async () => {
-    let id = 0;
+    let id = 1;
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["1A", "2A"];
-    const gameManager = new GameManager(tileGenerator, []);
+    const gameManager = new GameManager(tileGenerator);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
     const player3 = sessions.addPlayer("malli");
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(player1));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(player2));
+    lobby.addToWaitingList("3", gameManager, sessions.getPlayer(player3));
 
     const app = createApp(sessions, gameManager);
     const res = await app.request("/acquire/place-tile/3A", {
       method: "PATCH",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=1;gameId=4" },
     });
 
     assertFalse((await res.json()).status);
@@ -483,32 +496,30 @@ describe("App: /acquire/place-tile/:tile", () => {
 
 describe("App: /acquire/place-tile/:tile/:hotel", () => {
   it("should return the new hotel info when the hotel build request is send with the hotel name", async () => {
-    let id = 0;
+    let id = 1;
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["2A", "3A"];
-    const gameManager = new GameManager(tileGenerator, [
-      new Hotel("Imperial", 2),
-    ]);
+    const imperial = () => [new Hotel("Imperial", 2)];
+    const gameManager = new GameManager(tileGenerator, imperial);
     const sessions = new Sessions(idGenerator);
-
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
     const player3 = sessions.addPlayer("malli");
-
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(player1));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(player2));
+    lobby.addToWaitingList("3", gameManager, sessions.getPlayer(player3));
 
     const app = createApp(sessions, gameManager);
 
     await app.request("/acquire/place-tile/3A", {
       method: "PATCH",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=1;gameId=4" },
     });
 
     const res = await app.request("/acquire/place-tile/2A/Imperial", {
       method: "PATCH",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=1;gameId=4" },
     });
 
     assertEquals(await res.json(), {
@@ -577,37 +588,35 @@ describe("buyStocks() method", () => {
   // });
 
   it("should update cash and stocks after buying", async () => {
-    let id = 0;
+    let id = 1;
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["2A", "3A"];
-    const gameManager = new GameManager(tileGenerator, [
-      new Hotel("Imperial", 2),
-    ]);
+    const imperial = () => [new Hotel("Imperial", 2)];
+    const gameManager = new GameManager(tileGenerator, imperial);
     const sessions = new Sessions(idGenerator);
-
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
     const player3 = sessions.addPlayer("malli");
+    const lobby = new Lobby(idGenerator);
+    lobby.addToWaitingList("1", gameManager, sessions.getPlayer(player1));
+    lobby.addToWaitingList("2", gameManager, sessions.getPlayer(player2));
+    lobby.addToWaitingList("3", gameManager, sessions.getPlayer(player3));
 
-    sessions.addToWaitingList(player1, gameManager);
-    sessions.addToWaitingList(player2, gameManager);
-    sessions.addToWaitingList(player3, gameManager);
-
-    const app = createApp(sessions, gameManager);
+    const app = createApp(sessions, gameManager, lobby);
 
     await app.request("/acquire/place-tile/3A", {
       method: "PATCH",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=1;gameId=4" },
     });
 
     await app.request("/acquire/end-turn", {
       method: "PATCH",
-      headers: { cookie: "sessionId=1;gameId=0" },
+      headers: { cookie: "sessionId=1;gameId=4" },
     });
 
     await app.request("/acquire/place-tile/2A/Imperial", {
       method: "PATCH",
-      headers: { cookie: "sessionId=2;gameId=0" },
+      headers: { cookie: "sessionId=2;gameId=4" },
     });
 
     const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
@@ -615,7 +624,7 @@ describe("buyStocks() method", () => {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
-        cookie: "sessionId=2;gameId=0",
+        cookie: "sessionId=2;gameId=4",
         body: JSON.stringify(stocks),
       },
     });

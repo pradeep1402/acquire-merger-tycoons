@@ -1,7 +1,6 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
 import { Sessions } from "../src/models/sessions.ts";
-import { GameManager } from "../src/models/game_manager.ts";
 
 describe("Session model", () => {
   it("testing onePlayer", () => {
@@ -13,7 +12,7 @@ describe("Session model", () => {
   });
 
   it("testing getPlayerName", () => {
-    let id = 0;
+    let id = 1;
     const idGenerator = () => `${id++}`;
     const sessions = new Sessions(idGenerator);
 
@@ -24,49 +23,6 @@ describe("Session model", () => {
     assertEquals(sessions.addPlayer("Pragna"), "4");
 
     assertEquals(sessions.getPlayerName("4"), "Pragna");
-  });
-
-  it("testing addToWaitingList", () => {
-    let id = 0;
-    const idGenerator = () => `${id++}`;
-    const sessions = new Sessions(idGenerator);
-    const tileGenerator = () => ["1A", "2A"];
-    const gameManager = new GameManager(tileGenerator, []);
-    sessions.addPlayer("Sudheer");
-    assertEquals(sessions.addToWaitingList("1", gameManager), {
-      playerId: "1",
-      gameId: "0",
-    });
-  });
-
-  it("testing addToWaitingList for more than 3 players join", () => {
-    let id = 0;
-    const idGenerator = () => `${id++}`;
-    const sessions = new Sessions(idGenerator);
-
-    const tileGenerator = () => ["1A", "2A"];
-    const gameManager = new GameManager(tileGenerator, []);
-    sessions.addPlayer("Sudheer");
-    sessions.addPlayer("Pradeep");
-    sessions.addPlayer("Likhi");
-    sessions.addPlayer("Pragna");
-
-    assertEquals(sessions.addToWaitingList("1", gameManager), {
-      playerId: "1",
-      gameId: "0",
-    });
-    assertEquals(sessions.addToWaitingList("2", gameManager), {
-      playerId: "2",
-      gameId: "0",
-    });
-    assertEquals(sessions.addToWaitingList("3", gameManager), {
-      playerId: "3",
-      gameId: "0",
-    });
-    assertEquals(sessions.addToWaitingList("4", gameManager), {
-      playerId: "4",
-      gameId: "5",
-    });
   });
 
   describe("testing removeSession", () => {

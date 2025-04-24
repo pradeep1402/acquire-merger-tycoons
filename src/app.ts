@@ -14,19 +14,20 @@ import {
 } from "./handlers/game_handler.ts";
 import { deleteCookie, getCookie } from "hono/cookie";
 import { Sessions } from "./models/sessions.ts";
+import { Lobby } from "./models/lobby.ts";
 
 const setContext =
-  (sessions: Sessions, gameManager: GameManager) =>
+  (sessions: Sessions, gameManager: GameManager, lobby: Lobby) =>
   async (ctx: Context, next: Next) => {
     ctx.set("sessions", sessions);
     ctx.set("gameManager", gameManager);
+    ctx.set("lobby", lobby);
     await next();
   };
 
 const ensureGuest = async (c: Context, next: Next) => {
   const sessionId = getCookie(c, "sessionId");
   const sessions = c.get("sessions");
-
   if (sessionId && sessions.isSessionIdExist(sessionId)) {
     return c.redirect("/", 303);
   }
@@ -114,34 +115,35 @@ const ensureLobbyPage = async (ctx: Context, next: Next) => {
 };
 
 const createAuthenticatedRoutes = () => {
-  const authenticatedRoutes = new Hono();
-  authenticatedRoutes.use("/game.html", ensureGamePage);
-  authenticatedRoutes.use("/lobby.html", ensureLobbyPage);
-  authenticatedRoutes.use(ensureAuthenticated);
-  authenticatedRoutes.use(authenticatedContext);
-  authenticatedRoutes.use("/", ensureGameId);
-  authenticatedRoutes.post("acquire/home/quick-play", handleQuickPlay);
-  authenticatedRoutes.get("/acquire/game-status", serveGameStatus);
-  authenticatedRoutes.patch("/acquire/buy-stocks", handleBuyStocks);
-  authenticatedRoutes.patch("/acquire/end-turn", handleEndTurn);
-  authenticatedRoutes.get("/acquire/game-stats", serveGame);
-  authenticatedRoutes.patch("/acquire/place-tile/:tile", handlePlaceTile);
-  authenticatedRoutes.patch(
-    "/acquire/place-tile/:tile/:hotel",
-    handleFoundingHotel,
-  );
+  const router = new Hono();
+  router.use("/game.html", ensureGamePage);
+  router.use("/lobby.html", ensureLobbyPage);
+  router.use(ensureAuthenticated);
+  router.use(authenticatedContext);
+  router.use("/", ensureGameId);
+  router.post("acquire/home/quick-play", handleQuickPlay);
+  router.get("/acquire/game-status", serveGameStatus);
+  router.patch("/acquire/buy-stocks", handleBuyStocks);
+  router.patch("/acquire/end-turn", handleEndTurn);
+  router.get("/acquire/game-stats", serveGame);
+  router.patch("/acquire/place-tile/:tile", handlePlaceTile);
+  router.patch("/acquire/place-tile/:tile/:hotel", handleFoundingHotel);
 
-  authenticatedRoutes.get("/*", serveStatic({ root: "./public" }));
-  return authenticatedRoutes;
+  router.get("/*", serveStatic({ root: "./public" }));
+  return router;
 };
 
-export const createApp = (sessions: Sessions, gameManager: GameManager) => {
+export const createApp = (
+  sessions: Sessions,
+  gameManager: GameManager,
+  lobby: Lobby = new Lobby(),
+) => {
   const guestRoutes = createGuestRoutes();
   const authenticatedRoutes = createAuthenticatedRoutes();
   const app = new Hono();
 
   app.use(logger());
-  app.use(setContext(sessions, gameManager));
+  app.use(setContext(sessions, gameManager, lobby));
   app.get("/logout", (ctx: Context) => {
     deleteCookie(ctx, "sessionId");
     deleteCookie(ctx, "gameId");

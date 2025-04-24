@@ -2,6 +2,7 @@ import { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { Game } from "../models/game.ts";
 import { Sessions } from "../models/sessions.ts";
+import { Lobby } from "../models/lobby.ts";
 
 export const handleLogin = async (ctx: Context): Promise<Response> => {
   const fd = await ctx.req.formData();
@@ -17,22 +18,26 @@ export const serveGameStatus = (ctx: Context): Response => {
   const gameId = getCookie(ctx, "gameId");
   const gameManager = ctx.get("gameManager");
   const gameStatus = gameManager.getGame(gameId);
-  const sessions = ctx.get("sessions");
+  const sessions = ctx.get("sessions") as Sessions;
+
+  const lobby = ctx.get("lobby") as Lobby;
 
   if (gameStatus) {
     return ctx.json({ status: "START" });
   }
 
-  const players = sessions.getWaitingPlayers();
+  const players = lobby.getWaitingPlayers(sessions.getSessions());
 
   return ctx.json(players);
 };
 
 export const handleQuickPlay = (ctx: Context): Response => {
-  const sessions = ctx.get("sessions");
+  const sessions = ctx.get("sessions") as Sessions;
+  const lobby = ctx.get("lobby") as Lobby;
   const sessionId = ctx.get("sessionId");
+  const player = sessions.getPlayer(sessionId);
   const gameManager = ctx.get("gameManager");
-  const { gameId } = sessions.addToWaitingList(sessionId, gameManager);
+  const { gameId } = lobby.addToWaitingList(sessionId, gameManager, player);
   setCookie(ctx, "gameId", gameId);
 
   return ctx.json(gameId);
