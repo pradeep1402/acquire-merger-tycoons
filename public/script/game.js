@@ -272,16 +272,47 @@ const renderPlaceTilesBoard = (board) => {
   renderHotels(activeHotels);
 };
 
-const renderStocksOfAllHotels = (activeHotels, inActiveHotels) => {
-  const hotels = [...activeHotels, ...inActiveHotels];
-  const stocksSection = document.querySelector("#stocks-section");
-  stocksSection.innerText = "";
-
-  for (const { name, stocksAvailable, stockPrice } of hotels) {
-    const div = document.createElement("div");
-    div.innerText = `${name} : ${stocksAvailable} ($${stockPrice})`;
-    stocksSection.appendChild(div);
+class HotelView {
+  #name;
+  #stocksAvailable;
+  #stockPrice;
+  constructor(name, stocksAvailable, stockPrice) {
+    this.#name = name;
+    this.#stocksAvailable = stocksAvailable;
+    this.#stockPrice = stockPrice;
   }
+
+  renderStocks() {
+    const div = document.createElement("div");
+    div.innerText =
+      `${this.#name} : ${this.#stocksAvailable} ($${this.#stockPrice})`;
+
+    return div;
+  }
+
+  static fromHotel(hotel) {
+    return new HotelView(hotel.name, hotel.stocksAvailable, hotel.stockPrice);
+  }
+}
+
+class HotelsView {
+  #hotels;
+  constructor(hotels) {
+    this.#hotels = hotels;
+  }
+
+  renderStocks() {
+    const stocksSection = document.querySelector("#stocks-section");
+    const hotelElements = this.#hotels
+      .map((hotel) => HotelView.fromHotel(hotel))
+      .map((hotelView) => hotelView.renderStocks());
+
+    stocksSection.replaceChildren(...hotelElements);
+  }
+}
+
+const renderStocksOfAllHotels = (activeHotels, inActiveHotels) => {
+  new HotelsView(activeHotels.concat(inActiveHotels)).renderStocks();
 };
 
 const renderInActiveHotels = (inActiveHotels) => {
