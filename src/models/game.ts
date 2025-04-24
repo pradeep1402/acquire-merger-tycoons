@@ -2,6 +2,7 @@ import _ from "lodash";
 import { Board, PlaceType } from "./board.ts";
 import { HotelName, Player } from "./player.ts";
 import { Hotel } from "./hotel.ts";
+import { Merger } from "./merger.ts";
 
 type Tile = string;
 export type buyStocks = {
@@ -9,7 +10,11 @@ export type buyStocks = {
   count: number;
 };
 
-export class Game {
+export interface InterfaceGame {
+  playTurn: (tile: Tile) => InterfaceGame;
+}
+
+export class Game implements InterfaceGame {
   private board: Board;
   private pile: Tile[];
   private players: Player[];
@@ -20,6 +25,14 @@ export class Game {
     this.pile = [...tiles];
     this.players = this.initializePlayers(playerIds);
     this.currentPlayerIndex = 0;
+  }
+
+  playTurn(tile: Tile): InterfaceGame {
+    const placeInfo = this.board.getPlaceTileType(tile);
+    if (placeInfo.type === PlaceType.Merge) {
+      return new Merger(this);
+    }
+    return this;
   }
 
   private initializePlayers(playerIds: string[]) {
@@ -70,12 +83,9 @@ export class Game {
 
     if (!currentPlayer.isTileExits(tile)) return { status: false };
 
-    const placeInfo = this.board.getPlaceTileType(tile);
+    const placeInfo = this.board.placeATile(tile);
 
-    if (
-      placeInfo.type === PlaceType.Dependent ||
-      placeInfo.type === PlaceType.Independent
-    ) {
+    if ([PlaceType.Dependent, PlaceType.Independent].includes(placeInfo.type)) {
       currentPlayer.removeTile(tile);
       return placeInfo;
     }

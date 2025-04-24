@@ -25,7 +25,6 @@ const placeDependentTile = async ({ tile, hotel }, poller) => {
   placedTile.style.backgroundColor = hotelLookup(hotel.name).backgroundColor;
   await buyStocks(poller);
 };
-
 const changeTurn = async (poller) => {
   const res = await fetch("/acquire/end-turn", {
     method: "PATCH",
@@ -417,9 +416,10 @@ const handleBuy = async () => {
     },
   });
   console.log(await res.json());
+  await changeTurn(poller);
 };
 
-const buyStocks = async (poller) => {
+const buyStocks = async () => {
   const { board, playerPortfolio } = await getResource("/acquire/game-stats");
   const { activeHotels } = board;
   const { cash } = playerPortfolio;
@@ -431,7 +431,6 @@ const buyStocks = async (poller) => {
 
   setCash(cash);
   renderAllHotels(activeHotels);
-  await changeTurn(poller);
 };
 
 const startGamePolling = async (poller) => {

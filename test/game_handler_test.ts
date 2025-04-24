@@ -635,4 +635,87 @@ describe("buyStocks() method", () => {
       tiles: [],
     });
   });
+
+  // it("should update cash and stocks after buying", async () => {
+  //   let id = 0;
+  //   const idGenerator = () => `${id++}`;
+  //   const tileGenerator = () => ["2A", "3A", "4A", "5A", "6A"];
+  //   const gameManager = new GameManager(tileGenerator, [
+  //     new Hotel("Imperial", "orange", 2),
+  //     new Hotel("Continental", "orange", 2),
+  //   ]);
+  //   const sessions = new Sessions(idGenerator);
+
+  //   const player1 = sessions.addPlayer("Adi");
+  //   const player2 = sessions.addPlayer("bisht");
+  //   const player3 = sessions.addPlayer("malli");
+
+  //   sessions.addToWaitingList(player1, gameManager);
+  //   sessions.addToWaitingList(player2, gameManager);
+  //   sessions.addToWaitingList(player3, gameManager);
+
+  //   const app = createApp(sessions, gameManager);
+
+  //   await app.request("/acquire/place-tile/3A", {
+  //     method: "PATCH",
+  //     headers: { cookie: "sessionId=1;gameId=0" },
+  //   });
+
+  //   await app.request("/acquire/end-turn", {
+  //     method: "PATCH",
+  //     headers: { cookie: "sessionId=1;gameId=0" },
+  //   });
+
+  //   await app.request("/acquire/place-tile/2A/Imperial", {
+  //     method: "PATCH",
+  //     headers: { cookie: "sessionId=2;gameId=0" },
+  //   });
+
+  //   await app.request("/acquire/end-turn", {
+  //     method: "PATCH",
+  //     headers: { cookie: "sessionId=2;gameId=0" },
+  //   });
+
+  //   await app.request("/acquire/place-tile/5A", {
+  //     method: "PATCH",
+  //     headers: { cookie: "sessionId=3;gameId=0" },
+  //   });
+
+  //   await app.request("/acquire/end-turn", {
+  //     method: "PATCH",
+  //     headers: { cookie: "sessionId=3;gameId=0" },
+  //   });
+
+  //   await app.request("/acquire/place-tile/6A/Continental", {
+  //     method: "PATCH",
+  //     headers: { cookie: "sessionId=1;gameId=0" },
+  //   });
+
+  //   await app.request("/acquire/end-turn", {
+  //     method: "PATCH",
+  //     headers: { cookie: "sessionId=1;gameId=0" },
+  //   });
+
+  //   const res = await app.request("/acquire/place-tile/3A", {
+  //     method: "PATCH",
+  //     headers: {
+  //       cookie: "sessionId=1;gameId=0",
+  //     },
+  //   });
+
+  //   assertEquals(await res.json(), {
+  //     cash: 4800,
+  //     playerId: "2",
+  //     stocks: {
+  //       American: 0,
+  //       Continental: 0,
+  //       Festival: 0,
+  //       Imperial: 4,
+  //       Sackson: 0,
+  //       Tower: 0,
+  //       Worldwide: 0,
+  //     },
+  //     tiles: [],
+  //   });
+  // });
 });

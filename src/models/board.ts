@@ -41,7 +41,27 @@ export class Board {
   getPlaceTileType(tile: Tile) {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInActiveHotels();
+    if (this.isMerger(tile)) {
+      return { tile, type: PlaceType.Merge };
+    }
 
+    if (this.isDependent(tile)) {
+      return { tile, type: PlaceType.Dependent };
+    }
+
+    if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
+      return { tile, type: PlaceType.Independent };
+    }
+
+    return {
+      type: PlaceType.Build,
+      tile,
+    };
+  }
+
+  placeATile(tile: Tile) {
+    const adjacentTiles = this.getAdjacentTiles(tile, new Set());
+    const inActiveHotels = this.getInActiveHotels();
     if (this.isMerger(tile)) {
       this.mergerTile.push(tile);
       return { tile, type: PlaceType.Merge };

@@ -245,7 +245,9 @@ describe("getPlaceTileType(tile) method", () => {
     board.placeIndependentTile("3B");
     board.placeIndependentTile("4A");
     board.placeIndependentTile("3A");
-    assertEquals(board.getPlaceTileType("2A"), {
+    const type = board.getPlaceTileType("2A");
+    assertEquals(type.type, PlaceType.Build);
+    assertEquals(board.placeATile("2A"), {
       type: PlaceType.Build,
       inActiveHotels: [
         {
@@ -266,7 +268,9 @@ describe("getPlaceTileType(tile) method", () => {
 
     board.placeIndependentTile("1A");
     board.buildHotel("2A", "Imperial");
-    assertEquals(board.getPlaceTileType("3A"), {
+    const type = board.getPlaceTileType("3A");
+    assertEquals(type.type, PlaceType.Dependent);
+    assertEquals(board.placeATile("3A"), {
       hotel: {
         baseTile: "2A",
         name: "Imperial",

@@ -59,9 +59,15 @@ const authenticatedContext = async (ctx: Context, next: Next) => {
   const { sessionId, gameId } = getCookie(ctx);
   const gameManager = ctx.get("gameManager");
   const sessions = ctx.get("sessions");
+  const currentGame = gameManager.getCurrentGame(gameId);
+  if (gameId && currentGame) {
+    const game = currentGame.getGameState();
+    ctx.set("game", game);
+    ctx.set("currentGame", currentGame);
+  }
 
   ctx.set("sessionId", sessionId);
-  ctx.set("game", gameManager.getGame(gameId));
+
   ctx.set("username", sessions.getPlayerName(sessionId));
 
   await next();

@@ -59,9 +59,11 @@ export const serveGame = (ctx: Context): Response => {
 };
 
 export const handlePlaceTile = (ctx: Context) => {
-  const game = ctx.get("game");
-  const id = ctx.req.param("tile");
-  const placeInfo = game.placeTile(id);
+  const tile = ctx.req.param("tile");
+  const currentGame = ctx.get("currentGame");
+
+  const game = currentGame.playTurn(tile);
+  const placeInfo = game.placeTile(tile);
 
   return ctx.json(placeInfo);
 };
@@ -87,7 +89,5 @@ export const handleBuyStocks = (ctx: Context) => {
 export const handleEndTurn = (ctx: Context) => {
   const game = ctx.get("game");
   const response = game.changeTurn();
-  game;
-
   return ctx.json(response);
 };

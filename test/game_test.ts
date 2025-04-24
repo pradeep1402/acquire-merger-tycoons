@@ -3,6 +3,7 @@ import { describe, it } from "testing/bdd";
 import { buyStocks, Game } from "../src/models/game.ts";
 import { PlaceType } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
+import { Merger } from "../src/models/merger.ts";
 
 describe("Game model", () => {
   describe("getPlayerIds(", () => {
@@ -196,6 +197,8 @@ describe("Game model", () => {
         { hotel: "Continental", count: 2 },
       ];
       const result = game.buyStocks(stocks, "Malli");
+      const mergeGame = game.playTurn("9A") as Merger;
+      assertEquals(mergeGame.getState(), game);
       assertEquals(game.placeTile("9A"), { tile: "9A", type: PlaceType.Merge });
 
       assertEquals(result, {
