@@ -312,7 +312,7 @@ const updateMax = () => {
 };
 
 const setHotelInfo = (template, name, price, maxStocks) => {
-  template.querySelector("#hotel-name").textContent = name;
+  template.querySelector("#hotel").textContent = name;
   template.querySelector("#stock-value").textContent = price;
 
   const input = template.querySelector("input");
@@ -400,7 +400,7 @@ const handleBuy = async () => {
   const stocksToBuy = [];
 
   for (const child of children) {
-    const hotel = child.querySelector("#hotel-name").textContent;
+    const hotel = child.querySelector("#hotel").textContent;
     const count = +child.querySelector("input").value;
     if (count) stocksToBuy.push({ hotel, count });
   }
@@ -454,7 +454,7 @@ const main = () => {
   showStartingTilesPopup();
   renderGameBoard();
 
-  const polling = new Poller(100, startGamePolling);
+  const polling = new Poller(1000, startGamePolling);
   polling.start();
 };
 

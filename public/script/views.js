@@ -41,7 +41,7 @@ export class PortfolioView {
   }
 
   #renderStocks([name, count]) {
-    const hotelStocks = cloneTemplates("portfolio-stocks-template")
+    const hotelStocks = cloneTemplates("stocks-template")
       .querySelector(".hotel-stocks");
     const [img, hotelName, stockCount] = hotelStocks.children;
 
@@ -74,11 +74,17 @@ class HotelView {
   }
 
   renderStocks() {
-    const div = document.createElement("div");
-    div.innerText =
-      `${this.#name} : ${this.#stocksAvailable} ($${this.#stockPrice})`;
+    const hotelStocks = cloneTemplates("stocks-template")
+      .querySelector(".hotel-stocks");
+    const [img, hotelName, stockCount, price] = hotelStocks.children;
 
-    return div;
+    img.src = `/images/hotels/${this.#name.toLowerCase()}.png`;
+    hotelName.textContent = this.#name;
+    stockCount.textContent = this.#stocksAvailable;
+    price.textContent = this.#stockPrice;
+    hotelStocks.classList.add("available-stocks");
+
+    return hotelStocks;
   }
 
   static fromHotel(hotel) {

@@ -9,7 +9,7 @@ export default class Poller {
   }
 
   start() {
-    this.#intervalId = setTimeout(() => this.#callback(this), this.#time);
+    this.#intervalId = setInterval(() => this.#callback(this), this.#time);
   }
 
   pause() {

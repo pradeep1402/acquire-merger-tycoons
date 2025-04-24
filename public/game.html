@@ -9,17 +9,8 @@
   </head>
   <body>
     <div id="players"></div>
-    <template id="players-template">
-      <div id="player">
-        <img class="player-avatar" src="/images/avatars/logo.png" />
-        <p class="player-name"></p>
-      </div>
-    </template>
 
     <div class="gameBoard"></div>
-    <template id="board">
-      <div class="tile"></div>
-    </template>
 
     <div id="tiles-popup">
       <h1 id="popup-header">You were assigned 6 tiles and $6000</h1>
@@ -31,26 +22,22 @@
       <div id="hotel-container" class="display"></div>
     </div>
 
-    <template id="assigned-tile">
-      <div class="player-tile"></div>
-    </template>
-
     <div id="portfolio-panel">
       <div id="portfolio-header">
         PORTFOLIO <span class="open hidden"> ⬆</span>
         <span class="collapse"> ⬇</span>
       </div>
       <div id="portfolio-body" class="display">
-        <div class="portfolio-section">
+        <div class="tiles-portfolio">
           <h3>TILES</h3>
           <div id="portfolio-tiles"></div>
         </div>
-        <div class="portfolio-section">
+        <div class="stocks-portfolio">
           <h3>STOCKS</h3>
           <div id="stock-info"></div>
         </div>
 
-        <div class="portfolio-section">
+        <div class="cash-portfolio">
           <h3>CASH</h3>
           <div id="cash-info">
             <div id="money-emoji">💵</div>
@@ -74,39 +61,53 @@
     <div id="buy-stocks" class="hidden">
       <h1>BUY STOCKS</h1>
       <div id="active-hotels"></div>
-      <template id="hotel-template">
-        <div class="hotel">
-          <p id="hotel"></p>
-          <p id="stock-value"></p>
-          <button class="step-down">-</button>
-          <input
-            type="number"
-            name="stock-count"
-            class="count-input"
-            min="0"
-            max="3"
-            value="0"
-            disabled
-          />
-          <button class="step-up">+</button>
-        </div>
-      </template>
       <h2>Cash available: <span id="cash-available"></span></h2>
       <button id="buy">BUY</button>
     </div>
 
-    <template id="inactive-hotels-template">
-      <div>
-        <img src="" alt="" class="inactive-hotels-img" />
-        <p></p>
+    <template id="hotel-template">
+      <div class="hotel">
+        <p id="hotel"></p>
+        <p id="stock-value"></p>
+        <button class="step-down">-</button>
+        <input
+          type="number"
+          name="stock-count"
+          class="count-input"
+          min="0"
+          max="3"
+          value="0"
+          disabled
+        />
+        <button class="step-up">+</button>
       </div>
     </template>
-    <template id="portfolio-stocks-template">
+    <template id="assigned-tile">
+      <div class="player-tile"></div>
+    </template>
+    <template id="players-template">
+      <div id="player">
+        <img class="player-avatar" src="/images/avatars/logo.png" />
+        <p class="player-name"></p>
+      </div>
+    </template>
+    <template id="board">
+      <div class="tile"></div>
+    </template>
+    <template id="stocks-template">
       <div class="hotel-stocks">
         <img src="" alt="" class="hotel-img" />
         <p class="stock-hotel-name"></p>
         <p class="count"></p>
+        <p class="price"></p>
       </div>
     </template>
+    <template id="stock-price-template"><p class="price"></p></template>
+    <!-- <template id="hotels-template">
+      <div class="tray-hotel">
+        <img src="" alt="" class="hotels-img" />
+        <p></p>
+      </div>
+    </template> -->
   </body>
 </html>
