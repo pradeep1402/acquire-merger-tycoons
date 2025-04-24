@@ -27,7 +27,7 @@ class GameManager {
 
   constructor(
     tileGenerator: () => string[] = generateShuffledTiles,
-    hotelGenerator: () => Hotel[] = getHotels
+    hotelGenerator: () => Hotel[] = getHotels,
   ) {
     this.tileGenerator = tileGenerator;
     this.gamesMap = new Map();
