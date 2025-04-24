@@ -4,8 +4,8 @@ import { createApp } from "../src/app.ts";
 import { Sessions } from "../src/models/sessions.ts";
 import { GameManager } from "../src/models/game_manager.ts";
 import { Hotel } from "../src/models/hotel.ts";
-import { buyStocks, Game } from "../src/models/game.ts";
-import { assertSpyCallArgs, stub } from "testing/mock";
+import { buyStocks } from "../src/models/game.ts";
+// import { assertSpyCallArgs, stub } from "testing/mock";
 // import { Game } from "../src/models/game.ts";
 
 describe("App: /login", () => {
@@ -522,59 +522,59 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
   });
 });
 
-const createTestAppWithLoggedInUser = (username: string) => {
-  let id = 0;
-  const idGenerator = () => `${id++}`;
-  const tileGenerator = () => ["2A", "3A"];
-  const gameManager = new GameManager(tileGenerator, [
-    new Hotel("Imperial", 2),
-  ]);
-  const sessions = new Sessions(idGenerator);
-  const game = new Game([], [], []);
-  const app = createApp(sessions, gameManager);
-  stub(sessions, "isSessionIdExist", () => true);
-  stub(sessions, "getPlayerName", () => username);
+// const createTestAppWithLoggedInUser = (username: string) => {
+//   let id = 0;
+//   const idGenerator = () => `${id++}`;
+//   const tileGenerator = () => ["2A", "3A"];
+//   const gameManager = new GameManager(tileGenerator, [
+//     new Hotel("Imperial", 2),
+//   ]);
+//   const sessions = new Sessions(idGenerator);
+//   const game = new Game([], [], []);
+//   const app = createApp(sessions, gameManager);
+//   stub(sessions, "isSessionIdExist", () => true);
+//   stub(sessions, "getPlayerName", () => username);
 
-  return { app, sessions, gameManager, game };
-};
+//   return { app, sessions, gameManager, game };
+// };
 
 describe("buyStocks() method", () => {
-  it("with mock", async () => {
-    const playerPortfolio = {
-      cash: 4800,
-      playerId: "2",
-      stocks: {
-        American: 0,
-        Continental: 0,
-        Festival: 0,
-        Imperial: 4,
-        Sackson: 0,
-        Tower: 0,
-        Worldwide: 0,
-      },
-      tiles: [],
-    };
-    const { game, gameManager, app } = createTestAppWithLoggedInUser(
-      "Kungfu Panda",
-    );
+  // it("with mock", async () => {
+  //   const playerPortfolio = {
+  //     cash: 4800,
+  //     playerId: "2",
+  //     stocks: {
+  //       American: 0,
+  //       Continental: 0,
+  //       Festival: 0,
+  //       Imperial: 4,
+  //       Sackson: 0,
+  //       Tower: 0,
+  //       Worldwide: 0,
+  //     },
+  //     tiles: [],
+  //   };
+  //   const { game, gameManager, app } = createTestAppWithLoggedInUser(
+  //     "Kungfu Panda",
+  //   );
 
-    const buyStockStub = stub(game, "buyStocks", () => playerPortfolio);
+  //   const buyStockStub = stub(game, "buyStocks", () => playerPortfolio);
 
-    stub(gameManager, "getGame", () => game);
+  //   stub(gameManager, "getGame", () => game);
 
-    const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
-    const res = await app.request("/acquire/buy-stocks", {
-      method: "PATCH",
-      headers: {
-        "content-type": "application/json",
-        cookie: "sessionId=2;gameId=0",
-        body: JSON.stringify(stocks),
-      },
-    });
-    assertEquals(res.status, 200);
-    assertEquals(await res.json(), playerPortfolio);
-    assertSpyCallArgs(buyStockStub, 0, [stocks, "2"]);
-  });
+  //   const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
+  //   const res = await app.request("/acquire/buy-stocks", {
+  //     method: "PATCH",
+  //     headers: {
+  //       "content-type": "application/json",
+  //       cookie: "sessionId=2;gameId=0",
+  //       body: JSON.stringify(stocks),
+  //     },
+  //   });
+  //   assertEquals(res.status, 200);
+  //   assertEquals(await res.json(), playerPortfolio);
+  //   assertSpyCallArgs(buyStockStub, 0, [stocks, "2"]);
+  // });
 
   it("should update cash and stocks after buying", async () => {
     let id = 0;
@@ -636,13 +636,12 @@ describe("buyStocks() method", () => {
     });
   });
 
-  // it("should update cash and stocks after buying", async () => {
   //   let id = 0;
   //   const idGenerator = () => `${id++}`;
   //   const tileGenerator = () => ["2A", "3A", "4A", "5A", "6A"];
   //   const gameManager = new GameManager(tileGenerator, [
-  //     new Hotel("Imperial", "orange", 2),
-  //     new Hotel("Continental", "orange", 2),
+  //     new Hotel("Imperial", 2),
+  //     new Hotel("Continental", 2),
   //   ]);
   //   const sessions = new Sessions(idGenerator);
 

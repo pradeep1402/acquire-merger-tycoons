@@ -13,7 +13,7 @@ describe("Merger class", () => {
   });
 
   it("should return the size of hotel", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     hotel.addTile("1A");
     hotel.addTile("2A");
     assertEquals(hotel.getSize(), 2);
