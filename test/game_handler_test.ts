@@ -522,16 +522,12 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
   });
 });
 
-// describe("place tile with mocks", () => {
-//   it("shou")
-// });
-
 const createTestAppWithLoggedInUser = (username: string) => {
   let id = 0;
   const idGenerator = () => `${id++}`;
   const tileGenerator = () => ["2A", "3A"];
   const gameManager = new GameManager(tileGenerator, [
-    new Hotel("Imperial", "orange", 2),
+    new Hotel("Imperial", 2),
   ]);
   const sessions = new Sessions(idGenerator);
   const game = new Game([], [], []);
