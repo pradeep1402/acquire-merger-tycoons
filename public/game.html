@@ -11,7 +11,7 @@
     <div id="players"></div>
     <template id="players-template">
       <div id="player">
-        <img class="player-avatar" />
+        <img class="player-avatar" src="/images/avatars/logo.png" />
         <p class="player-name"></p>
       </div>
     </template>
@@ -70,14 +70,8 @@
         <span class="open hidden">⬅</span>
       </div>
       <div id="tray-body" class="display">
-        <details>
-          <summary>INACTIVE HOTELS</summary>
-          <section id="inactive-hotels"></section>
-        </details>
-        <details>
-          <summary>AVAILABLE STOCKS</summary>
-          <section id="stocks-section"></section>
-        </details>
+        <h3>AVAILABLE STOCKS</h3>
+        <div id="stocks-section"></div>
       </div>
     </div>
 
@@ -107,7 +101,7 @@
 
     <template id="inactive-hotels-template">
       <div>
-        <img src="" alt="" class="inactive-hotels-img">
+        <img src="" alt="" class="inactive-hotels-img" />
         <p></p>
       </div>
     </template>

@@ -1,5 +1,7 @@
 import Collapse from "./collapse.js";
+import PlayersView from "./views/PlayersView.js";
 import Poller from "./polling.js";
+import HotelsView from "./views/HotelsView.js";
 
 const getResource = async (path) => {
   try {
@@ -271,88 +273,12 @@ const renderPlaceTilesBoard = (board) => {
   renderHotels(activeHotels);
 };
 
-class HotelView {
-  #name;
-  #stocksAvailable;
-  #stockPrice;
-  constructor(name, stocksAvailable, stockPrice) {
-    this.#name = name;
-    this.#stocksAvailable = stocksAvailable;
-    this.#stockPrice = stockPrice;
-  }
-
-  renderStocks() {
-    const div = document.createElement("div");
-    div.innerText =
-      `${this.#name} : ${this.#stocksAvailable} ($${this.#stockPrice})`;
-
-    return div;
-  }
-
-  static fromHotel(hotel) {
-    return new HotelView(hotel.name, hotel.stocksAvailable, hotel.stockPrice);
-  }
-}
-
-class HotelsView {
-  #activeHotels;
-  #inactiveHotels;
-  constructor(activeHotels, inActiveHotels) {
-    this.#activeHotels = activeHotels;
-    this.#inactiveHotels = inActiveHotels;
-  }
-
-  renderStocks() {
-    const stocksSection = document.querySelector("#stocks-section");
-    const hotelElements = this.#activeHotels.concat(this.#inactiveHotels)
-      .map((hotel) => HotelView.fromHotel(hotel))
-      .map((hotelView) => hotelView.renderStocks());
-
-    stocksSection.replaceChildren(...hotelElements);
-  }
-}
-
-const renderInActiveHotels = (inActiveHotels) => {
-  const inActiveHotelsSection = document.querySelector("#inactive-hotels");
-  inActiveHotelsSection.innerText = "";
-
-  for (const { name } of inActiveHotels) {
-    const template = cloneTemplates("inactive-hotels-template");
-
-    const img = template.querySelector("img");
-    img.setAttribute("src", `/images/hotels/${name.toLowerCase()}.png`);
-
-    const hotelName = template.querySelector("p");
-    hotelName.textContent = name;
-
-    inActiveHotelsSection.appendChild(template);
-  }
-};
-
 const renderStocksAndInactiveHotels = (inActiveHotels, activeHotels) => {
   new HotelsView(activeHotels, inActiveHotels).renderStocks();
-  renderInActiveHotels(inActiveHotels);
-};
-
-const createPlayerAvatar = ({ name, isTheSamePlayer }, currentPlayer) => {
-  const playerIcon = cloneTemplates("players-template");
-  const avatar = playerIcon.querySelector(".player-avatar");
-
-  avatar.setAttribute("src", "/images/avatars/logo.png");
-  playerIcon.querySelector(".player-name").textContent = isTheSamePlayer
-    ? `${name} (YOU)`
-    : name;
-  currentPlayer === name && avatar.classList.add("active-player");
-
-  return playerIcon;
 };
 
 const renderPlayers = (players, currentPlayer) => {
-  const playerSection = document.getElementById("players");
-  playerSection.innerText = "";
-  players.forEach((player) => {
-    playerSection.appendChild(createPlayerAvatar(player, currentPlayer));
-  });
+  new PlayersView(players, currentPlayer).renderPlayers();
 };
 
 const showStartingTilesPopup = async () => {
@@ -368,7 +294,7 @@ const showStartingTilesPopup = async () => {
   }, 2000);
 };
 
-const cloneTemplates = (id) => {
+export const cloneTemplates = (id) => {
   const template = document.getElementById(id);
   return template.content.cloneNode(true);
 };
@@ -540,7 +466,6 @@ const startGamePolling = async (poller) => {
   const { inActiveHotels, activeHotels } = board;
 
   renderStocksAndInactiveHotels(inActiveHotels, activeHotels);
-  // showStartingTilesPopup(tiles);
   renderPlayers(players, currentPlayer);
   renderPlayerTurn(isMyTurn, tiles, poller, activeHotels);
   renderPortfolio(playerPortfolio);
