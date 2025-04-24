@@ -42,24 +42,20 @@
       </div>
       <div id="portfolio-body" class="display">
         <div class="portfolio-section">
-          <h2>TILES</h2>
+          <h3>TILES</h3>
           <div id="portfolio-tiles"></div>
         </div>
         <div class="portfolio-section">
-          <h2>STOCKS</h2>
-          <table id="stock-info">
-            <thead>
-              <tr id="hotel-names-row"></tr>
-            </thead>
-            <tbody>
-              <tr id="shares-row"></tr>
-            </tbody>
-          </table>
+          <h3>STOCKS</h3>
+          <div id="stock-info"></div>
         </div>
 
         <div class="portfolio-section">
-          <h2>CASH</h2>
-          <div id="cash-info"></div>
+          <h3>CASH</h3>
+          <div id="cash-info">
+            <div id="money-emoji">💵</div>
+            <p id="money-available"></p>
+          </div>
         </div>
       </div>
     </div>
@@ -80,7 +76,7 @@
       <div id="active-hotels"></div>
       <template id="hotel-template">
         <div class="hotel">
-          <p id="hotel-name"></p>
+          <p id="hotel"></p>
           <p id="stock-value"></p>
           <button class="step-down">-</button>
           <input
@@ -103,6 +99,13 @@
       <div>
         <img src="" alt="" class="inactive-hotels-img" />
         <p></p>
+      </div>
+    </template>
+    <template id="portfolio-stocks-template">
+      <div class="hotel-stocks">
+        <img src="" alt="" class="hotel-img" />
+        <p class="stock-hotel-name"></p>
+        <p class="count"></p>
       </div>
     </template>
   </body>

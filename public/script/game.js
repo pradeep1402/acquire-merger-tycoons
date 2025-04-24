@@ -1,7 +1,8 @@
 import Collapse from "./collapse.js";
-import PlayersView from "./views/PlayersView.js";
+import { PlayersView } from "./views.js";
 import Poller from "./polling.js";
-import HotelsView from "./views/HotelsView.js";
+import { HotelsView } from "./views.js";
+import { PortfolioView } from "./views.js";
 
 const getResource = async (path) => {
   try {
@@ -170,34 +171,8 @@ const renderPlayerTiles = (tilesContainer, tiles) => {
   });
 };
 
-const renderStockRow = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
-  const nameCell = document.createElement("th");
-  nameCell.textContent = hotel;
-  const shareCell = document.createElement("td");
-  shareCell.textContent = shares;
-  hotelNamesRow.appendChild(nameCell);
-  sharesRow.appendChild(shareCell);
-};
-
-const renderStocks = (stocks) => {
-  const hotelNamesRow = document.getElementById("hotel-names-row");
-  const sharesRow = document.getElementById("shares-row");
-
-  hotelNamesRow.textContent = "";
-  sharesRow.textContent = "";
-
-  Object.entries(stocks).forEach(renderStockRow(hotelNamesRow, sharesRow));
-};
-
-const renderCash = (cash) => {
-  document.getElementById("cash-info").textContent = `$${cash}`;
-};
-
 const renderPortfolio = ({ tiles, stocks, cash }) => {
-  const tilesContainer = document.querySelector("#portfolio-tiles");
-  renderPlayerTiles(tilesContainer, tiles);
-  renderStocks(stocks);
-  renderCash(cash);
+  new PortfolioView(tiles, stocks, cash).renderPortfolio();
 };
 
 const renderIndependentTiles = (tiles) => {
@@ -480,7 +455,7 @@ const main = () => {
   showStartingTilesPopup();
   renderGameBoard();
 
-  const polling = new Poller(1000, startGamePolling);
+  const polling = new Poller(100, startGamePolling);
   polling.start();
 };
 

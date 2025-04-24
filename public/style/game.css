@@ -95,7 +95,6 @@ body {
 }
 
 #players {
-  /* height: 80vh; */
   background-color: var(--color);
   padding: 20px 12px;
   border-radius: 6px;
@@ -145,6 +144,7 @@ body {
   text-align: center;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 #portfolio-tiles {
@@ -180,19 +180,47 @@ body {
 }
 
 #stock-info {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
+  width: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10%;
+  justify-content: space-around;
+  padding: 1% 2%;
 }
 
-#stock-info th,
-#stock-info td {
-  padding: 0.5em;
-  border: none;
+.hotel-img {
+  height: 55%;
+  width: 55%;
+}
+
+.hotel-stocks {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#hotel-stocks > div {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #cash-info {
-  padding-top: 0.6em;
+  padding-top: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#money-emoji {
+  font-size: 6em;
+}
+
+#money-available {
+  font-size: 1.5em;
 }
 
 .hidden {
@@ -261,12 +289,6 @@ body {
 
   color: var(--dark-color);
   flex-direction: column;
-}
-
-summary {
-  font-size: 1.4em;
-  width: 100%;
-  padding: 0.5em;
 }
 
 #popup {
@@ -376,24 +398,6 @@ summary {
   background-size: cover;
 }
 
-.inactive-hotels-img {
-  height: 60px;
-  width: 60px;
-}
-
-#inactive-hotels {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-#inactive-hotels > div {
-  width: 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 #buy-stocks {
   width: 50vw;
   height: 50vh;
