@@ -14,8 +14,7 @@ const placeIndependentTile = async (placeInfo, poller, activeHotels) => {
   const placedTile = document.getElementById(placeInfo.tile);
   placedTile.classList.add("place-tile");
   if (activeHotels.length) return await buyStocks(poller);
-  const res = await changeTurn(poller);
-  console.log(res);
+  await changeTurn(poller);
 };
 
 const placeDependentTile = async ({ tile, hotel }, poller) => {
@@ -89,7 +88,7 @@ const renderSelectHotel = async (inActiveHotels, tileLabel, poller) => {
       handleFoundHotel(tileLabel, hotel.name, poller),
       {
         once: true,
-      },
+      }
     );
     hotelList.appendChild(outerDiv);
   });
@@ -154,29 +153,30 @@ const renderPlayerTurn = (isMyTurn, tiles, poller, activeHotels) => {
     createTileClickHandler(tiles, poller, activeHotels),
     {
       once: true,
-    },
+    }
   );
 };
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   tilesContainer.innerText = "";
   tiles.forEach((tile) => {
-    const playerTile = cloneTemplates("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplates("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = tile;
     tilesContainer.appendChild(playerTile);
   });
 };
 
-const renderStockRow = (hotelNamesRow, sharesRow) => ([hotel, shares]) => {
-  const nameCell = document.createElement("th");
-  nameCell.textContent = hotel;
-  const shareCell = document.createElement("td");
-  shareCell.textContent = shares;
-  hotelNamesRow.appendChild(nameCell);
-  sharesRow.appendChild(shareCell);
-};
+const renderStockRow =
+  (hotelNamesRow, sharesRow) =>
+  ([hotel, shares]) => {
+    const nameCell = document.createElement("th");
+    nameCell.textContent = hotel;
+    const shareCell = document.createElement("td");
+    shareCell.textContent = shares;
+    hotelNamesRow.appendChild(nameCell);
+    sharesRow.appendChild(shareCell);
+  };
 
 const renderStocks = (stocks) => {
   const hotelNamesRow = document.getElementById("hotel-names-row");
@@ -284,8 +284,9 @@ class HotelView {
 
   renderStocks() {
     const div = document.createElement("div");
-    div.innerText =
-      `${this.#name} : ${this.#stocksAvailable} ($${this.#stockPrice})`;
+    div.innerText = `${this.#name} : ${this.#stocksAvailable} ($${
+      this.#stockPrice
+    })`;
 
     return div;
   }
@@ -305,7 +306,8 @@ class HotelsView {
 
   renderStocks() {
     const stocksSection = document.querySelector("#stocks-section");
-    const hotelElements = this.#activeHotels.concat(this.#inactiveHotels)
+    const hotelElements = this.#activeHotels
+      .concat(this.#inactiveHotels)
       .map((hotel) => HotelView.fromHotel(hotel))
       .map((hotelView) => hotelView.renderStocks());
 
@@ -548,13 +550,12 @@ const startGamePolling = async (poller) => {
   renderPlaceTilesBoard(board);
 };
 
-const main = async () => {
-  new Collapse("tray-header", "tray-body");
-  new Collapse("portfolio-header", "portfolio-body");
-  const stats = await getResource("/acquire/game-stats");
-  const { playerPortfolio } = stats;
-  const { tiles } = playerPortfolio;
-  showStartingTilesPopup(tiles);
+const main = () => {
+  const portfolio = new Collapse("tray-header", "tray-body");
+  const sideBar = new Collapse("portfolio-header", "portfolio-body");
+  portfolio.init();
+  sideBar.init();
+  showStartingTilesPopup();
   renderGameBoard();
 
   const polling = new Poller(1000, startGamePolling);
