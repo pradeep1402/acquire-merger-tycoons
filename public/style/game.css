@@ -134,7 +134,6 @@ body {
 
 #portfolio-body {
   border-top: 3px solid var(--light-color);
-  display: flex;
   width: 50vw;
   background-color: var(--color);
   padding: 1%;
