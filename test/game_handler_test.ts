@@ -486,7 +486,7 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["2A", "3A"];
     const gameManager = new GameManager(tileGenerator, [
-      new Hotel("Imperial", "orange", 2),
+      new Hotel("Imperial", 2),
     ]);
     const sessions = new Sessions(idGenerator);
 
@@ -513,7 +513,6 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
     assertEquals(await res.json(), {
       name: "Imperial",
       tiles: ["3A"],
-      color: "orange",
       stocksAvailable: 24,
       stockPrice: 400,
       baseTile: "2A",
@@ -528,7 +527,7 @@ describe("buyStocks() method", () => {
     const idGenerator = () => `${id++}`;
     const tileGenerator = () => ["2A", "3A"];
     const gameManager = new GameManager(tileGenerator, [
-      new Hotel("Imperial", "orange", 2),
+      new Hotel("Imperial", 2),
     ]);
     const sessions = new Sessions(idGenerator);
 

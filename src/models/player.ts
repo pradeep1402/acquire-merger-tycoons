@@ -63,8 +63,8 @@ export class Player {
   }
 
   addTile(tile: string) {
-    if (!tile) return;
-    return this.tiles.add(tile);
+    this.tiles.add(tile);
+    return [...this.tiles];
   }
 
   isTileExits(tile: string) {
@@ -73,6 +73,7 @@ export class Player {
 
   removeTile(tile: string) {
     this.tiles.delete(tile);
+    return [...this.tiles];
   }
 
   doesPlayerMatch(playerId: string) {

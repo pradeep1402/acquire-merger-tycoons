@@ -5,14 +5,14 @@ import { Hotel } from "../src/models/hotel.ts";
 
 describe("Board class", () => {
   it("should return the tile which placed", () => {
-    const hotels = [new Hotel("Imperial", "blue", 2)];
+    const hotels = [new Hotel("Imperial", 2)];
     const board = new Board(hotels);
 
     assertEquals(board.placeIndependentTile("1A"), "1A");
   });
 
   it("should return the empty board", () => {
-    const hotels = [new Hotel("Imperial", "orange", 2)];
+    const hotels = [new Hotel("Imperial", 2)];
     const board = new Board(hotels);
 
     assertEquals(board.getBoard(), {
@@ -20,7 +20,6 @@ describe("Board class", () => {
       activeHotels: [],
       inActiveHotels: [
         {
-          color: "orange",
           name: "Imperial",
           tiles: [],
           stocksAvailable: 25,
@@ -33,7 +32,7 @@ describe("Board class", () => {
   });
 
   it("should return the board", () => {
-    const hotels = [new Hotel("Imperial", "orange", 2)];
+    const hotels = [new Hotel("Imperial", 2)];
     const board = new Board(hotels);
     board.placeIndependentTile("1A");
     board.placeIndependentTile("4A");
@@ -43,7 +42,6 @@ describe("Board class", () => {
       activeHotels: [],
       inActiveHotels: [
         {
-          color: "orange",
           name: "Imperial",
           tiles: [],
           stocksAvailable: 25,
@@ -56,7 +54,7 @@ describe("Board class", () => {
   });
 
   it("should return the board when there is active hotel available", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     board.placeIndependentTile("2A");
@@ -69,7 +67,6 @@ describe("Board class", () => {
         {
           name: "Imperial",
           tiles: ["2A"],
-          color: "blue",
           stocksAvailable: 24,
           stockPrice: 400,
           baseTile: "1A",
@@ -81,7 +78,7 @@ describe("Board class", () => {
   });
 
   it("should build a new hotel when a independent tile is already placed", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     board.placeIndependentTile("2A");
@@ -90,7 +87,6 @@ describe("Board class", () => {
     assertEquals(board.buildHotel("1A", "Imperial"), {
       name: "Imperial",
       tiles: ["2A"],
-      color: "blue",
       stocksAvailable: 24,
       stockPrice: 400,
       baseTile: "1A",
@@ -98,7 +94,7 @@ describe("Board class", () => {
   });
 
   it("should move the tiles from the independent to hotel when new hotel is founded", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     board.placeIndependentTile("2A");
@@ -109,7 +105,6 @@ describe("Board class", () => {
     assertEquals(board.buildHotel("4C", "Imperial"), {
       name: "Imperial",
       tiles: ["4B", "4D"],
-      color: "blue",
       stocksAvailable: 24,
       stockPrice: 500,
       baseTile: "4C",
@@ -119,35 +114,35 @@ describe("Board class", () => {
 
 describe("getAdjacentOf(tile)", () => {
   it("should return all the adjacent tile of top left", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     assertEquals(board.getAdjacentOf("1A"), ["2A", "1B"]);
   });
 
   it("should return all the adjacent tiles of a top right", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     assertEquals(board.getAdjacentOf("12A"), ["11A", "12B"]);
   });
 
   it("should return all the adjacent tile of bottom left", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     assertEquals(board.getAdjacentOf("1I"), ["2I", "1H"]);
   });
 
   it("should return all the adjacent tile of bottom right", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     assertEquals(board.getAdjacentOf("12I"), ["11I", "12H"]);
   });
 
   it("should return all the adjacent tile of centered tile", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     assertEquals(board.getAdjacentOf("2B"), ["1B", "3B", "2A", "2C"]);
@@ -156,7 +151,7 @@ describe("getAdjacentOf(tile)", () => {
 
 describe("getAdjacentTilesOf(tile)", () => {
   it("should return all the adjacent tile which is placed of top left", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
     board.placeIndependentTile("2A");
 
@@ -164,7 +159,7 @@ describe("getAdjacentTilesOf(tile)", () => {
   });
 
   it("should return all the adjacent tiles which is placed of a top right", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
     board.placeIndependentTile("11A");
 
@@ -172,7 +167,7 @@ describe("getAdjacentTilesOf(tile)", () => {
   });
 
   it("should return all the adjacent tiles which is placed of bottom left", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
     board.placeIndependentTile("2I");
 
@@ -180,7 +175,7 @@ describe("getAdjacentTilesOf(tile)", () => {
   });
 
   it("should return all the adjacent tiles which is placed of bottom right", () => {
-    const hotel = new Hotel("Imperial", "blue", 2);
+    const hotel = new Hotel("Imperial", 2);
     const board = new Board([hotel]);
 
     assertEquals(board.getAdjacentTilesOf("12I"), []);
@@ -189,7 +184,7 @@ describe("getAdjacentTilesOf(tile)", () => {
 
 describe("dependentHotels(tile) method", () => {
   it("should return the adjacent hotels of a tile", () => {
-    const imperial = new Hotel("Imperial", "blue", 2);
+    const imperial = new Hotel("Imperial", 2);
     const board = new Board([imperial]);
 
     board.placeIndependentTile("2A");
@@ -201,8 +196,8 @@ describe("dependentHotels(tile) method", () => {
   });
 
   it("should return the adjacent hotels of a tile", () => {
-    const imperial = new Hotel("Imperial", "blue", 2);
-    const tower = new Hotel("Tower", "yellow", 2);
+    const imperial = new Hotel("Imperial", 2);
+    const tower = new Hotel("Tower", 2);
 
     const board = new Board([imperial, tower]);
 
@@ -216,7 +211,7 @@ describe("dependentHotels(tile) method", () => {
 
 describe("isDependent(tile) method", () => {
   it("should return the adjacent hotels of a tile", () => {
-    const imperial = new Hotel("Imperial", "blue", 2);
+    const imperial = new Hotel("Imperial", 2);
     const board = new Board([imperial]);
 
     board.placeIndependentTile("2A");
@@ -228,8 +223,8 @@ describe("isDependent(tile) method", () => {
   });
 
   it("should return the adjacent hotels of a tile", () => {
-    const imperial = new Hotel("Imperial", "blue", 2);
-    const tower = new Hotel("Tower", "yellow", 2);
+    const imperial = new Hotel("Imperial", 2);
+    const tower = new Hotel("Tower", 2);
 
     const board = new Board([imperial, tower]);
 
@@ -243,7 +238,7 @@ describe("isDependent(tile) method", () => {
 
 describe("getPlaceTileType(tile) method", () => {
   it("should return the adjacent hotels of a tile", () => {
-    const imperial = new Hotel("Imperial", "blue", 2);
+    const imperial = new Hotel("Imperial", 2);
     const board = new Board([imperial]);
 
     board.placeIndependentTile("1A");
@@ -256,7 +251,6 @@ describe("getPlaceTileType(tile) method", () => {
         {
           name: "Imperial",
           tiles: [],
-          color: "blue",
           stocksAvailable: 25,
           stockPrice: 0,
           baseTile: "",
@@ -267,7 +261,7 @@ describe("getPlaceTileType(tile) method", () => {
   });
 
   it("should return the adjacent hotels of a tile", () => {
-    const imperial = new Hotel("Imperial", "blue", 2);
+    const imperial = new Hotel("Imperial", 2);
     const board = new Board([imperial]);
 
     board.placeIndependentTile("1A");
@@ -275,7 +269,6 @@ describe("getPlaceTileType(tile) method", () => {
     assertEquals(board.getPlaceTileType("3A"), {
       hotel: {
         baseTile: "2A",
-        color: "blue",
         name: "Imperial",
         stockPrice: 500,
         stocksAvailable: 24,

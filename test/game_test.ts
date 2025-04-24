@@ -91,14 +91,13 @@ describe("Game model", () => {
 
     it("should return the tile info when tile type is build", () => {
       const players: string[] = ["Adi"];
-      const hotel = new Hotel("Imperial", "blue", 2);
+      const hotel = new Hotel("Imperial", 2);
       const game = new Game(["1A", "2A"], players, [hotel]);
       game.placeTile("2A");
 
       assertEquals(game.placeTile("1A"), {
         inActiveHotels: [
           {
-            color: "blue",
             name: "Imperial",
             tiles: [],
             stocksAvailable: 25,
@@ -115,14 +114,11 @@ describe("Game model", () => {
   describe("foundHotel() method", () => {
     it("should return false for wrong tile", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
-      const game = new Game(["1A", "2A"], players, [
-        new Hotel("Imperial", "orange", 2),
-      ]);
+      const game = new Game(["1A", "2A"], players, [new Hotel("Imperial", 2)]);
 
       assertEquals(game.foundHotel("3A", "Imperial"), {
         name: "Imperial",
         tiles: [],
-        color: "orange",
         stocksAvailable: 24,
         stockPrice: 0,
         baseTile: "3A",
@@ -134,7 +130,7 @@ describe("Game model", () => {
     it("should return updated player details when buying only one kind of stocks", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new Game(["1A", "2A", "5A"], players, [
-        new Hotel("Imperial", "orange", 2),
+        new Hotel("Imperial", 2),
       ]);
       game.placeTile("1A");
       game.changeTurn();
@@ -185,10 +181,7 @@ describe("Game model", () => {
           "11B",
         ],
         players,
-        [
-          new Hotel("Imperial", "orange", 2),
-          new Hotel("Continental", "sky-blue", 2),
-        ],
+        [new Hotel("Imperial", 2), new Hotel("Continental", 2)],
       );
       game.placeTile("8A");
       game.changeTurn();

@@ -5,14 +5,12 @@ export class Hotel {
   private tiles: Set<Tile>;
   private stocksAvailable: number;
   private status: boolean;
-  private color: string;
   private offset: number;
   private baseTile: Tile;
 
-  constructor(name: string, color: string = "blue", offset: number) {
+  constructor(name: string, offset: number) {
     this.name = name;
     this.tiles = new Set();
-    this.color = color;
     this.stocksAvailable = 25;
     this.status = false;
     this.offset = offset;
@@ -98,7 +96,6 @@ export class Hotel {
     return {
       name: this.name,
       tiles: [...this.tiles],
-      color: this.color,
       stocksAvailable: this.stocksAvailable,
       stockPrice: this.getStockPrice(),
       baseTile: this.baseTile,
