@@ -76,11 +76,11 @@ export const handleFoundingHotel = (ctx: Context) => {
 };
 
 export const handleBuyStocks = (ctx: Context) => {
-  const game = ctx.get("game");
-  const sessionId: string = ctx.get("sessionId");
+  const game = ctx.get("game") as Game;
+  const playerId: string = ctx.get("sessionId");
   const stocks = JSON.parse(ctx.req.header().body);
 
-  const result = game.buyStocks(stocks, sessionId);
+  const result = game.buyStocks(stocks, playerId);
   return ctx.json(result);
 };
 

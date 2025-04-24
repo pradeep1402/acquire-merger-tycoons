@@ -296,14 +296,16 @@ class HotelView {
 }
 
 class HotelsView {
-  #hotels;
-  constructor(hotels) {
-    this.#hotels = hotels;
+  #activeHotels;
+  #inactiveHotels;
+  constructor(activeHotels, inActiveHotels) {
+    this.#activeHotels = activeHotels;
+    this.#inactiveHotels = inActiveHotels;
   }
 
   renderStocks() {
     const stocksSection = document.querySelector("#stocks-section");
-    const hotelElements = this.#hotels
+    const hotelElements = this.#activeHotels.concat(this.#inactiveHotels)
       .map((hotel) => HotelView.fromHotel(hotel))
       .map((hotelView) => hotelView.renderStocks());
 
@@ -311,31 +313,25 @@ class HotelsView {
   }
 }
 
-const renderStocksOfAllHotels = (activeHotels, inActiveHotels) => {
-  new HotelsView(activeHotels.concat(inActiveHotels)).renderStocks();
-};
-
 const renderInActiveHotels = (inActiveHotels) => {
   const inActiveHotelsSection = document.querySelector("#inactive-hotels");
   inActiveHotelsSection.innerText = "";
 
   for (const { name } of inActiveHotels) {
-    const div = document.createElement("div");
-    const img = document.createElement("img");
-    const hotelName = document.createElement("p");
+    const template = cloneTemplates("inactive-hotels-template");
 
+    const img = template.querySelector("img");
     img.setAttribute("src", `/images/hotels/${name.toLowerCase()}.png`);
-    hotelName.textContent = name;
-    img.classList.add("inactive-hotels-img");
-    div.appendChild(img);
-    div.appendChild(hotelName);
 
-    inActiveHotelsSection.appendChild(div);
+    const hotelName = template.querySelector("p");
+    hotelName.textContent = name;
+
+    inActiveHotelsSection.appendChild(template);
   }
 };
 
 const renderStocksAndInactiveHotels = (inActiveHotels, activeHotels) => {
-  renderStocksOfAllHotels(activeHotels, inActiveHotels);
+  new HotelsView(activeHotels, inActiveHotels).renderStocks();
   renderInActiveHotels(inActiveHotels);
 };
 
