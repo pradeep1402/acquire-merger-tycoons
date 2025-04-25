@@ -1,6 +1,6 @@
 import { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
-import { Game } from "../models/game.ts";
+import { Game, StdGame } from "../models/game.ts";
 import { Sessions } from "../models/sessions.ts";
 import { Lobby } from "../models/lobby.ts";
 
@@ -44,7 +44,7 @@ export const handleQuickPlay = (ctx: Context): Response => {
 };
 
 export const serveGame = (ctx: Context): Response => {
-  const game: Game = ctx.get("game");
+  const game: StdGame = ctx.get("game");
   const sessions: Sessions = ctx.get("sessions");
   const sessionId: string = ctx.get("sessionId");
 

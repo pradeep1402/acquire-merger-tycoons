@@ -1,5 +1,5 @@
 import { CurrentGame } from "./CurrentGame.ts";
-import { Game } from "./game.ts";
+import { StdGame } from "./game.ts";
 import { Hotel } from "./hotel.ts";
 import _ from "lodash";
 
@@ -20,7 +20,7 @@ const tiles = JSON.parse(await Deno.readTextFile("./src/data/tiles.json"));
 const generateShuffledTiles = () => _.shuffle(tiles);
 
 class GameManager {
-  private gamesMap: Map<string, Game>;
+  private gamesMap: Map<string, StdGame>;
   private gameStateMap: Map<string, CurrentGame>;
   private tileGenerator: () => string[];
   private hotels: () => Hotel[];
@@ -35,8 +35,8 @@ class GameManager {
     this.gameStateMap = new Map();
   }
 
-  createGame(gameId: string, playerIds: string[]): Game {
-    const game = new Game(this.tileGenerator(), playerIds, this.hotels());
+  createGame(gameId: string, playerIds: string[]): StdGame {
+    const game = new StdGame(this.tileGenerator(), playerIds, this.hotels());
     const currentGame = new CurrentGame(game);
     this.gamesMap.set(gameId, game);
     this.gameStateMap.set(gameId, currentGame);
@@ -44,7 +44,7 @@ class GameManager {
     return game;
   }
 
-  getGame(gameId: string): Game | undefined {
+  getGame(gameId: string): StdGame | undefined {
     return this.gamesMap.get(gameId);
   }
 

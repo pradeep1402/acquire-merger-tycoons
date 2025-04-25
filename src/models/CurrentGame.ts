@@ -1,19 +1,19 @@
-import { InterfaceGame } from "./game.ts";
+import { Game } from "./game.ts";
 
 type Tile = string;
 
 export class CurrentGame {
-  private currentState: InterfaceGame;
+  private currentState: Game;
 
-  constructor(game: InterfaceGame) {
+  constructor(game: Game) {
     this.currentState = game;
   }
 
-  playTurn(tile: Tile) {
+  playTurn(tile: Tile): Game {
     return (this.currentState = this.currentState.playTurn(tile));
   }
 
-  getGameState() {
+  getGameState(): Game {
     return this.currentState;
   }
 }

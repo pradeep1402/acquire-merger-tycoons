@@ -1,20 +1,125 @@
 import _ from "lodash";
-import { Board, PlaceType } from "./board.ts";
+import { Board, InactiveHotels, PlaceType } from "./board.ts";
 import { HotelName, Player } from "./player.ts";
 import { Hotel } from "./hotel.ts";
-import { Merger } from "./merger.ts";
+import { Merger, MergerType } from "./merger.ts";
 
 type Tile = string;
+export type PlayerDetails = {
+  playerId: string;
+  cash: number;
+  tiles: string[];
+  stocks: {
+    Sackson: number;
+    Tower: number;
+    Festival: number;
+    Worldwide: number;
+    American: number;
+    Continental: number;
+    Imperial: number;
+  };
+};
+
+export type BoardReturnType = {
+  independentTiles: string[];
+  activeHotels: {
+    name: string;
+    tiles: string[];
+    stocksAvailable: number;
+    stockPrice: number;
+    baseTile: string;
+  }[];
+  inActiveHotels: {
+    name: string;
+    tiles: string[];
+    stocksAvailable: number;
+    stockPrice: number;
+    baseTile: string;
+  }[];
+  mergerTile: string[];
+};
+
+export type GameStats = {
+  board: {
+    independentTiles: string[];
+    activeHotels: {
+      name: string;
+      tiles: string[];
+      stocksAvailable: number;
+      stockPrice: number;
+      baseTile: string;
+    }[];
+    inActiveHotels: {
+      name: string;
+      tiles: string[];
+      stocksAvailable: number;
+      stockPrice: number;
+      baseTile: string;
+    }[];
+    mergerTile: string[];
+  };
+  playersId: string[];
+  currentPlayerId: string;
+};
+
+export type PlaceTile =
+  | {
+    tile: string;
+    type: PlaceType;
+    hotel?: undefined;
+    inActiveHotels?: undefined;
+  }
+  | {
+    tile: string;
+    type: PlaceType;
+    hotel: {
+      name: string;
+      tiles: string[];
+      stocksAvailable: number;
+      stockPrice: number;
+      baseTile: string;
+    };
+    inActiveHotels?: undefined;
+  }
+  | {
+    tile: string;
+    type: PlaceType;
+    inActiveHotels?: InactiveHotels;
+    mergeType?: MergerType;
+  };
+
 export type buyStocks = {
   hotel: HotelName;
   count: number;
 };
 
-export interface InterfaceGame {
-  playTurn: (tile: Tile) => InterfaceGame;
+export type FoundHotel =
+  | {
+    name: string;
+    tiles: string[];
+    stocksAvailable: number;
+    stockPrice: number;
+    baseTile: string;
+  }
+  | undefined;
+
+export interface Game {
+  playTurn: (tile: Tile) => Game;
+  buyStocks: (
+    hotels: buyStocks[],
+    playerId: string,
+  ) => PlayerDetails | undefined | { error: string };
+  placeTile: (tile: Tile) => PlaceTile | { status: boolean };
+  foundHotel: (tile: Tile, hotel: HotelName) => FoundHotel | { error: string };
+  getPlayerIds: () => string[];
+  getPlayerDetails: (playerId: string) => PlayerDetails | undefined;
+  getGameStats: () => GameStats;
+  getAffectedHotels: (tile: Tile) => Hotel[];
+  // getSizeOfHotel: (hotelName: string) => number;
+  changeTurn: () => { status: string };
 }
 
-export class Game implements InterfaceGame {
+export class StdGame implements Game {
   private board: Board;
   private pile: Tile[];
   private players: Player[];
@@ -27,7 +132,7 @@ export class Game implements InterfaceGame {
     this.currentPlayerIndex = 0;
   }
 
-  playTurn(tile: Tile): InterfaceGame {
+  playTurn(tile: Tile): Game {
     const placeInfo = this.board.getPlaceTileType(tile);
 
     if (placeInfo.type === PlaceType.Merge) {
@@ -43,24 +148,24 @@ export class Game implements InterfaceGame {
     });
   }
 
-  changeTurn() {
+  changeTurn(): { status: string } {
     this.assignTile();
     this.updateCurrentPlayerIndex();
     return { status: this.getCurrentPlayer() };
   }
 
-  private assignTile() {
+  private assignTile(): void {
     const currentPlayer = this.players[this.currentPlayerIndex];
     const [tile] = this.getTiles(1);
     currentPlayer.addTile(tile);
   }
 
-  private updateCurrentPlayerIndex() {
+  private updateCurrentPlayerIndex(): void {
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
       this.players.length;
   }
 
-  buyStocks(hotels: buyStocks[], playerId: string) {
+  buyStocks(hotels: buyStocks[], playerId: string): PlayerDetails | undefined {
     const currentPlayer = this.players.find((player) =>
       player.doesPlayerMatch(playerId)
     );
@@ -79,7 +184,7 @@ export class Game implements InterfaceGame {
     return currentPlayer?.getPlayerDetails();
   }
 
-  placeTile(tile: Tile) {
+  placeTile(tile: Tile): PlaceTile | { status: boolean } {
     const currentPlayer = this.players[this.currentPlayerIndex];
 
     if (!currentPlayer.isTileExits(tile)) return { status: false };
@@ -94,7 +199,7 @@ export class Game implements InterfaceGame {
     return placeInfo;
   }
 
-  foundHotel(tile: Tile, hotel: HotelName) {
+  foundHotel(tile: Tile, hotel: HotelName): FoundHotel {
     const buildHotel = this.board.buildHotel(tile, hotel);
     const currentPlayer = this.players[this.currentPlayerIndex];
 
@@ -104,7 +209,7 @@ export class Game implements InterfaceGame {
     return buildHotel;
   }
 
-  getPlayerIds() {
+  getPlayerIds(): string[] {
     return this.players.map((player) => player.getPlayerDetails().playerId);
   }
 
@@ -112,11 +217,11 @@ export class Game implements InterfaceGame {
     return this.pile.splice(0, count);
   }
 
-  getBoard() {
+  private getBoard(): BoardReturnType {
     return this.board.getBoard();
   }
 
-  getPlayerDetails(playerId: string) {
+  getPlayerDetails(playerId: string): PlayerDetails | undefined {
     const playerInfo = this.players.find((player: Player) =>
       player.doesPlayerMatch(playerId)
     );
@@ -124,17 +229,17 @@ export class Game implements InterfaceGame {
     return playerInfo?.getPlayerDetails();
   }
 
-  private getCurrentPlayer() {
+  private getCurrentPlayer(): string {
     return this.players[this.currentPlayerIndex].getPlayerDetails().playerId;
   }
 
-  getHotelsInMerge(tile: Tile) {
+  getAffectedHotels(tile: Tile): Hotel[] {
     return this.board.dependentHotels(tile);
   }
 
   // getSizeOfHotel(hotelName: string) {}
 
-  getGameStats() {
+  getGameStats(): GameStats {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();

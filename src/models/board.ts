@@ -1,3 +1,4 @@
+import { BoardReturnType, PlaceTile } from "./game.ts";
 import { Hotel } from "./hotel.ts";
 import _ from "lodash";
 
@@ -10,6 +11,22 @@ export enum PlaceType {
   Merge = "Merge",
   InValid = "Invalid",
 }
+
+export type hotel = {
+  name: string;
+  tiles: string[];
+  stocksAvailable: number;
+  stockPrice: number;
+  baseTile: string;
+};
+
+export type InactiveHotels = {
+  name: string;
+  tiles: string[];
+  stocksAvailable: number;
+  stockPrice: number;
+  baseTile: string;
+}[];
 
 export class Board {
   hotels: Hotel[];
@@ -34,12 +51,15 @@ export class Board {
       .map((hotel) => hotel.getHotel());
   }
 
-  placeIndependentTile(tile: Tile) {
+  placeIndependentTile(tile: Tile): string {
     this.independentTiles.add(tile);
     return tile;
   }
 
-  getPlaceTileType(tile: Tile) {
+  getPlaceTileType(tile: Tile): {
+    tile: string;
+    type: PlaceType;
+  } {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInactiveHotels();
     if (this.isMerger(tile)) {
@@ -73,14 +93,14 @@ export class Board {
   //   return false;
   // }
 
-  private validateMergeTile(tile: Tile) {
+  private validateMergeTile(tile: Tile): boolean {
     const hotelsInMerge = this.dependentHotels(tile);
     console.log(hotelsInMerge);
 
     return true;
   }
 
-  placeATile(tile: Tile) {
+  placeATile(tile: Tile): PlaceTile {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInactiveHotels();
     if (this.isMerger(tile)) {
@@ -106,18 +126,18 @@ export class Board {
     };
   }
 
-  getHotel(hotelName: string) {
+  getHotel(hotelName: string): Hotel[] {
     return this.hotels.filter((hotel) => hotel.isAMatch(hotelName));
   }
 
-  private moveToHotel(tiles: Tile[], hotel: Hotel | undefined) {
+  private moveToHotel(tiles: Tile[], hotel: Hotel | undefined): void {
     tiles.forEach((tile) => {
       this.independentTiles.delete(tile);
       hotel?.addTile(tile);
     });
   }
 
-  buildHotel(tile: Tile, hotelName: string) {
+  buildHotel(tile: Tile, hotelName: string): hotel | undefined {
     const hotel = this.hotels.find((hotel) => hotel.isAMatch(hotelName));
     const tiles = [...this.getAdjacentTiles(tile, new Set())];
 
@@ -129,7 +149,7 @@ export class Board {
     return hotel?.getHotel();
   }
 
-  getBoard() {
+  getBoard(): BoardReturnType {
     const activeHotels = this.getActiveHotels();
     const inActiveHotels = this.getInactiveHotels();
 
@@ -180,7 +200,7 @@ export class Board {
       .map(([num, letter]) => `${num}${String.fromCharCode(letter)}`);
   }
 
-  private isPlaced(tile: Tile) {
+  private isPlaced(tile: Tile): boolean {
     return (
       this.independentTiles.has(tile) ||
       this.hotels.some((h) => h.isTileBelongs(tile))
@@ -193,11 +213,11 @@ export class Board {
     return adjacent.filter((t: Tile) => this.isPlaced(t));
   }
 
-  isDependent(tile: Tile) {
+  isDependent(tile: Tile): boolean {
     return this.dependentHotels(tile).length === 1;
   }
 
-  isMerger(tile: Tile) {
+  isMerger(tile: Tile): boolean {
     return this.dependentHotels(tile).length > 1;
   }
 

@@ -1,28 +1,45 @@
 import _ from "lodash";
 import { HotelName } from "./player.ts";
-import { Game, InterfaceGame } from "./game.ts";
+import { Game, PlaceTile, StdGame } from "./game.ts";
 import { PlaceType } from "./board.ts";
 import { Hotel } from "./hotel.ts";
 
 type Tile = string;
-type hotels = {
+type Hotels = {
   name: string;
   size: number;
-}[];
-export type buyStocks = {
+};
+export type BuyStocks = {
   hotel: HotelName;
   count: number;
 };
+
+export type MergerType =
+  | {
+    typeofMerge: MergeType;
+    hotels: {
+      name: string;
+      size: number;
+    }[];
+    acquiring?: Hotels;
+    acquired?: Hotels;
+  }
+  | {
+    typeofMerge: MergeType;
+    acquiring: Hotels;
+    acquired: Hotels;
+    hotels?: undefined;
+  };
 
 export enum MergeType {
   AutoMerge = "AutoMerge",
   SelectiveMerge = "SelectiveMerge",
 }
 
-export class Merger implements InterfaceGame {
+export class Merger implements Game {
   private original;
 
-  constructor(game: InterfaceGame) {
+  constructor(game: Game) {
     this.original = game;
   }
 
@@ -32,17 +49,15 @@ export class Merger implements InterfaceGame {
     return this.original;
   }
 
-  placeTile(tile: Tile) {
-    const game = this.original as Game;
-    const hotelsInMerge = game.getHotelsInMerge(tile);
+  placeTile(tile: Tile): PlaceTile {
+    const game = this.original as StdGame;
+    const hotelsInMerge = game.getAffectedHotels(tile);
 
-    if (hotelsInMerge.length === 2) {
-      const mergeType = this.findMergeType(hotelsInMerge);
-      return { tile, type: PlaceType.Merge, mergeType };
-    }
+    const mergeType = this.findMergeType(hotelsInMerge);
+    return { tile, type: PlaceType.Merge, mergeType };
   }
 
-  private isEveryHotelOfSameSize(hotels: hotels) {
+  private isEveryHotelOfSameSize(hotels: Hotels[]) {
     const sizeOfHotel = hotels[0].size;
     return hotels.every(({ size }) => size === sizeOfHotel);
   }
@@ -56,7 +71,7 @@ export class Merger implements InterfaceGame {
     return hotels;
   }
 
-  private getHighestAndSmallestHotel(hotels: hotels) {
+  private getHighestAndSmallestHotel(hotels: Hotels[]): Hotels[] {
     const highest = _.maxBy(hotels, "size");
     const lowest = _.minBy(hotels, "size");
 
@@ -80,5 +95,35 @@ export class Merger implements InterfaceGame {
 
   getState() {
     return this.original;
+  }
+
+  buyStocks(_hotels: BuyStocks[], _playerId: string) {
+    return { error: "Not valid in Merger Mode" };
+  }
+
+  foundHotel(_tile: Tile, _hotel: HotelName) {
+    return { error: "Not valid in Merger Mode" };
+  }
+
+  getPlayerIds() {
+    return this.original.getPlayerIds();
+  }
+
+  getPlayerDetails(playerId: string) {
+    return this.original.getPlayerDetails(playerId);
+  }
+
+  getGameStats() {
+    return this.original.getGameStats();
+  }
+
+  getAffectedHotels(tile: Tile) {
+    return this.original.getAffectedHotels(tile);
+  }
+
+  // getSizeOfHotel: (hotelName: string) => number;
+
+  changeTurn() {
+    return this.original.changeTurn();
   }
 }

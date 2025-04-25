@@ -58,7 +58,7 @@ const ensureAuthenticated = async (c: Context, next: Next) => {
 
 const authenticatedContext = async (ctx: Context, next: Next) => {
   const { sessionId, gameId } = getCookie(ctx);
-  const gameManager = ctx.get("gameManager");
+  const gameManager = ctx.get("gameManager") as GameManager;
   const sessions = ctx.get("sessions");
   const currentGame = gameManager.getCurrentGame(gameId);
   if (gameId && currentGame) {
