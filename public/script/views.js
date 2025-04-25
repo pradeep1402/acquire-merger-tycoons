@@ -1,4 +1,4 @@
-import { cloneTemplates, hotelLookup } from "./game.js";
+import { cloneTemplates, getResource } from "./game.js";
 
 class TileView {
   #label;
@@ -185,3 +185,340 @@ export class BoardView {
     if (this.#hotelTiles.length) this.#renderHotelTiles();
   }
 }
+
+class BuyStocksView {
+  #activeHotels;
+  #cash;
+  #poller;
+  #cashAvailable;
+  #hotelsContainer;
+
+  constructor(activeHotels, cash, poller) {
+    this.#activeHotels = activeHotels;
+    this.#cash = cash;
+    this.#poller = poller;
+    this.#cashAvailable = document.getElementById("cash-available");
+    this.#hotelsContainer = document.getElementById("active-hotels");
+  }
+
+  #updateMax() {
+    const allInputs = this.#hotelsContainer.querySelectorAll("input");
+    const maxAllowed = 3;
+
+    const totalSelected = Array.from(allInputs).reduce((sum, input) => {
+      return sum + parseInt(input.value || 0);
+    }, 0);
+
+    allInputs.forEach((input) => {
+      const currentValue = parseInt(input.value || 0);
+      const otherTotal = totalSelected - currentValue;
+      input.max = Math.max(0, maxAllowed - otherTotal);
+    });
+  }
+
+  #setHotelInfo(template, name, price, maxStocks) {
+    template.querySelector("#hotel").textContent = name;
+    template.querySelector("#stock-value").textContent = price;
+
+    const input = template.querySelector("input");
+    input.id = name;
+    input.max = maxStocks;
+    input.value = 0;
+  }
+
+  #attachInputHandlers(input) {
+    input.addEventListener("input", () => {
+      this.#updateMax();
+    });
+  }
+
+  #debitCash(amount) {
+    const current = Number(this.#cashAvailable.textContent);
+    this.#cashAvailable.textContent = current - amount;
+  }
+
+  #creditCash(amount) {
+    const current = Number(this.#cashAvailable.textContent);
+    this.#cashAvailable.textContent = current + amount;
+  }
+
+  #incrementValue(input, stockPrice) {
+    const currentCash = Number(this.#cashAvailable.textContent);
+    if (currentCash < stockPrice) {
+      alert("Insufficient balance");
+      return;
+    }
+    const preValue = input.value;
+    input.stepUp();
+    const curValue = input.value;
+    if (preValue < curValue) this.#debitCash(stockPrice);
+    input.dispatchEvent(new Event("input"));
+  }
+
+  #decrementValue(input, stockPrice) {
+    const preValue = input.value;
+    input.stepDown();
+    const curValue = input.value;
+    if (preValue > curValue) this.#creditCash(stockPrice);
+    input.dispatchEvent(new Event("input"));
+  }
+
+  #attachStepButtons(template, input, stockPrice) {
+    const [decrement, increment] = template.querySelectorAll("button");
+    increment.addEventListener(
+      "click",
+      () => this.#incrementValue(input, stockPrice),
+    );
+    decrement.addEventListener(
+      "click",
+      () => this.#decrementValue(input, stockPrice),
+    );
+  }
+
+  #renderHotel({ name, stocksAvailable, stockPrice }) {
+    const template = cloneTemplates("hotel-template");
+    const maxStocks = stocksAvailable >= 3 ? 3 : stocksAvailable;
+    const input = template.querySelector("input");
+
+    this.#setHotelInfo(template, name, stockPrice, maxStocks);
+    this.#attachInputHandlers(input);
+    this.#attachStepButtons(template, input, stockPrice);
+
+    return template;
+  }
+
+  #renderAllHotels() {
+    const hotelNode = this.#activeHotels.map((hotel) => {
+      return this.#renderHotel(hotel);
+    });
+    this.#hotelsContainer.replaceChildren(...hotelNode);
+  }
+
+  #setCash() {
+    const cashAvailable = document.getElementById("cash-available");
+    cashAvailable.textContent = this.#cash;
+  }
+
+  async #handleBuy() {
+    const activeHotels = document.getElementById("active-hotels");
+    const children = activeHotels.children;
+    const stocksToBuy = [];
+
+    for (const child of children) {
+      const hotel = child.querySelector("#hotel").textContent;
+      const count = +child.querySelector("input").value;
+      if (count) stocksToBuy.push({ hotel, count });
+    }
+
+    const buyStocksEle = document.getElementById("buy-stocks");
+    buyStocksEle.classList.remove("display");
+    await fetch("/acquire/buy-stocks", {
+      method: "PATCH",
+      body: JSON.stringify(stocksToBuy),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    await this.#changeTurn();
+  }
+
+  async #changeTurn() {
+    console.log(`from change turn`, this.#poller);
+    await fetch("/acquire/end-turn", { method: "PATCH" });
+    this.#poller.start();
+  }
+
+  render() {
+    if (this.#activeHotels.length <= 0) {
+      return this.#changeTurn();
+    }
+    const buyStocksEle = document.getElementById("buy-stocks");
+    buyStocksEle.classList.add("display");
+
+    const submit = document.getElementById("buy");
+    submit.addEventListener("click", this.#handleBuy.bind(this), {
+      once: true,
+    });
+
+    this.#setCash();
+    this.#renderAllHotels();
+  }
+}
+
+export class PlayerTurnView {
+  #tiles;
+  #poller;
+  #tileListener;
+
+  constructor(tiles, poller) {
+    this.#tiles = tiles;
+    this.#poller = poller;
+    this.#tileListener = this.#handleTileClick.bind(this);
+  }
+
+  #toggleHighlightTiles() {
+    this.#tiles.forEach((tile) => {
+      document.getElementById(tile).classList.toggle("highlight");
+    });
+  }
+
+  #placeIndependentTile(tileLabel) {
+    const tileNode = document.getElementById(tileLabel);
+    tileNode.classList.add("place-tile");
+
+    this.#buyStocks();
+  }
+
+  async #buyStocks() {
+    const { board, playerPortfolio } = await getResource("/acquire/game-stats");
+
+    new BuyStocksView(
+      board.activeHotels,
+      playerPortfolio.cash,
+      this.#poller,
+    ).render();
+  }
+
+  async #placeDependentTile({ tile, hotel }) {
+    const tileNode = document.getElementById(tile);
+    tileNode.style.backgroundColor = hotelLookup(hotel.name).backgroundColor;
+    await this.#buyStocks();
+  }
+
+  #renderGamerBoard() {
+    const minimap = document.querySelector(".gameBoard");
+    minimap.classList.remove("minimap");
+    const children = minimap.children;
+
+    for (const child of children) {
+      child.classList.remove("mini-tile");
+    }
+  }
+
+  async #handleFoundHotel(tileLabel, hotelName) {
+    await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
+      method: "PATCH",
+    });
+
+    const container = document.querySelector("#popup");
+    container.style.display = "none";
+    this.#renderGamerBoard();
+    await this.#buyStocks();
+  }
+
+  #renderMinimap() {
+    const minimap = document.querySelector(".gameBoard");
+    minimap.classList.add("minimap");
+    const children = minimap.children;
+
+    for (const child of children) {
+      child.classList.add("mini-tile");
+    }
+  }
+
+  async #renderSelectHotel(inActiveHotels, tileLabel) {
+    const container = document.querySelector("#popup");
+    const hotelList = document.querySelector("#hotel-container");
+
+    this.#renderMinimap();
+    container.style.display = "block";
+
+    const hotels = inActiveHotels.map((hotel) => {
+      const outerDiv = document.createElement("div");
+      const hotelName = document.createElement("span");
+      hotelName.textContent = hotel.name;
+
+      const div = document.createElement("div");
+      div.classList.add(hotel.name.toLowerCase(), "select-hotel");
+
+      outerDiv.appendChild(hotelName);
+      outerDiv.appendChild(div);
+
+      outerDiv.addEventListener(
+        "click",
+        () => this.#handleFoundHotel(tileLabel, hotel.name, this.#poller),
+      );
+      return outerDiv;
+    });
+    hotelList.replaceChildren(...hotels);
+
+    if (inActiveHotels.length === 0) {
+      await buyStocks(this.#poller);
+    }
+  }
+
+  async #handleTileClick(event) {
+    const tileLabel = event.target.id;
+    if (!this.#tiles.includes(tileLabel)) return;
+
+    const res = await fetch(`/acquire/place-tile/${tileLabel}`, {
+      method: "PATCH",
+    });
+    const placeInfo = await res.json();
+
+    this.#toggleHighlightTiles();
+    this.#removeTileListeners();
+
+    switch (placeInfo.type) {
+      case "Independent":
+        await this.#placeIndependentTile(tileLabel);
+        break;
+
+      case "Dependent":
+        await this.#placeDependentTile(placeInfo);
+        break;
+
+      case "Build":
+        await this.#renderSelectHotel(placeInfo.inActiveHotels, tileLabel);
+        break;
+
+      case "Merge":
+        break;
+    }
+  }
+
+  #removeTileListeners() {
+    const board = document.querySelector(".gameBoard");
+    board.removeEventListener("click", this.#tileListener);
+  }
+
+  #activateTileListeners() {
+    const board = document.querySelector(".gameBoard");
+    board.addEventListener("click", this.#tileListener);
+  }
+
+  enableTurn() {
+    this.#poller.pause();
+    this.#toggleHighlightTiles();
+    this.#activateTileListeners();
+  }
+}
+
+const hotelLookup = (name) => {
+  const colors = {
+    Tower: { backgroundColor: "#ffb404", color: "black" },
+    Sackson: { backgroundColor: "#ff5454", color: "white" },
+    Festival: {
+      backgroundColor: "#48c454",
+      color: "white",
+    },
+    Continental: {
+      backgroundColor: "#28c4e4",
+      color: "white",
+    },
+    Imperial: {
+      backgroundColor: "#ff7c14",
+      color: "white",
+    },
+    Worldwide: {
+      backgroundColor: "#8054f4",
+      color: "white",
+    },
+    American: {
+      backgroundColor: "#288ce4",
+      color: "white",
+    },
+  };
+
+  return colors[name];
+};

@@ -66,7 +66,6 @@ export const serveGame = (ctx: Context): Response => {
 export const handlePlaceTile = (ctx: Context) => {
   const tile = ctx.req.param("tile");
   const currentGame = ctx.get("currentGame");
-
   const game = currentGame.playTurn(tile);
   const placeInfo = game.placeTile(tile);
 
