@@ -1,13 +1,19 @@
 import _ from "lodash";
-import { HotelName } from "./player.ts";
-import { Game, PlaceTile, StdGame } from "./game.ts";
+import { HotelName, Player } from "./player.ts";
+import { Game, PlaceTile, PlayerDetails, Tile } from "./game.ts";
 import { PlaceType } from "./board.ts";
 import { Hotel } from "./hotel.ts";
+import { StdGame } from "./stdGame.ts";
 
-type Tile = string;
-type Hotels = {
+export type HotelDetails = {
   name: string;
   size: number;
+};
+
+export type TradeStats = {
+  acquirer: HotelName;
+  target: HotelName;
+  count: number;
 };
 export type BuyStocks = {
   hotel: HotelName;
@@ -21,13 +27,11 @@ export type MergerType =
       name: string;
       size: number;
     }[];
-    acquirer?: Hotels;
-    target?: Hotels;
   }
   | {
     typeofMerge: MergeType;
-    acquirer: Hotels;
-    target: Hotels;
+    acquirer: HotelDetails;
+    target: HotelDetails;
     hotels?: undefined;
   };
 
@@ -53,11 +57,11 @@ export class Merger implements Game {
     const game = this.original as StdGame;
     const hotelsInMerge = game.getAffectedHotels(tile);
 
-    const mergeType = this.findMergeType(hotelsInMerge);
-    return { tile, type: PlaceType.Merge, mergeType };
+    const mergeDetails = this.findMergeType(hotelsInMerge);
+    return { tile, type: PlaceType.Merge, mergeDetails };
   }
 
-  private isEveryHotelOfSameSize(hotels: Hotels[]) {
+  private isEveryHotelOfSameSize(hotels: HotelDetails[]) {
     const sizeOfHotel = hotels[0].size;
     return hotels.every(({ size }) => size === sizeOfHotel);
   }
@@ -71,7 +75,7 @@ export class Merger implements Game {
     return hotels;
   }
 
-  private getHighestAndSmallestHotel(hotels: Hotels[]): Hotels[] {
+  private getHighestAndSmallestHotel(hotels: HotelDetails[]): HotelDetails[] {
     const highest = _.maxBy(hotels, "size");
     const lowest = _.minBy(hotels, "size");
 
@@ -123,7 +127,50 @@ export class Merger implements Game {
 
   // getSizeOfHotel: (hotelName: string) => number;
 
+  private sellStocks(player: Player, stocks: BuyStocks[]) {
+    for (const { hotel, count } of stocks) {
+      const hotelInstance = this.getHotel(hotel);
+      const priceGained = hotelInstance?.calculatePrice(count) as number;
+      player.addCash(priceGained);
+      player.deductStock(count, hotel);
+    }
+
+    return player.getPlayerDetails();
+  }
+
+  private tradeStocks(player: Player, { acquirer, target, count }: TradeStats) {
+    const acquirerHotel = this.getHotel(acquirer);
+    acquirerHotel?.decrementStocks(Math.floor(count / 2));
+    player.addStock(Math.floor(count / 2), acquirer);
+
+    const targetHotel = this.getHotel(target);
+    targetHotel?.incrementStocks(count);
+    player.deductStock(count, target);
+
+    return player.getPlayerDetails();
+  }
+
+  tradeAndSellStocks(
+    tradeStats: TradeStats,
+    stocks: BuyStocks[],
+    playerId: string,
+  ): PlayerDetails | undefined {
+    const player = this.getPlayer(playerId) as Player;
+
+    this.sellStocks(player, stocks);
+    this.tradeStocks(player, tradeStats);
+
+    return this.getPlayerDetails(playerId);
+  }
+
   changeTurn() {
     return this.original.changeTurn();
+  }
+
+  getPlayer(playerId: string) {
+    return this.original.getPlayer(playerId);
+  }
+  getHotel(hotelName: string) {
+    return this.original.getHotel(hotelName);
   }
 }

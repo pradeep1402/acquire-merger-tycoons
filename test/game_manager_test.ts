@@ -1,8 +1,9 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
 import { GameManager } from "../src/models/game_manager.ts";
-import { StdGame } from "../src/models/game.ts";
+
 import _ from "lodash";
+import { StdGame } from "../src/models/stdGame.ts";
 
 describe("GameManager", () => {
   it("should return a new game instance when players are provided", () => {

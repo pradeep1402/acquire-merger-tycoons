@@ -27,7 +27,7 @@ describe("Board class", () => {
           baseTile: "",
         },
       ],
-      mergerTile: [],
+      mergerTile: null,
     });
   });
 
@@ -49,7 +49,7 @@ describe("Board class", () => {
           baseTile: "",
         },
       ],
-      mergerTile: [],
+      mergerTile: null,
     });
   });
 
@@ -73,7 +73,7 @@ describe("Board class", () => {
         },
       ],
       inActiveHotels: [],
-      mergerTile: [],
+      mergerTile: null,
     });
   });
 

@@ -1,9 +1,11 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
-import { buyStocks, StdGame } from "../src/models/game.ts";
 import { PlaceType } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
-import { Merger, MergeType } from "../src/models/merger.ts";
+import { BuyStocks, Merger, MergeType } from "../src/models/merger.ts";
+import { StdGame } from "../src/models/stdGame.ts";
+import { BoardDetails, GameStats } from "../src/models/game.ts";
+import { Player } from "../src/models/player.ts";
 
 describe("Game model", () => {
   describe("getPlayerIds(", () => {
@@ -18,6 +20,28 @@ describe("Game model", () => {
       game.getPlayerIds().forEach((playerId, i) => {
         assertEquals(playerId, players[i]);
       });
+    });
+  });
+
+  describe("getPlayer(", () => {
+    it("should return  the player with id", () => {
+      const players: string[] = ["12", "13", "14"];
+      const game = new StdGame([], players, []);
+
+      assertEquals(game.getPlayer("12"), new Player("12", []));
+    });
+  });
+
+  describe("tradeAndSellStocks()", () => {
+    it("should return error with message when accessing tradeAndSellStocks", () => {
+      const game = new StdGame([], [], []);
+
+      const { error } = game.tradeAndSellStocks(
+        { acquirer: "American", target: "Continental", count: 3 },
+        [],
+        "",
+      );
+      assertEquals(error, "Not valid in Standard Game Mode");
     });
   });
 
@@ -105,7 +129,7 @@ describe("Game model", () => {
       game.changeTurn();
 
       game.foundHotel("2A", "Imperial");
-      const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
+      const stocks: BuyStocks[] = [{ hotel: "Imperial", count: 3 }];
       const result = game.buyStocks(stocks, "Malli");
 
       assertEquals(result, {
@@ -160,7 +184,7 @@ describe("Game model", () => {
       game.changeTurn();
       game.foundHotel("10B", "Continental");
       game.changeTurn();
-      const stocks: buyStocks[] = [
+      const stocks: BuyStocks[] = [
         { hotel: "Imperial", count: 1 },
         { hotel: "Continental", count: 2 },
       ];
@@ -169,7 +193,7 @@ describe("Game model", () => {
       assertEquals(mergeGame.placeTile("9A"), {
         tile: "9A",
         type: PlaceType.Merge,
-        mergeType: {
+        mergeDetails: {
           typeofMerge: MergeType.SelectiveMerge,
           hotels: [
             { name: "Imperial", size: 2 },
@@ -235,7 +259,7 @@ describe("Game model", () => {
       game.changeTurn();
       game.foundHotel("10B", "Continental");
       game.changeTurn();
-      const stocks: buyStocks[] = [
+      const stocks: BuyStocks[] = [
         { hotel: "Imperial", count: 1 },
         { hotel: "Continental", count: 2 },
       ];
@@ -244,7 +268,7 @@ describe("Game model", () => {
       assertEquals(mergeGame.placeTile("9A"), {
         tile: "9A",
         type: PlaceType.Merge,
-        mergeType: {
+        mergeDetails: {
           typeofMerge: MergeType.SelectiveMerge,
           hotels: [
             { name: "Imperial", size: 2 },
@@ -309,7 +333,7 @@ describe("Game model", () => {
       assertEquals(mergeGame.placeTile("8B"), {
         tile: "8B",
         type: PlaceType.Merge,
-        mergeType: {
+        mergeDetails: {
           target: {
             name: "Continental",
             size: 2,
@@ -339,15 +363,16 @@ describe("Game model", () => {
         [],
       );
 
-      const board = {
+      const board: BoardDetails = {
         independentTiles: [],
         activeHotels: [],
         inActiveHotels: [],
-        mergerTile: [],
+        mergerTile: null,
       };
       const playersId = ["Adi", "Malli"];
       const currentPlayerId = "Adi";
-      assertEquals(game.getGameStats(), { board, playersId, currentPlayerId });
+      const gameStats: GameStats = { board, playersId, currentPlayerId };
+      assertEquals(game.getGameStats(), gameStats);
     });
   });
 });

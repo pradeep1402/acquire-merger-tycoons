@@ -1,8 +1,9 @@
 import { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
-import { Game, StdGame } from "../models/game.ts";
+import { Game } from "../models/game.ts";
 import { Sessions } from "../models/sessions.ts";
 import { Lobby } from "../models/lobby.ts";
+import { StdGame } from "../models/stdGame.ts";
 
 export const handleLogin = async (ctx: Context): Promise<Response> => {
   const fd = await ctx.req.formData();

@@ -79,6 +79,11 @@ export class Hotel {
     return this.stocksAvailable;
   }
 
+  incrementStocks(delta: number) {
+    this.stocksAvailable += delta;
+    return this.stocksAvailable;
+  }
+
   getSize() {
     return this.tiles.size + (this.isActive() ? 1 : 0);
   }

@@ -49,8 +49,18 @@ export class Player {
     return this.stocks[stockName];
   }
 
+  deductStock(delta: number, stockName: HotelName) {
+    this.stocks[stockName] -= delta;
+
+    return this.stocks[stockName];
+  }
+
   deductCash(price: number) {
     return (this.cash = this.cash - price);
+  }
+
+  addCash(price: number) {
+    return (this.cash = this.cash + price);
   }
 
   getPlayerDetails() {

@@ -143,12 +143,12 @@ export class PlayersView {
 export class BoardView {
   #independentTiles;
   #hotelTiles;
-  #mergerTiles;
+  #mergerTile;
 
-  constructor({ independentTiles, activeHotels = [], mergerTiles = [] }) {
+  constructor({ independentTiles, activeHotels = [], mergerTile }) {
     this.#independentTiles = independentTiles;
     this.#hotelTiles = activeHotels;
-    this.#mergerTiles = mergerTiles;
+    this.#mergerTile = mergerTile;
   }
 
   #renderIndependentTile() {
@@ -181,7 +181,7 @@ export class BoardView {
 
   render() {
     this.#renderIndependentTile();
-    if (this.#mergerTiles.length) this.#renderMergerTile();
+    if (this.#mergerTile) this.#renderMergerTile();
     if (this.#hotelTiles.length) this.#renderHotelTiles();
   }
 }
@@ -402,8 +402,9 @@ export class PlayerTurnView {
     const res = await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
       method: "PATCH",
     });
+    const stockAllotted = await res.json().stockAllotted;
 
-    if (!await res.json().stockAllotted) {
+    if (!stockAllotted) {
       alert("No stocks available for this hotel...");
     }
 
@@ -481,7 +482,7 @@ export class PlayerTurnView {
 
       case "Merge":
         console.log("switch case", placeInfo);
-        new MergerView(placeInfo.mergeType, tileLabel).merge();
+        new MergerView(placeInfo.mergeDetails, tileLabel).merge();
         break;
     }
   }

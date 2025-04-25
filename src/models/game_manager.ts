@@ -1,7 +1,8 @@
 import { CurrentGame } from "./CurrentGame.ts";
-import { StdGame } from "./game.ts";
+
 import { Hotel } from "./hotel.ts";
 import _ from "lodash";
+import { StdGame } from "./stdGame.ts";
 
 const getHotels = (): Hotel[] => {
   const hotelTexts = `Tower:0,Sackson:0,

@@ -1,16 +1,23 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
 import { Hotel } from "../src/models/hotel.ts";
-import { Game, StdGame } from "../src/models/game.ts";
-import { Merger, MergeType } from "../src/models/merger.ts";
+import {
+  BuyStocks,
+  Merger,
+  MergeType,
+  TradeStats,
+} from "../src/models/merger.ts";
 import { PlaceType } from "../src/models/board.ts";
+import { stub } from "testing/mock";
+import { StdGame } from "../src/models/stdGame.ts";
+import { Player } from "../src/models/player.ts";
 
 describe("Merger class", () => {
   it("should return the game state", () => {
     const game = new StdGame([], [], []);
     const merger = new Merger(game);
 
-    assertEquals(merger.playTurn("3A"), game as Game);
+    assertEquals(merger.playTurn("3A"), game as StdGame);
   });
 
   it("should return the size of hotel", () => {
@@ -72,7 +79,7 @@ describe("Merger class", () => {
             baseTile: "",
           },
         ],
-        mergerTile: [],
+        mergerTile: null,
       },
       playersId: ["p1", "p2", "p3"],
       currentPlayerId: "p1",
@@ -138,7 +145,7 @@ describe("Merger class", () => {
     assertEquals(merger.placeTile("3A"), {
       tile: "3A",
       type: PlaceType.Merge,
-      mergeType: {
+      mergeDetails: {
         typeofMerge: MergeType.SelectiveMerge,
         hotels: [
           { name: "Imperial", size: 2 },
@@ -166,11 +173,57 @@ describe("Merger class", () => {
     assertEquals(merger.placeTile("3A"), {
       tile: "3A",
       type: PlaceType.Merge,
-      mergeType: {
+      mergeDetails: {
         typeofMerge: MergeType.AutoMerge,
         acquirer: { name: "Continental", size: 3 },
         target: { name: "Imperial", size: 2 },
       },
     });
+  });
+
+  it("should return player details", () => {
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("4A");
+    continental.addTile("5A");
+    continental.addTile("6A");
+    const game = new StdGame(
+      ["1A", "2A", "3A", "4A", "5A", "6A"],
+      ["player1"],
+      [continental, imperial],
+    );
+    const player = new Player("player1", []);
+    player.addStock(5, "Continental");
+
+    const mergerGame = new Merger(game);
+    stub(game, "getPlayer", () => player);
+    stub(game, "getPlayerDetails", () => player.getPlayerDetails());
+
+    const tradeStats: TradeStats = {
+      acquirer: "Imperial",
+      target: "Continental",
+      count: 2,
+    };
+    const playerId = "player1";
+    const sellStocks: BuyStocks[] = [{ hotel: "Continental", count: 2 }];
+    assertEquals(
+      mergerGame.tradeAndSellStocks(tradeStats, sellStocks, playerId),
+      {
+        playerId: "player1",
+        cash: 7000,
+        tiles: [],
+        stocks: {
+          Sackson: 0,
+          Tower: 0,
+          Festival: 0,
+          Worldwide: 0,
+          American: 0,
+          Continental: 1,
+          Imperial: 1,
+        },
+      },
+    );
   });
 });
