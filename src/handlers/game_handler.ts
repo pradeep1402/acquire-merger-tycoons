@@ -76,9 +76,9 @@ export const handleFoundingHotel = (ctx: Context) => {
   const game = ctx.get("game");
   const tile = ctx.req.param("tile");
   const hotel = ctx.req.param("hotel");
-  const foundedHotel = game.foundHotel(tile, hotel);
+  const status = game.foundHotel(tile, hotel);
 
-  return ctx.json(foundedHotel);
+  return ctx.json(status);
 };
 
 export const handleBuyStocks = async (ctx: Context) => {

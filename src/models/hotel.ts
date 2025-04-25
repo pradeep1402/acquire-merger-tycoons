@@ -66,7 +66,7 @@ export class Hotel {
     return this.status;
   }
 
-  areStocksEnough(delta: number) {
+  areStocksEnough(delta: number): boolean {
     return this.stocksAvailable >= delta;
   }
 

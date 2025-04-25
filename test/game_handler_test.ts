@@ -523,11 +523,14 @@ describe("App: /acquire/place-tile/:tile/:hotel", () => {
     });
 
     assertEquals(await res.json(), {
-      name: "Imperial",
-      tiles: ["3A"],
-      stocksAvailable: 24,
-      stockPrice: 400,
-      baseTile: "2A",
+      hotel: {
+        baseTile: "2A",
+        name: "Imperial",
+        stockPrice: 400,
+        stocksAvailable: 24,
+        tiles: ["3A"],
+      },
+      stockAllotted: true,
     });
     assertEquals(res.status, 200);
   });

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Board, InactiveHotels, PlaceType } from "./board.ts";
+import { Board, buildingHotel, InactiveHotels, PlaceType } from "./board.ts";
 import { HotelName, Player } from "./player.ts";
 import { Hotel } from "./hotel.ts";
 import { Merger, MergerType } from "./merger.ts";
@@ -110,7 +110,10 @@ export interface Game {
     playerId: string,
   ) => PlayerDetails | undefined | { error: string };
   placeTile: (tile: Tile) => PlaceTile | { status: boolean };
-  foundHotel: (tile: Tile, hotel: HotelName) => FoundHotel | { error: string };
+  foundHotel: (
+    tile: Tile,
+    hotel: HotelName,
+  ) => buildingHotel | { error: string };
   getPlayerIds: () => string[];
   getPlayerDetails: (playerId: string) => PlayerDetails | undefined;
   getGameStats: () => GameStats;
@@ -199,14 +202,14 @@ export class StdGame implements Game {
     return placeInfo;
   }
 
-  foundHotel(tile: Tile, hotel: HotelName): FoundHotel {
-    const buildHotel = this.board.buildHotel(tile, hotel);
+  foundHotel(tile: Tile, hotel: HotelName): buildingHotel {
+    const foundedHotel = this.board.buildHotel(tile, hotel);
     const currentPlayer = this.players[this.currentPlayerIndex];
 
-    currentPlayer.addStock(1, hotel);
+    if (foundedHotel.stockAllotted) currentPlayer.addStock(1, hotel);
     currentPlayer.removeTile(tile);
 
-    return buildHotel;
+    return foundedHotel;
   }
 
   getPlayerIds(): string[] {

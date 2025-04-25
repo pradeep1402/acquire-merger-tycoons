@@ -85,11 +85,14 @@ describe("Board class", () => {
     board.placeIndependentTile("4A");
 
     assertEquals(board.buildHotel("1A", "Imperial"), {
-      name: "Imperial",
-      tiles: ["2A"],
-      stocksAvailable: 24,
-      stockPrice: 400,
-      baseTile: "1A",
+      hotel: {
+        name: "Imperial",
+        tiles: ["2A"],
+        stocksAvailable: 24,
+        stockPrice: 400,
+        baseTile: "1A",
+      },
+      stockAllotted: true,
     });
   });
 
@@ -103,11 +106,29 @@ describe("Board class", () => {
     board.placeIndependentTile("4D");
 
     assertEquals(board.buildHotel("4C", "Imperial"), {
-      name: "Imperial",
-      tiles: ["4B", "4D"],
-      stocksAvailable: 24,
-      stockPrice: 500,
-      baseTile: "4C",
+      hotel: {
+        name: "Imperial",
+        tiles: ["4B", "4D"],
+        stocksAvailable: 24,
+        stockPrice: 500,
+        baseTile: "4C",
+      },
+      stockAllotted: true,
+    });
+  });
+
+  it("should return hotel undefined and false for stock allotted if hotel is not available", () => {
+    const hotel = new Hotel("Imperial", 2);
+    const board = new Board([hotel]);
+
+    board.placeIndependentTile("2A");
+    board.placeIndependentTile("1A");
+    board.placeIndependentTile("4B");
+    board.placeIndependentTile("4D");
+
+    assertEquals(board.buildHotel("4C", "Continental"), {
+      hotel: undefined,
+      stockAllotted: false,
     });
   });
 });

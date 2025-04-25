@@ -399,9 +399,13 @@ export class PlayerTurnView {
   }
 
   async #handleFoundHotel(tileLabel, hotelName) {
-    await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
+    const res = await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
       method: "PATCH",
     });
+
+    if (!await res.json().stockAllotted) {
+      alert("No stocks available for this hotel...");
+    }
 
     const container = document.querySelector("#popup");
     container.style.display = "none";
@@ -524,7 +528,7 @@ class MergerView {
   }
 
   // #handleMerge() {
-  //   await fetch(`/acquire/continue-merge/`)
+  //   await fetch(`/acquire/continue-merge`, {method:'PATCH',body:})
   // }
 
   #autoMerge() {

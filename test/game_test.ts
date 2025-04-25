@@ -83,11 +83,14 @@ describe("Game model", () => {
       ]);
 
       assertEquals(game.foundHotel("3A", "Imperial"), {
-        name: "Imperial",
-        tiles: [],
-        stocksAvailable: 24,
-        stockPrice: 0,
-        baseTile: "3A",
+        hotel: {
+          name: "Imperial",
+          tiles: [],
+          stocksAvailable: 24,
+          stockPrice: 0,
+          baseTile: "3A",
+        },
+        stockAllotted: true,
       });
     });
   });

@@ -28,6 +28,11 @@ export type InactiveHotels = {
   baseTile: string;
 }[];
 
+export type buildingHotel = {
+  hotel: hotel | undefined;
+  stockAllotted: boolean;
+};
+
 export class Board {
   hotels: Hotel[];
   independentTiles: Set<Tile>;
@@ -137,16 +142,17 @@ export class Board {
     });
   }
 
-  buildHotel(tile: Tile, hotelName: string): hotel | undefined {
+  buildHotel(tile: Tile, hotelName: string): buildingHotel {
     const hotel = this.hotels.find((hotel) => hotel.isAMatch(hotelName));
     const tiles = [...this.getAdjacentTiles(tile, new Set())];
 
+    const stockAllotted = hotel?.areStocksEnough(1) || false;
     hotel?.toggleStatus();
     hotel?.decrementStocks(1);
     hotel?.storeBaseTile(tile);
     this.moveToHotel(tiles, hotel);
 
-    return hotel?.getHotel();
+    return { hotel: hotel?.getHotel(), stockAllotted };
   }
 
   getBoard(): BoardReturnType {
