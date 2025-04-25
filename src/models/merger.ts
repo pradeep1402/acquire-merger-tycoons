@@ -21,13 +21,13 @@ export type MergerType =
       name: string;
       size: number;
     }[];
-    acquiring?: Hotels;
-    acquired?: Hotels;
+    acquirer?: Hotels;
+    target?: Hotels;
   }
   | {
     typeofMerge: MergeType;
-    acquiring: Hotels;
-    acquired: Hotels;
+    acquirer: Hotels;
+    target: Hotels;
     hotels?: undefined;
   };
 
@@ -88,8 +88,8 @@ export class Merger implements Game {
 
     return {
       typeofMerge: MergeType.AutoMerge,
-      acquiring: highest,
-      acquired: lowest,
+      acquirer: highest,
+      target: lowest,
     };
   }
 

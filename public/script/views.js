@@ -160,7 +160,7 @@ export class BoardView {
 
   #renderMergerTile() {
     const tileElem = document.getElementById(tile);
-    tileElem.style.backgroundColor = "lightgrey";
+    tileElem.style.backgroundColor = "red";
   }
 
   #renderHotel = ({ name, tiles, baseTile }) => {
@@ -464,7 +464,7 @@ export class PlayerTurnView {
 
     switch (placeInfo.type) {
       case "Independent":
-        await this.#placeIndependentTile(tileLabel);
+        this.#placeIndependentTile(tileLabel);
         break;
 
       case "Dependent":
@@ -476,6 +476,8 @@ export class PlayerTurnView {
         break;
 
       case "Merge":
+        console.log("switch case", placeInfo);
+        new MergerView(placeInfo.mergeType, tileLabel).merge();
         break;
     }
   }
@@ -497,9 +499,58 @@ export class PlayerTurnView {
   }
 }
 
+class MergerView {
+  #mergerEle;
+  #mergeInfo;
+  #tile;
+  constructor(mergeInfo, tile) {
+    this.#tile = tile;
+    this.#mergeInfo = mergeInfo;
+    this.#mergerEle = document.querySelector(".merge-popup");
+  }
+
+  #attachImgs(target, acquirer) {
+    const acquirerEle = this.#mergerEle.querySelector("#target");
+    acquirerEle.src = `/images/hotels/${acquirer.toLowerCase()}.png`;
+
+    const targetEle = this.#mergerEle.querySelector("#acquirer");
+    targetEle.src = `/images/hotels/${target.toLowerCase()}.png`;
+  }
+
+  #indicateMergingTile() {
+    document.getElementById(this.#tile).style.backgroundColor = "navy";
+    document.getElementById(this.#tile).style.color = "white";
+    document.getElementById(this.#tile).textContent = "Merger";
+  }
+
+  // #handleMerge() {
+  //   await fetch(`/acquire/continue-merge/`)
+  // }
+
+  #autoMerge() {
+    const { acquirer, target } = this.#mergeInfo;
+    this.#attachImgs(acquirer.name, target.name);
+    setTimeout(() => this.#toggleDisplay(), 2500);
+    this.#indicateMergingTile();
+  }
+
+  #selectiveMerge() {}
+
+  #toggleDisplay() {
+    this.#mergerEle.classList.toggle("display");
+  }
+
+  merge() {
+    console.log("merge()");
+    this.#toggleDisplay();
+    if (this.#mergeInfo.typeofMerge === "AutoMerge") return this.#autoMerge();
+    this.#selectiveMerge();
+  }
+}
+
 const hotelLookup = (name) => {
   const colors = {
-    Tower: { backgroundColor: "#ffb404", color: "black" },
+    Tower: { backgroundColor: "#ffb404", color: "white" },
     Sackson: { backgroundColor: "#ff5454", color: "white" },
     Festival: {
       backgroundColor: "#48c454",

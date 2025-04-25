@@ -307,11 +307,11 @@ describe("Game model", () => {
         tile: "8B",
         type: PlaceType.Merge,
         mergeType: {
-          acquired: {
+          target: {
             name: "Continental",
             size: 2,
           },
-          acquiring: {
+          acquirer: {
             name: "Imperial",
             size: 3,
           },

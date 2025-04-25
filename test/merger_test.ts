@@ -168,8 +168,8 @@ describe("Merger class", () => {
       type: PlaceType.Merge,
       mergeType: {
         typeofMerge: MergeType.AutoMerge,
-        acquiring: { name: "Continental", size: 3 },
-        acquired: { name: "Imperial", size: 2 },
+        acquirer: { name: "Continental", size: 3 },
+        target: { name: "Imperial", size: 2 },
       },
     });
   });

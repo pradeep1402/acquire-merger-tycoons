@@ -249,7 +249,7 @@ body {
 
 .place-tile {
   background-color: var(--independent-tile);
-  color: var(--dark-color);
+  color: var(--light-color);
   box-shadow: none;
 }
 
@@ -459,4 +459,18 @@ body {
 
 input {
   width: 55%;
+}
+
+.merge-popup {
+  /* display: flex; */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 25%;
+  left: 35%;
+  height: 40vh;
+  width: 30vw;
+  border: 1px solid var(--tray-color);
+  background-color: var(--color);
 }
