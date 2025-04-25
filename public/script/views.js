@@ -553,6 +553,76 @@ class MergerView {
   }
 }
 
+export class StockExchangeView {
+  #stockAvailable;
+  #keep;
+  #sell;
+  #trade;
+  #btn;
+
+  constructor(stocksAvailable) {
+    this.#stockAvailable = stocksAvailable;
+    this.#keep = document.querySelector("#keep");
+    this.#sell = document.querySelector("#sell");
+    this.#trade = document.querySelector("#trade");
+    this.#btn = document.querySelector("#merger");
+  }
+
+  renderKeep() {
+    this.#keep.value = this.#stockAvailable;
+    this.#keep.max = this.#stockAvailable;
+    this.#keep.min = 0;
+  }
+
+  #updateKeepAndLimits() {
+    const sell = parseInt(this.#sell.value) || 0;
+    const trade = parseInt(this.#trade.value) || 0;
+
+    const totalUsed = sell + trade * 2;
+    const remaining = Math.max(this.#stockAvailable - totalUsed, 0);
+
+    this.#keep.value = remaining;
+    this.#keep.max = remaining;
+
+    const availableForSell = this.#stockAvailable - trade * 2;
+    this.#sell.max = Math.max(availableForSell, 0);
+
+    const availableForTrade = Math.floor((this.#stockAvailable - sell) / 2);
+    this.#trade.max = Math.max(availableForTrade, 0);
+  }
+
+  renderSell() {
+    this.#sell.max = this.#stockAvailable;
+    this.#sell.min = 0;
+    this.#sell.addEventListener("input", this.#updateKeepAndLimits.bind(this));
+  }
+
+  renderTrade() {
+    const maxTradable = Math.floor(this.#stockAvailable / 2);
+    this.#trade.max = maxTradable;
+    this.#trade.min = 0;
+    this.#trade.addEventListener("input", this.#updateKeepAndLimits.bind(this));
+  }
+
+  async #completeMerge() {
+    const keep = this.#keep.value;
+    const sell = this.#sell.value;
+    const trade = this.#trade.value;
+    await fetch("/acquire/continue-merger/exchange", {
+      body: JSON.stringify({ keep, sell, trade }),
+      headers: {
+        method: "PATCH",
+      },
+    });
+  }
+  render() {
+    this.renderKeep();
+    this.renderSell();
+    this.renderTrade();
+    this.#btn.addEventListener("submit", this.#completeMerge.bind(this));
+  }
+}
+
 const hotelLookup = (name) => {
   const colors = {
     Tower: { backgroundColor: "#ffb404", color: "white" },

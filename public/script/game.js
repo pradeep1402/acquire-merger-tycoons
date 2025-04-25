@@ -1,5 +1,5 @@
 import Collapse from "./collapse.js";
-import { PlayersView, PlayerTurnView } from "./views.js";
+import { PlayersView, PlayerTurnView, StockExchangeView } from "./views.js";
 import Poller from "./polling.js";
 import { BoardView, HotelsView, PortfolioView } from "./views.js";
 
@@ -109,6 +109,7 @@ const main = () => {
   showStartingTilesPopup();
   renderGameBoard();
 
+  new StockExchangeView(40).render();
   const polling = new Poller(1000, startGamePolling);
   polling.start();
 };
