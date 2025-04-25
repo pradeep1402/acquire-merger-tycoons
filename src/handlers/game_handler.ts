@@ -82,11 +82,10 @@ export const handleFoundingHotel = (ctx: Context) => {
   return ctx.json(foundedHotel);
 };
 
-export const handleBuyStocks = (ctx: Context) => {
+export const handleBuyStocks = async (ctx: Context) => {
   const game = ctx.get("game") as Game;
   const playerId: string = ctx.get("sessionId");
-  const stocks = JSON.parse(ctx.req.header().body);
-
+  const stocks = await ctx.req.json();
   const result = game.buyStocks(stocks, playerId);
   return ctx.json(result);
 };

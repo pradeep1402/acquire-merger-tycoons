@@ -62,6 +62,12 @@ body {
   font-size: 1em;
 }
 
+.unplaced-tile {
+  box-shadow:
+    inset 0.5em 0.5em 0.1em rgba(209, 208, 208, 0.8),
+    inset -0.5em -0.5em 0.1em rgba(190, 189, 189, 0.2);
+}
+
 #tiles-popup {
   display: flex;
   flex-direction: column;
@@ -73,7 +79,6 @@ body {
   height: 40vh;
   background-color: var(--color);
   border: 1px solid var(--tray-color);
-  /* border-radius: 1%; */
   font-family: "Times New Roman", serif;
   position: absolute;
   top: 23%;
@@ -195,23 +200,12 @@ body {
   display: grid;
   grid-template-rows: repeat(2, auto);
   grid-template-columns: repeat(4, auto);
-  gap: 2% 10%;
   margin: auto;
 }
 
 .hotel-img {
-  width: 60%;
-  height: 54%;
-}
-
-.hotel-stocks {
-  height: ;
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-weight: 700;
-  width: 20%; */
+  width: 50%;
+  height: 45%;
 }
 
 #cash-info {
@@ -243,6 +237,7 @@ body {
   color: #1e2a38;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
   animation: pulse-scale 2s infinite ease-in-out;
+  cursor: pointer;
 }
 
 @keyframes pulse-scale {
@@ -257,7 +252,8 @@ body {
 
 .place-tile {
   background-color: var(--independent-tile);
-  color: var(--light-color);
+  color: var(--dark-color);
+  box-shadow: none;
 }
 
 .active-player {
@@ -266,9 +262,9 @@ body {
 
 #game-tray {
   position: absolute;
-  top: 4%;
+  top: 8%;
   right: 0;
-  height: 70vh;
+  height: 60%;
   display: flex;
   flex-direction: row;
 }
@@ -282,7 +278,6 @@ body {
   align-items: center;
   background-color: var(--tray-color);
   color: var(--light-color);
-
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
 }
@@ -290,27 +285,34 @@ body {
 #tray-body {
   padding: 1em;
   height: 100%;
-  width: 20vw;
+  width: 25vw;
   border-left: 3px solid var(--light-color);
   background-color: var(--color);
-
   color: var(--dark-color);
   flex-direction: column;
 }
 
 #stocks-section {
   height: 100%;
+  padding: 1em;
   width: 100%;
   display: grid;
-  grid-template-rows: repeat(4, auto);
-  grid-template-columns: repeat(2, auto);
-  gap: 2% 10%;
+  grid-template-rows: repeat(3, 27%);
+  grid-template-columns: repeat(3, 27%);
+  gap: 1.5em 1.5em;
   margin: auto;
 }
 
 .available-stocks {
-  width: 50%;
-  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid black; */
+  border-radius: 0.2em;
+  /* background-color: #e9e3db; */
+  box-shadow: 0px 0px 10px lightgray;
+  z-index: 1;
 }
 
 #popup {
@@ -357,7 +359,7 @@ body {
 .select-hotel {
   width: 60px;
   height: 60px;
-  background-size: contain; /* or use 'cover' */
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   border: 1px solid #ccc;
@@ -365,6 +367,7 @@ body {
 }
 
 .tower {
+  box-shadow: none;
   background-color: whitesmoke;
   background-image: url("/images/hotels/tower.png");
   background-position: center;
@@ -373,6 +376,7 @@ body {
 }
 
 .imperial {
+  box-shadow: none;
   background-color: whitesmoke;
   background-image: url("/images/hotels/imperial.png");
   background-position: center;
@@ -381,6 +385,7 @@ body {
 }
 
 .continental {
+  box-shadow: none;
   background-color: whitesmoke;
   background-image: url("/images/hotels/continental.png");
   background-position: center;
@@ -389,6 +394,7 @@ body {
 }
 
 .sackson {
+  box-shadow: none;
   background-color: whitesmoke;
   background-image: url("/images/hotels/sackson.png");
   background-position: center;
@@ -397,6 +403,7 @@ body {
 }
 
 .worldwide {
+  box-shadow: none;
   background-color: whitesmoke;
   background-image: url("/images/hotels/worldwide.png");
   background-position: center;
@@ -405,6 +412,7 @@ body {
 }
 
 .american {
+  box-shadow: none;
   background-color: whitesmoke;
   background-image: url("/images/hotels/american.png");
   background-position: center;
@@ -413,6 +421,7 @@ body {
 }
 
 .festival {
+  box-shadow: none;
   background-color: whitesmoke;
   background-image: url("/images/hotels/festival.png");
   background-position: center;

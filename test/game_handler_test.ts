@@ -622,10 +622,10 @@ describe("buyStocks() method", () => {
     const stocks: buyStocks[] = [{ hotel: "Imperial", count: 3 }];
     const res = await app.request("/acquire/buy-stocks", {
       method: "PATCH",
+      body: JSON.stringify(stocks),
       headers: {
         "content-type": "application/json",
         cookie: "sessionId=2;gameId=4",
-        body: JSON.stringify(stocks),
       },
     });
 

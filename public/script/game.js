@@ -25,6 +25,7 @@ const placeDependentTile = async ({ tile, hotel }, poller) => {
   placedTile.style.backgroundColor = hotelLookup(hotel.name).backgroundColor;
   await buyStocks(poller);
 };
+
 const changeTurn = async (poller) => {
   const res = await fetch("/acquire/end-turn", {
     method: "PATCH",
@@ -98,9 +99,14 @@ const renderSelectHotel = async (inActiveHotels, tileLabel, poller) => {
   if (inActiveHotels.length === 0) return await buyStocks(poller);
 };
 
+const makeTilePlaced = (id) => {
+  document.getElementById(id).classList.remove("unplaced-tile");
+};
+
 const createTileClickHandler =
   (tiles, poller, activeHotels) => async (event) => {
     const id = event.target.id;
+    makeTilePlaced(id);
 
     if (!tiles.includes(id)) return;
 
@@ -113,14 +119,17 @@ const createTileClickHandler =
 
     if (placeInfo.type === "Independent") {
       await placeIndependentTile(placeInfo, poller, activeHotels);
+      return;
     }
 
     if (placeInfo.type === "Dependent") {
       await placeDependentTile(placeInfo, poller);
+      return;
     }
 
     if (placeInfo.type === "Build") {
       renderSelectHotel(placeInfo.inActiveHotels, id, poller);
+      return;
     }
 
     if (placeInfo.type === "Merge") {
@@ -327,10 +336,8 @@ const attachInputHandlers = (input) => {
   });
 };
 
-const debitCash = (stockPrice) => {
-  const cash = document.getElementById("cash-available");
+const debitCash = (cash, stockPrice) => {
   const amount = Number(cash.textContent);
-
   cash.textContent = amount - stockPrice;
 };
 
@@ -341,30 +348,29 @@ const creditCash = (stockPrice) => {
   cash.textContent = amount + stockPrice;
 };
 
+const incrementValue = (input, stockPrice) => {
+  const cash = document.getElementById("cash-available");
+  const amount = Number(cash.textContent);
+  const balance = amount - Number(stockPrice);
+  if (balance < 0) {
+    alert("Insufficient balance");
+    return;
+  }
+  input.stepUp();
+  debitCash(cash, stockPrice);
+  // input.dispatchEvent(new Event("input"));
+};
+
+const decrementValue = (input, stockPrice) => {
+  input.stepDown();
+  creditCash(stockPrice);
+};
+
 const attachStepButtons = (stockPrice, template, input) => {
   const [decrement, increment] = template.querySelectorAll("button");
 
-  increment.addEventListener("click", () => {
-    const prevValue = parseInt(input.value);
-    input.stepUp();
-    const newValue = parseInt(input.value);
-
-    if (newValue > prevValue) {
-      debitCash(stockPrice);
-      input.dispatchEvent(new Event("input"));
-    }
-  });
-
-  decrement.addEventListener("click", () => {
-    const prevValue = parseInt(input.value);
-    input.stepDown();
-    const newValue = parseInt(input.value);
-
-    if (newValue < prevValue) {
-      creditCash(stockPrice);
-      input.dispatchEvent(new Event("input"));
-    }
-  });
+  increment.addEventListener("click", () => incrementValue(input, stockPrice));
+  decrement.addEventListener("click", () => decrementValue(input, stockPrice));
 };
 
 const renderHotel = ({ name, stocksAvailable, stockPrice }) => {
@@ -393,9 +399,8 @@ const setCash = (amount) => {
   cashAvailable.textContent = amount;
 };
 
-const handleBuy = async () => {
+const handleBuy = async (poller) => {
   const activeHotels = document.getElementById("active-hotels");
-  console.log(activeHotels);
   const children = activeHotels.children;
   const stocksToBuy = [];
 
@@ -405,21 +410,19 @@ const handleBuy = async () => {
     if (count) stocksToBuy.push({ hotel, count });
   }
 
-  console.log(stocksToBuy);
   const buyStocksEle = document.getElementById("buy-stocks");
   buyStocksEle.classList.remove("display");
-  const res = await fetch("/acquire/buy-stocks", {
+  await fetch("/acquire/buy-stocks", {
     method: "PATCH",
+    body: JSON.stringify(stocksToBuy),
     headers: {
       "content-type": "application/json",
-      body: JSON.stringify(stocksToBuy),
     },
   });
-  console.log(await res.json());
   await changeTurn(poller);
 };
 
-const buyStocks = async () => {
+const buyStocks = async (poller) => {
   const { board, playerPortfolio } = await getResource("/acquire/game-stats");
   const { activeHotels } = board;
   const { cash } = playerPortfolio;
@@ -427,7 +430,7 @@ const buyStocks = async () => {
   buyStocksEle.classList.add("display");
 
   const submit = document.getElementById("buy");
-  submit.addEventListener("click", handleBuy);
+  submit.addEventListener("click", () => handleBuy(poller), { once: true });
 
   setCash(cash);
   renderAllHotels(activeHotels);

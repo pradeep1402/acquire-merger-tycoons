@@ -24,7 +24,6 @@ class CashView {
 
   render() {
     const cashInfo = document.querySelector("#money-available");
-
     cashInfo.textContent = `$${this.#cash}`;
   }
 }
@@ -80,8 +79,8 @@ class HotelView {
 
     img.src = `/images/hotels/${this.#name.toLowerCase()}.png`;
     hotelName.textContent = this.#name;
-    stockCount.textContent = this.#stocksAvailable;
-    price.textContent = this.#stockPrice;
+    stockCount.textContent = `Left:${this.#stocksAvailable}`;
+    price.textContent = `Value:$${this.#stockPrice}`;
     hotelStocks.classList.add("available-stocks");
 
     return hotelStocks;

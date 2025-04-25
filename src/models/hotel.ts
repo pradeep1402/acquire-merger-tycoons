@@ -36,7 +36,7 @@ export class Hotel {
       (s) => this.getSize() >= s.from && this.getSize() <= s.to,
     );
 
-    return stockPrice?.value ? stockPrice?.value + 100 * this.offset : 0;
+    return stockPrice?.value ? stockPrice.value + 100 * this.offset : 0;
   }
 
   getPrimaryBonus() {

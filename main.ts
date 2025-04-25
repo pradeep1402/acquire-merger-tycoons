@@ -1,7 +1,6 @@
 import { createApp } from "./src/app.ts";
 import { GameManager } from "./src/models/game_manager.ts";
 import { Sessions } from "./src/models/sessions.ts";
-
 import { Lobby } from "./src/models/lobby.ts";
 
 const main = () => {
