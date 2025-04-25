@@ -1,4 +1,4 @@
-import { cloneTemplates } from "./game.js";
+import { cloneTemplates, hotelLookup } from "./game.js";
 
 class TileView {
   #label;
@@ -40,8 +40,9 @@ export class PortfolioView {
   }
 
   #renderStocks([name, count]) {
-    const hotelStocks = cloneTemplates("stocks-template")
-      .querySelector(".hotel-stocks");
+    const hotelStocks = cloneTemplates("stocks-template").querySelector(
+      ".hotel-stocks",
+    );
     const [img, hotelName, stockCount] = hotelStocks.children;
 
     img.src = `/images/hotels/${name.toLowerCase()}.png`;
@@ -73,8 +74,9 @@ class HotelView {
   }
 
   renderStocks() {
-    const hotelStocks = cloneTemplates("stocks-template")
-      .querySelector(".hotel-stocks");
+    const hotelStocks = cloneTemplates("stocks-template").querySelector(
+      ".hotel-stocks",
+    );
     const [img, hotelName, stockCount, price] = hotelStocks.children;
 
     img.src = `/images/hotels/${this.#name.toLowerCase()}.png`;
@@ -101,7 +103,8 @@ export class HotelsView {
 
   renderStocks() {
     const stocksSection = document.querySelector("#stocks-section");
-    const hotelElements = this.#activeHotels.concat(this.#inactiveHotels)
+    const hotelElements = this.#activeHotels
+      .concat(this.#inactiveHotels)
       .map((hotel) => HotelView.fromHotel(hotel))
       .map((hotelView) => hotelView.renderStocks());
 
@@ -134,5 +137,51 @@ export class PlayersView {
     const playersEle = this.#players.map(this.#createPlayerAvatar.bind(this));
 
     playerSection.replaceChildren(...playersEle);
+  }
+}
+
+export class BoardView {
+  #independentTiles;
+  #hotelTiles;
+  #mergerTiles;
+
+  constructor({ independentTiles, activeHotels = [], mergerTiles = [] }) {
+    this.#independentTiles = independentTiles;
+    this.#hotelTiles = activeHotels;
+    this.#mergerTiles = mergerTiles;
+  }
+
+  #renderIndependentTile() {
+    this.#independentTiles.forEach((tile) => {
+      const tileNode = document.getElementById(tile);
+      tileNode.classList.add("place-tile");
+    });
+  }
+
+  #renderMergerTile() {
+    const tileElem = document.getElementById(tile);
+    tileElem.style.backgroundColor = "lightgrey";
+  }
+
+  #renderHotel = ({ name, tiles, baseTile }) => {
+    const hotelTile = document.getElementById(baseTile);
+    hotelTile.classList.add(name.toLowerCase());
+    hotelTile.textContent = "";
+
+    tiles.forEach((tile) => {
+      const tileNode = document.getElementById(tile);
+      tileNode.style.backgroundColor = hotelLookup(name).backgroundColor;
+      tileNode.style.color = hotelLookup(name).color;
+    });
+  };
+
+  #renderHotelTiles() {
+    this.#hotelTiles.forEach(this.#renderHotel);
+  }
+
+  render() {
+    this.#renderIndependentTile();
+    if (this.#mergerTiles.length) this.#renderMergerTile();
+    if (this.#hotelTiles.length) this.#renderHotelTiles();
   }
 }

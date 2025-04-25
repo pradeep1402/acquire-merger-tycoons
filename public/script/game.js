@@ -1,8 +1,7 @@
 import Collapse from "./collapse.js";
 import { PlayersView } from "./views.js";
 import Poller from "./polling.js";
-import { HotelsView } from "./views.js";
-import { PortfolioView } from "./views.js";
+import { BoardView, HotelsView, PortfolioView } from "./views.js";
 
 const getResource = async (path) => {
   try {
@@ -99,14 +98,9 @@ const renderSelectHotel = async (inActiveHotels, tileLabel, poller) => {
   if (inActiveHotels.length === 0) return await buyStocks(poller);
 };
 
-const makeTilePlaced = (id) => {
-  document.getElementById(id).classList.remove("unplaced-tile");
-};
-
 const createTileClickHandler =
   (tiles, poller, activeHotels) => async (event) => {
     const id = event.target.id;
-    makeTilePlaced(id);
 
     if (!tiles.includes(id)) return;
 
@@ -183,14 +177,7 @@ const renderPortfolio = ({ tiles, stocks, cash }) => {
   new PortfolioView(tiles, stocks, cash).renderPortfolio();
 };
 
-const renderIndependentTiles = (tiles) => {
-  tiles.forEach((tile) => {
-    const tileNode = document.getElementById(tile);
-    tileNode.classList.add("place-tile");
-  });
-};
-
-const hotelLookup = (name) => {
+export const hotelLookup = (name) => {
   const colors = {
     Tower: { backgroundColor: "#ffb404", color: "black" },
     Sackson: { backgroundColor: "#ff5454", color: "white" },
@@ -219,41 +206,13 @@ const hotelLookup = (name) => {
   return colors[name];
 };
 
-const displayHotelIcon = (name, tile) => {
-  const tileElem = document.getElementById(tile);
-  tileElem.classList.add(name.toLowerCase());
-  tileElem.textContent = "";
-};
-
-const renderAHotel = ({ name, tiles, baseTile }) => {
-  displayHotelIcon(name, baseTile);
-
-  tiles.forEach((t) => {
-    const tile = document.getElementById(t);
-    tile.style.backgroundColor = hotelLookup(name).backgroundColor;
-    tile.style.color = hotelLookup(name).color;
-  });
-};
-
-const renderHotels = (hotels) => {
-  hotels.forEach((h) => {
-    renderAHotel(h);
-  });
-};
-
 const renderMergerTile = (tile) => {
   const tileElem = document.getElementById(tile);
   tileElem.style.backgroundColor = "lightgrey";
 };
 
 const renderPlaceTilesBoard = (board) => {
-  const { independentTiles, activeHotels, mergerTile } = board;
-  renderIndependentTiles(independentTiles);
-
-  if (!activeHotels) return;
-  if (mergerTile.length) renderMergerTile(mergerTile[0]);
-
-  renderHotels(activeHotels);
+  new BoardView(board).render();
 };
 
 const renderStocksAndInactiveHotels = (inActiveHotels, activeHotels) => {
@@ -358,7 +317,6 @@ const incrementValue = (input, stockPrice) => {
   }
   input.stepUp();
   debitCash(cash, stockPrice);
-  // input.dispatchEvent(new Event("input"));
 };
 
 const decrementValue = (input, stockPrice) => {

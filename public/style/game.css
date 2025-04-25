@@ -60,12 +60,9 @@ body {
   color: var(--dark-color);
   background-color: var(--tile-color);
   font-size: 1em;
-}
-
-.unplaced-tile {
   box-shadow:
-    inset 0.5em 0.5em 0.1em rgba(209, 208, 208, 0.8),
-    inset -0.5em -0.5em 0.1em rgba(190, 189, 189, 0.2);
+    inset 0.5em 0.5em 0.1em rgba(209, 208, 208, 0.3),
+    inset -0.5em -0.5em 0.1em rgba(190, 189, 189, 0.1);
 }
 
 #tiles-popup {
