@@ -203,7 +203,6 @@ class BuyStocksView {
 
   #updateMax() {
     const allInputs = this.#hotelsContainer.querySelectorAll("input");
-    const maxAllowed = 3;
 
     const totalSelected = Array.from(allInputs).reduce((sum, input) => {
       return sum + parseInt(input.value || 0);
@@ -212,7 +211,7 @@ class BuyStocksView {
     allInputs.forEach((input) => {
       const currentValue = parseInt(input.value || 0);
       const otherTotal = totalSelected - currentValue;
-      input.max = Math.max(0, maxAllowed - otherTotal);
+      input.max = Math.max(0, input.max - otherTotal);
     });
   }
 
@@ -288,7 +287,14 @@ class BuyStocksView {
   }
 
   #renderAllHotels() {
-    const hotelNode = this.#activeHotels.map((hotel) => {
+    const hotels = this.#activeHotels.filter(
+      ({ stocksAvailable }) => stocksAvailable,
+    );
+    if (!hotels.length) return this.#changeTurn();
+
+    const buyStocksEle = document.getElementById("buy-stocks");
+    buyStocksEle.classList.add("display");
+    const hotelNode = hotels.map((hotel) => {
       return this.#renderHotel(hotel);
     });
     this.#hotelsContainer.replaceChildren(...hotelNode);
@@ -323,7 +329,6 @@ class BuyStocksView {
   }
 
   async #changeTurn() {
-    console.log(`from change turn`, this.#poller);
     await fetch("/acquire/end-turn", { method: "PATCH" });
     this.#poller.start();
   }
@@ -332,8 +337,6 @@ class BuyStocksView {
     if (this.#activeHotels.length <= 0) {
       return this.#changeTurn();
     }
-    const buyStocksEle = document.getElementById("buy-stocks");
-    buyStocksEle.classList.add("display");
 
     const submit = document.getElementById("buy");
     submit.addEventListener("click", this.#handleBuy.bind(this), {
