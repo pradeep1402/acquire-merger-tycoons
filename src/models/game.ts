@@ -26,7 +26,6 @@ export type PlayerDetails = {
     Imperial: number;
   };
 };
-
 export type BoardDetails = {
   independentTiles: string[];
   activeHotels: {
