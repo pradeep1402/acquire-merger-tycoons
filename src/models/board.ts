@@ -8,6 +8,7 @@ export enum PlaceType {
   Dependent = "Dependent",
   Independent = "Independent",
   Merge = "Merge",
+  InValid = "Invalid",
 }
 
 export class Board {
@@ -21,7 +22,7 @@ export class Board {
     this.mergerTile = [];
   }
 
-  private getInActiveHotels() {
+  private getInactiveHotels() {
     return this.hotels
       .filter((hotel) => !hotel.isActive())
       .map((hotel) => hotel.getHotel());
@@ -40,8 +41,11 @@ export class Board {
 
   getPlaceTileType(tile: Tile) {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
-    const inActiveHotels = this.getInActiveHotels();
+    const inActiveHotels = this.getInactiveHotels();
     if (this.isMerger(tile)) {
+      this.validateMergeTile(tile);
+      // const validation = this.validateMergeTile(tile);
+      // if (!validation) return { tile, type: PlaceType.InValid };
       return { tile, type: PlaceType.Merge };
     }
 
@@ -59,9 +63,26 @@ export class Board {
     };
   }
 
+  // isGameEnd() {
+  //   const hotelWith41 = this.hotels.filter((hotel) => hotel.getSize() >= 41);
+  //   if (hotelWith41.length) return true;
+  //   const hotelsInSafeState = this.hotels.filter(
+  //     (hotel) => hotel.getSize() >= 11
+  //   );
+  //   if (hotelsInSafeState.length === 7) return true;
+  //   return false;
+  // }
+
+  private validateMergeTile(tile: Tile) {
+    const hotelsInMerge = this.dependentHotels(tile);
+    console.log(hotelsInMerge);
+
+    return true;
+  }
+
   placeATile(tile: Tile) {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
-    const inActiveHotels = this.getInActiveHotels();
+    const inActiveHotels = this.getInactiveHotels();
     if (this.isMerger(tile)) {
       this.mergerTile.push(tile);
       return { tile, type: PlaceType.Merge };
@@ -79,7 +100,7 @@ export class Board {
     }
 
     return {
-      inActiveHotels: this.getInActiveHotels(),
+      inActiveHotels: this.getInactiveHotels(),
       type: PlaceType.Build,
       tile,
     };
@@ -110,7 +131,7 @@ export class Board {
 
   getBoard() {
     const activeHotels = this.getActiveHotels();
-    const inActiveHotels = this.getInActiveHotels();
+    const inActiveHotels = this.getInactiveHotels();
 
     return {
       independentTiles: [...this.independentTiles],
@@ -179,6 +200,10 @@ export class Board {
   isMerger(tile: Tile) {
     return this.dependentHotels(tile).length > 1;
   }
+
+  // getHotelsInMerger(tile: Tile) {
+  //   return this.dependentHotels(tile);
+  // }
 
   dependentHotels(tile: Tile): Hotel[] {
     const adjacentTiles = this.getAdjacentTilesOf(tile);

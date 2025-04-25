@@ -83,6 +83,10 @@ export class Hotel {
     return this.tiles.size + (this.isActive() ? 1 : 0);
   }
 
+  getHotelName() {
+    return this.name;
+  }
+
   isTileBelongs(tile: Tile) {
     return this.tiles.has(tile) || this.baseTile === tile;
   }

@@ -29,6 +29,7 @@ export class Game implements InterfaceGame {
 
   playTurn(tile: Tile): InterfaceGame {
     const placeInfo = this.board.getPlaceTileType(tile);
+
     if (placeInfo.type === PlaceType.Merge) {
       return new Merger(this);
     }
@@ -126,6 +127,12 @@ export class Game implements InterfaceGame {
   private getCurrentPlayer() {
     return this.players[this.currentPlayerIndex].getPlayerDetails().playerId;
   }
+
+  getHotelsInMerge(tile: Tile) {
+    return this.board.dependentHotels(tile);
+  }
+
+  // getSizeOfHotel(hotelName: string) {}
 
   getGameStats() {
     const board = this.getBoard();

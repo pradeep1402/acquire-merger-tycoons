@@ -3,7 +3,7 @@ import { describe, it } from "testing/bdd";
 import { buyStocks, Game } from "../src/models/game.ts";
 import { PlaceType } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
-import { Merger } from "../src/models/merger.ts";
+import { Merger, MergeType } from "../src/models/merger.ts";
 
 describe("Game model", () => {
   describe("getPlayerIds(", () => {
@@ -198,6 +198,18 @@ describe("Game model", () => {
       ];
       const result = game.buyStocks(stocks, "Malli");
       const mergeGame = game.playTurn("9A") as Merger;
+      assertEquals(mergeGame.placeTile("9A"), {
+        tile: "9A",
+        type: PlaceType.Merge,
+        mergeType: {
+          typeofMerge: MergeType.SelectiveMerge,
+          hotels: [
+            { name: "Imperial", size: 2 },
+            { name: "Continental", size: 2 },
+          ],
+        },
+      });
+
       assertEquals(mergeGame.getState(), game);
       assertEquals(game.placeTile("9A"), { tile: "9A", type: PlaceType.Merge });
 
@@ -214,6 +226,138 @@ describe("Game model", () => {
           Continental: 2,
           Imperial: 2,
         },
+      });
+    });
+  });
+
+  describe("Testing mergers", () => {
+    it("testing merger class when there two hotel merging of same size", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(
+        [
+          "1A",
+          "2A",
+          "5A",
+          "6A",
+          "7A",
+          "8A",
+          "9A",
+          "10A",
+          "11A",
+          "12A",
+          "1B",
+          "2B",
+          "3B",
+          "4B",
+          "5B",
+          "6B",
+          "7B",
+          "9B",
+          "10B",
+          "11B",
+        ],
+        players,
+        [new Hotel("Imperial", 2), new Hotel("Continental", 2)],
+      );
+      game.placeTile("8A");
+      game.changeTurn();
+      game.foundHotel("7A", "Imperial");
+      game.changeTurn();
+      game.placeTile("9B");
+      game.changeTurn();
+      game.foundHotel("10B", "Continental");
+      game.changeTurn();
+      const stocks: buyStocks[] = [
+        { hotel: "Imperial", count: 1 },
+        { hotel: "Continental", count: 2 },
+      ];
+      const result = game.buyStocks(stocks, "Malli");
+      const mergeGame = game.playTurn("9A") as Merger;
+      assertEquals(mergeGame.placeTile("9A"), {
+        tile: "9A",
+        type: PlaceType.Merge,
+        mergeType: {
+          typeofMerge: MergeType.SelectiveMerge,
+          hotels: [
+            { name: "Imperial", size: 2 },
+            { name: "Continental", size: 2 },
+          ],
+        },
+      });
+
+      assertEquals(mergeGame.getState(), game);
+      assertEquals(game.placeTile("9A"), {
+        tile: "9A",
+        type: PlaceType.Merge,
+      });
+
+      assertEquals(result, {
+        playerId: "Malli",
+        cash: 4800,
+        tiles: ["9A", "10A", "11A", "12A", "1B", "2B", "11B"],
+        stocks: {
+          Sackson: 0,
+          Tower: 0,
+          Festival: 0,
+          Worldwide: 0,
+          American: 0,
+          Continental: 2,
+          Imperial: 2,
+        },
+      });
+    });
+    it("testing merger class when there two hotel merging of same differents", () => {
+      const players: string[] = ["Adi", "Malli", "Aman"];
+      const game = new Game(
+        [
+          "6A",
+          "7A",
+          "8A",
+          "9A",
+          "9B",
+          "10B",
+          "11B",
+          "10A",
+          "6B",
+          "7B",
+          "12B",
+          "1C",
+        ],
+        players,
+        [new Hotel("Imperial", 2), new Hotel("Continental", 2)],
+      );
+      game.placeTile("8A");
+
+      game.foundHotel("7A", "Imperial");
+
+      game.placeTile("6A");
+
+      game.placeTile("9B");
+
+      game.foundHotel("10B", "Continental");
+
+      const mergeGame = game.playTurn("8B") as Merger;
+
+      assertEquals(mergeGame.placeTile("8B"), {
+        tile: "8B",
+        type: PlaceType.Merge,
+        mergeType: {
+          acquired: {
+            name: "Continental",
+            size: 2,
+          },
+          acquiring: {
+            name: "Imperial",
+            size: 3,
+          },
+          typeofMerge: MergeType.AutoMerge,
+        },
+      });
+
+      assertEquals(mergeGame.getState(), game);
+      assertEquals(game.placeTile("9A"), {
+        tile: "9A",
+        type: PlaceType.Merge,
       });
     });
   });

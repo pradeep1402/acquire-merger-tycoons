@@ -1,4 +1,4 @@
-import { CurrentGame } from "./CurrentClass.ts";
+import { CurrentGame } from "./CurrentGame.ts";
 import { Game } from "./game.ts";
 import { Hotel } from "./hotel.ts";
 import _ from "lodash";
