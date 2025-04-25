@@ -1,6 +1,6 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
-import { PlaceType } from "../src/models/board.ts";
+import { TileStatus } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
 import { BuyStocks, Merger, MergeType } from "../src/models/merger.ts";
 import { StdGame } from "../src/models/stdGame.ts";
@@ -73,7 +73,7 @@ describe("Game model", () => {
 
       assertEquals(game.placeTile("1A"), {
         tile: "1A",
-        type: PlaceType.Independent,
+        type: TileStatus.Independent,
       });
     });
 
@@ -94,7 +94,7 @@ describe("Game model", () => {
           },
         ],
         tile: "1A",
-        type: PlaceType.Build,
+        type: TileStatus.Build,
       });
     });
   });
@@ -192,7 +192,7 @@ describe("Game model", () => {
       const mergeGame = game.playTurn("9A") as Merger;
       assertEquals(mergeGame.placeTile("9A"), {
         tile: "9A",
-        type: PlaceType.Merge,
+        type: TileStatus.Merge,
         mergeDetails: {
           typeofMerge: MergeType.SelectiveMerge,
           hotels: [
@@ -203,7 +203,10 @@ describe("Game model", () => {
       });
 
       assertEquals(mergeGame.getState(), game);
-      assertEquals(game.placeTile("9A"), { tile: "9A", type: PlaceType.Merge });
+      assertEquals(game.placeTile("9A"), {
+        tile: "9A",
+        type: TileStatus.Merge,
+      });
 
       assertEquals(result, {
         playerId: "Malli",
@@ -267,7 +270,7 @@ describe("Game model", () => {
       const mergeGame = game.playTurn("9A") as Merger;
       assertEquals(mergeGame.placeTile("9A"), {
         tile: "9A",
-        type: PlaceType.Merge,
+        type: TileStatus.Merge,
         mergeDetails: {
           typeofMerge: MergeType.SelectiveMerge,
           hotels: [
@@ -280,7 +283,7 @@ describe("Game model", () => {
       assertEquals(mergeGame.getState(), game);
       assertEquals(game.placeTile("9A"), {
         tile: "9A",
-        type: PlaceType.Merge,
+        type: TileStatus.Merge,
       });
 
       assertEquals(result, {
@@ -333,7 +336,7 @@ describe("Game model", () => {
 
       assertEquals(mergeGame.placeTile("8B"), {
         tile: "8B",
-        type: PlaceType.Merge,
+        type: TileStatus.Merge,
         mergeDetails: {
           target: {
             name: "Continental",
@@ -352,7 +355,7 @@ describe("Game model", () => {
       assertEquals(mergeGame.getState(), game);
       assertEquals(game.placeTile("9A"), {
         tile: "9A",
-        type: PlaceType.Merge,
+        type: TileStatus.Merge,
       });
     });
   });

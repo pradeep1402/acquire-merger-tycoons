@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Board, buildingHotel, PlaceType } from "./board.ts";
+import { Board, buildingHotel, TileStatus } from "./board.ts";
 import { HotelName, Player } from "./player.ts";
 import { Hotel } from "./hotel.ts";
 import { BuyStocks, Merger, TradeStats } from "./merger.ts";
@@ -28,7 +28,7 @@ export class StdGame implements Game {
   playTurn(tile: Tile): Game {
     const placeInfo = this.board.getPlaceTileType(tile);
 
-    if (placeInfo.type === PlaceType.Merge) {
+    if (placeInfo.type === TileStatus.Merge) {
       return new Merger(this);
     }
     return this;
@@ -80,11 +80,13 @@ export class StdGame implements Game {
   placeTile(tile: Tile): PlaceTile | { status: boolean } {
     const currentPlayer = this.players[this.currentPlayerIndex];
 
-    if (!currentPlayer.isTileExits(tile)) return { status: false };
+    if (!currentPlayer.hasTile(tile)) return { status: false };
 
     const placeInfo = this.board.placeATile(tile);
 
-    if ([PlaceType.Dependent, PlaceType.Independent].includes(placeInfo.type)) {
+    if (
+      [TileStatus.Dependent, TileStatus.Independent].includes(placeInfo.type)
+    ) {
       currentPlayer.removeTile(tile);
       return placeInfo;
     }

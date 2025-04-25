@@ -7,10 +7,10 @@ import {
   MergeType,
   TradeStats,
 } from "../src/models/merger.ts";
-import { PlaceType } from "../src/models/board.ts";
 import { stub } from "testing/mock";
 import { StdGame } from "../src/models/stdGame.ts";
 import { Player } from "../src/models/player.ts";
+import { TileStatus } from "../src/models/board.ts";
 
 describe("Merger class", () => {
   it("should return the game state", () => {
@@ -144,7 +144,7 @@ describe("Merger class", () => {
 
     assertEquals(merger.placeTile("3A"), {
       tile: "3A",
-      type: PlaceType.Merge,
+      type: TileStatus.Merge,
       mergeDetails: {
         typeofMerge: MergeType.SelectiveMerge,
         hotels: [
@@ -172,7 +172,7 @@ describe("Merger class", () => {
 
     assertEquals(merger.placeTile("3A"), {
       tile: "3A",
-      type: PlaceType.Merge,
+      type: TileStatus.Merge,
       mergeDetails: {
         typeofMerge: MergeType.AutoMerge,
         acquirer: { name: "Continental", size: 3, baseTile: "" },

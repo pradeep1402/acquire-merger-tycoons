@@ -1,6 +1,6 @@
 import { assert, assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
-import { Board, PlaceType } from "../src/models/board.ts";
+import { Board, TileStatus } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
 
 describe("Board class", () => {
@@ -267,9 +267,9 @@ describe("getPlaceTileType(tile) method", () => {
     board.placeIndependentTile("4A");
     board.placeIndependentTile("3A");
     const type = board.getPlaceTileType("2A");
-    assertEquals(type.type, PlaceType.Build);
+    assertEquals(type.type, TileStatus.Build);
     assertEquals(board.placeATile("2A"), {
-      type: PlaceType.Build,
+      type: TileStatus.Build,
       inActiveHotels: [
         {
           name: "Imperial",
@@ -290,7 +290,7 @@ describe("getPlaceTileType(tile) method", () => {
     board.placeIndependentTile("1A");
     board.buildHotel("2A", "Imperial");
     const type = board.getPlaceTileType("3A");
-    assertEquals(type.type, PlaceType.Dependent);
+    assertEquals(type.type, TileStatus.Dependent);
     assertEquals(board.placeATile("3A"), {
       hotel: {
         baseTile: "2A",
@@ -299,7 +299,7 @@ describe("getPlaceTileType(tile) method", () => {
         stocksAvailable: 24,
         tiles: ["1A", "3A"],
       },
-      type: PlaceType.Dependent,
+      type: TileStatus.Dependent,
       tile: "3A",
     });
   });

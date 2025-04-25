@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { HotelName, Player } from "./player.ts";
 import { Game, PlaceTile, PlayerDetails, Tile } from "./game.ts";
-import { PlaceType } from "./board.ts";
+import { TileStatus } from "./board.ts";
 import { Hotel } from "./hotel.ts";
 import { StdGame } from "./stdGame.ts";
 
@@ -60,7 +60,7 @@ export class Merger implements Game {
     const hotelsInMerge = game.getAffectedHotels(tile);
 
     const mergeDetails = this.findMergeType(hotelsInMerge);
-    return { tile, type: PlaceType.Merge, mergeDetails };
+    return { tile, type: TileStatus.Merge, mergeDetails };
   }
 
   private isEveryHotelOfSameSize(hotels: HotelDetails[]) {

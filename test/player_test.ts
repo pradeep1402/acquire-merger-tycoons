@@ -58,19 +58,19 @@ describe("Player model", () => {
     });
   });
 
-  describe("isTileExits() method", () => {
+  describe("hasTile() method", () => {
     it("should return true when player has the tile ", () => {
       const tiles: string[] = ["1A", "2A"];
       const player = new Player("121", tiles);
 
-      assert(player.isTileExits("1A"));
+      assert(player.hasTile("1A"));
     });
 
     it("should return false when player doesn't have the tile ", () => {
       const tiles: string[] = ["1A", "2A"];
       const player = new Player("121", tiles);
 
-      assertFalse(player.isTileExits("3A"));
+      assertFalse(player.hasTile("3A"));
     });
   });
 

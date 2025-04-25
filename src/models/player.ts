@@ -77,7 +77,7 @@ export class Player {
     return [...this.tiles];
   }
 
-  isTileExits(tile: string) {
+  hasTile(tile: string) {
     return this.tiles.has(tile);
   }
 

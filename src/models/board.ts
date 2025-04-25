@@ -4,7 +4,7 @@ import _ from "lodash";
 
 type Tile = string;
 
-export enum PlaceType {
+export enum TileStatus {
   Build = "Build",
   Dependent = "Dependent",
   Independent = "Independent",
@@ -63,7 +63,7 @@ export class Board {
 
   getPlaceTileType(tile: Tile): {
     tile: string;
-    type: PlaceType;
+    type: TileStatus;
   } {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInactiveHotels();
@@ -72,19 +72,19 @@ export class Board {
       this.mergerTile = tile;
       // const validation = this.validateMergeTile(tile);
       // if (!validation) return { tile, type: PlaceType.InValid };
-      return { tile, type: PlaceType.Merge };
+      return { tile, type: TileStatus.Merge };
     }
 
     if (this.isDependent(tile)) {
-      return { tile, type: PlaceType.Dependent };
+      return { tile, type: TileStatus.Dependent };
     }
 
     if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
-      return { tile, type: PlaceType.Independent };
+      return { tile, type: TileStatus.Independent };
     }
 
     return {
-      type: PlaceType.Build,
+      type: TileStatus.Build,
       tile,
     };
   }
@@ -97,26 +97,28 @@ export class Board {
   }
 
   placeATile(tile: Tile): PlaceTile {
-    const adjacentTiles = this.getAdjacentTiles(tile, new Set());
-    const inActiveHotels = this.getInactiveHotels();
     if (this.isMerger(tile)) {
-      return { tile, type: PlaceType.Merge };
+      this.mergerTile = tile;
+
+      return { tile, type: TileStatus.Merge };
     }
 
+    const adjacentTiles = this.getAdjacentTiles(tile);
     if (this.isDependent(tile)) {
       const [hotel] = this.dependentHotels(tile);
       this.moveToHotel([...adjacentTiles, tile], hotel);
-      return { tile, type: PlaceType.Dependent, hotel: hotel.getHotel() };
+      return { tile, type: TileStatus.Dependent, hotel: hotel.getHotel() };
     }
 
+    const inActiveHotels = this.getInactiveHotels();
     if (adjacentTiles.size === 0 || inActiveHotels.length === 0) {
       this.placeIndependentTile(tile);
-      return { tile, type: PlaceType.Independent };
+      return { tile, type: TileStatus.Independent };
     }
 
     return {
       inActiveHotels: this.getInactiveHotels(),
-      type: PlaceType.Build,
+      type: TileStatus.Build,
       tile,
     };
   }
@@ -157,7 +159,10 @@ export class Board {
     };
   }
 
-  private getAdjacentTiles(tile: Tile, adjacentTiles: Set<Tile>): Set<Tile> {
+  private getAdjacentTiles(
+    tile: Tile,
+    adjacentTiles: Set<Tile> = new Set(),
+  ): Set<Tile> {
     const tilesAdjacent = this.getAdjacentOf(tile);
 
     const tilesFound = tilesAdjacent.filter(
