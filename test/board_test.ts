@@ -2,6 +2,7 @@ import { assert, assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
 import { Board, TileStatus } from "../src/models/board.ts";
 import { Hotel } from "../src/models/hotel.ts";
+import { stub } from "testing/mock";
 
 describe("Board class", () => {
   it("should return the tile which placed", () => {
@@ -302,5 +303,40 @@ describe("getPlaceTileType(tile) method", () => {
       type: TileStatus.Dependent,
       tile: "3A",
     });
+  });
+});
+
+describe("isGameEnd() method", () => {
+  it("should return the true if any hotel chain size is atleast 41", () => {
+    const imperial = new Hotel("Imperial", 2);
+    const board = new Board([imperial]);
+    imperial.toggleStatus();
+    stub(imperial, "getSize", () => 41);
+
+    assertEquals(board.isGameEnd(), true);
+  });
+
+  it("should return the true if every active hotel is safe", () => {
+    const imperial = new Hotel("Imperial", 2);
+    const tower = new Hotel("Tower", 0);
+    const board = new Board([imperial, tower]);
+    imperial.toggleStatus();
+    tower.toggleStatus();
+    stub(imperial, "getSize", () => 12);
+    stub(tower, "getSize", () => 11);
+
+    assertEquals(board.isGameEnd(), true);
+  });
+
+  it("should return the false if any active hotel is not safe", () => {
+    const imperial = new Hotel("Imperial", 2);
+    const tower = new Hotel("Tower", 0);
+    const board = new Board([imperial, tower]);
+    imperial.toggleStatus();
+    tower.toggleStatus();
+    stub(imperial, "getSize", () => 10);
+    stub(tower, "getSize", () => 11);
+
+    assertEquals(board.isGameEnd(), false);
   });
 });

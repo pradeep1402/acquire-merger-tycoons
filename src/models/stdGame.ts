@@ -143,8 +143,9 @@ export class StdGame implements Game {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();
+    const isGameEnd = this.isGameEnd();
 
-    return { board, playersId, currentPlayerId };
+    return { board, playersId, currentPlayerId, isGameEnd };
   }
 
   tradeAndSellStocks(
@@ -213,20 +214,33 @@ export class StdGame implements Game {
     const { primaryHolders, secondaryHolders } = this
       .getPrimaryAndSecondaryHolders(hotelName);
 
-    const primaryPlayerIds = this.extractPlayerIds(primaryHolders);
-    const secondaryPlayerIds = this.extractPlayerIds(secondaryHolders);
+    const primaryHolderIds = this.extractPlayerIds(primaryHolders);
+    const secondaryHolderIds = this.extractPlayerIds(secondaryHolders);
 
     if (primaryHolders.length > 1 || secondaryHolders[0].count === 0) {
       this.creditBonusToPlayers(
-        primaryPlayerIds,
+        primaryHolderIds,
         primaryBonus + secondaryBonus,
       );
+      return {
+        status: "bonus distributed",
+        bonusHolders: { primaryPlayerIds: primaryHolderIds },
+      };
     } else {
-      this.creditBonusToPlayers(primaryPlayerIds, primaryBonus);
-      this.creditBonusToPlayers(secondaryPlayerIds, secondaryBonus);
+      this.creditBonusToPlayers(primaryHolderIds, primaryBonus);
+      this.creditBonusToPlayers(secondaryHolderIds, secondaryBonus);
+      return {
+        status: "bonus distributed",
+        bonusHolders: {
+          primaryHolderIds,
+          secondaryHolderIds,
+        },
+      };
     }
+  }
 
-    return { status: "bonus distributed" };
+  isGameEnd(): boolean {
+    return this.board.isGameEnd() || this.pile.length === 0;
   }
 
   getPlayersForTesting() {

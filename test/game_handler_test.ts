@@ -363,11 +363,17 @@ describe("App: /", () => {
 });
 
 describe("App: /game-stats", () => {
+  const csv = (text: string, separator = " ") => text.split(separator);
   it("should return game stats when game starts", async () => {
+    const tiles = csv(
+      "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+    );
     let id = 1;
     const idGenerator = () => `${id++}`;
-    const tileGenerator = () => ["1A"];
-    const gameManager = new GameManager(tileGenerator, () => []);
+    const tileGenerator = () => tiles;
+    const gameManager = new GameManager(tileGenerator, () => [
+      new Hotel("Imperial", 2),
+    ]);
     const sessions = new Sessions(idGenerator);
     const player1 = sessions.addPlayer("Adi");
     const player2 = sessions.addPlayer("bisht");
@@ -386,7 +392,15 @@ describe("App: /game-stats", () => {
       board: {
         independentTiles: [],
         activeHotels: [],
-        inActiveHotels: [],
+        inActiveHotels: [
+          {
+            baseTile: "",
+            name: "Imperial",
+            stockPrice: 0,
+            stocksAvailable: 25,
+            tiles: [],
+          },
+        ],
         mergerTile: null,
       },
       playerPortfolio: {
@@ -401,7 +415,7 @@ describe("App: /game-stats", () => {
           Tower: 0,
           Worldwide: 0,
         },
-        tiles: ["1A"],
+        tiles: ["6A", "7A", "8A", "9A", "9B", "10B"],
       },
       players: [
         { isTheSamePlayer: true, name: "Adi" },
@@ -410,6 +424,7 @@ describe("App: /game-stats", () => {
       ],
       currentPlayer: "Adi",
       isMyTurn: true,
+      isGameEnd: false,
     };
 
     assertEquals(res.status, 200);

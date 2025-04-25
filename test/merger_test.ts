@@ -14,6 +14,7 @@ import { TileStatus } from "../src/models/board.ts";
 import { Game } from "../src/models/game.ts";
 
 describe("Merger class", () => {
+  const csv = (text: string, separator = " ") => text.split(separator);
   it("should return the game state", () => {
     const game: Game = new StdGame([], [], []);
     const merger = new Merger(game);
@@ -77,8 +78,11 @@ describe("Merger class", () => {
   });
 
   it("should return game stats", () => {
+    const tiles = csv(
+      "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+    );
     const game = new StdGame(
-      ["1A"],
+      tiles,
       ["p1", "p2", "p3"],
       [new Hotel("Continental", 2)],
     );

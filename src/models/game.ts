@@ -53,6 +53,7 @@ export type GameStats = {
   mode?: string | null;
   acquirer?: null | HotelName;
   target?: null | HotelName;
+  isGameEnd?: boolean;
 };
 
 export type MergerData = {

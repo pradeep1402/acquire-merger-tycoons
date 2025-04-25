@@ -89,11 +89,26 @@ const renderGameBoard = () => {
   gameBoard.replaceChildren(...tiles);
 };
 
+const renderGameEndBtn = () => {
+  const btn = document.getElementById("end-game");
+  btn.style.visibility = "visible";
+  btn.addEventListener("click", async () => await fetch("acquire/game-end"));
+};
+
 const startGamePolling = async (poller) => {
   const stats = await getResource("/acquire/game-stats");
-  const { players, board, isMyTurn, currentPlayer, playerPortfolio } = stats;
+  const {
+    players,
+    board,
+    isMyTurn,
+    currentPlayer,
+    playerPortfolio,
+    isGameEnd,
+  } = stats;
   const { tiles } = playerPortfolio;
   const { inActiveHotels, activeHotels } = board;
+  console.log(isGameEnd);
+  if (isGameEnd) renderGameEndBtn();
 
   renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);
   renderPlayerTurn(isMyTurn, tiles, poller);

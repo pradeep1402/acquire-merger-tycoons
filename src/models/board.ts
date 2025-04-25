@@ -232,4 +232,16 @@ export class Board {
 
     return [...hotels];
   }
+
+  isGameEnd(): boolean {
+    const isAnyHotel41 = this.hotels.some((hotel) => hotel.getSize() >= 41);
+    const areActiveHotelsSafe = this.hotels.every(
+      (hotel) => hotel.isActive() && hotel.getSize() >= 11,
+    );
+
+    console.log("is any 41 =>", isAnyHotel41);
+    console.log("are active hotels safe => ", areActiveHotelsSafe);
+
+    return isAnyHotel41 || areActiveHotelsSafe;
+  }
 }

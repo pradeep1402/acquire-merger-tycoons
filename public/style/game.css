@@ -598,3 +598,10 @@ label {
     opacity: 1;
   }
 }
+
+#end-game {
+  visibility: hidden;
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+}
