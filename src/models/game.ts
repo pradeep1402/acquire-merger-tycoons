@@ -68,6 +68,18 @@ export type PlaceTile =
     tile: string;
     type: PlaceType;
     inActiveHotels?: InactiveHotels;
+    mergeType?: MergerType;
+  }
+  | {
+    tile: string;
+    type: PlaceType;
+    inActiveHotels?: InactiveHotels;
+    mergeType?: MergerType;
+  }
+  | {
+    tile: string;
+    type: PlaceType;
+    inActiveHotels?: InactiveHotels;
     mergeDetails?: MergerType;
   };
 
