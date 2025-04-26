@@ -95,3 +95,9 @@ export const handleEndTurn = (ctx: Context) => {
   const response = game.changeTurn();
   return ctx.json(response);
 };
+
+// export const handleMerging = (ctx: Context) => {
+//   // const game = ctx.get("game") as Game;
+//   return ctx
+
+// };

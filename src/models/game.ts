@@ -96,7 +96,6 @@ export interface Game {
   getPlayerDetails: (playerId: string) => PlayerDetails | undefined;
   getGameStats: () => GameStats;
   getAffectedHotels: (tile: Tile) => Hotel[];
-  // getSizeOfHotel: (hotelName: string) => number;
   changeTurn: () => { status: string };
   tradeAndSellStocks: (
     tradeStats: TradeStats,

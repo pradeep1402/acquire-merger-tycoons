@@ -8,6 +8,7 @@ import { StdGame } from "./stdGame.ts";
 export type HotelDetails = {
   name: string;
   size: number;
+  baseTile: string;
 };
 
 export type TradeStats = {
@@ -26,6 +27,7 @@ export type MergerType =
     hotels: {
       name: string;
       size: number;
+      baseTile: Tile;
     }[];
   }
   | {
@@ -66,10 +68,11 @@ export class Merger implements Game {
     return hotels.every(({ size }) => size === sizeOfHotel);
   }
 
-  private getHotelNameAndSize(hotelsInMerge: Hotel[]) {
+  private getHotelInfo(hotelsInMerge: Hotel[]) {
     const hotels = hotelsInMerge.map((hotel) => ({
       name: hotel.getHotelName(),
       size: hotel.getSize(),
+      baseTile: hotel.getBaseTile(),
     }));
 
     return hotels;
@@ -83,7 +86,7 @@ export class Merger implements Game {
   }
 
   private findMergeType(hotelsInMerge: Hotel[]) {
-    const hotels = this.getHotelNameAndSize(hotelsInMerge);
+    const hotels = this.getHotelInfo(hotelsInMerge);
 
     if (this.isEveryHotelOfSameSize(hotels)) {
       return { typeofMerge: MergeType.SelectiveMerge, hotels };

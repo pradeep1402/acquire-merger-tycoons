@@ -92,6 +92,10 @@ export class Hotel {
     return this.name;
   }
 
+  getBaseTile() {
+    return this.baseTile;
+  }
+
   isTileBelongs(tile: Tile) {
     return this.tiles.has(tile) || this.baseTile === tile;
   }

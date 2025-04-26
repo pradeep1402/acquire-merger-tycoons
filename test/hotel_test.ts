@@ -104,3 +104,11 @@ describe("getSecondaryBonus", () => {
     assertEquals(hotel.getSecondaryBonus(), 1000);
   });
 });
+
+describe("getBaseTile() method", () => {
+  it("should return the base tile of the hotel", () => {
+    const hotel = new Hotel("Tower", 0);
+    hotel.storeBaseTile("1A");
+    assertEquals(hotel.getBaseTile(), "1A");
+  });
+});

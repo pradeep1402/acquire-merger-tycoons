@@ -196,8 +196,8 @@ describe("Game model", () => {
         mergeDetails: {
           typeofMerge: MergeType.SelectiveMerge,
           hotels: [
-            { name: "Imperial", size: 2 },
-            { name: "Continental", size: 2 },
+            { name: "Imperial", size: 2, baseTile: "7A" },
+            { name: "Continental", size: 2, baseTile: "10B" },
           ],
         },
       });
@@ -271,8 +271,8 @@ describe("Game model", () => {
         mergeDetails: {
           typeofMerge: MergeType.SelectiveMerge,
           hotels: [
-            { name: "Imperial", size: 2 },
-            { name: "Continental", size: 2 },
+            { name: "Imperial", size: 2, baseTile: "7A" },
+            { name: "Continental", size: 2, baseTile: "10B" },
           ],
         },
       });
@@ -298,7 +298,8 @@ describe("Game model", () => {
         },
       });
     });
-    it("testing merger class when there two hotel merging of same differents", () => {
+
+    it("testing merger class when there are two hotel merging of different size", () => {
       const players: string[] = ["Adi", "Malli", "Aman"];
       const game = new StdGame(
         [
@@ -337,10 +338,12 @@ describe("Game model", () => {
           target: {
             name: "Continental",
             size: 2,
+            baseTile: "10B",
           },
           acquirer: {
             name: "Imperial",
             size: 3,
+            baseTile: "7A",
           },
           typeofMerge: MergeType.AutoMerge,
         },

@@ -69,6 +69,7 @@ export class Board {
     const inActiveHotels = this.getInactiveHotels();
     if (this.isMerger(tile)) {
       this.validateMergeTile(tile);
+      this.mergerTile = tile;
       // const validation = this.validateMergeTile(tile);
       // if (!validation) return { tile, type: PlaceType.InValid };
       return { tile, type: PlaceType.Merge };
@@ -99,7 +100,6 @@ export class Board {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInactiveHotels();
     if (this.isMerger(tile)) {
-      this.mergerTile = tile;
       return { tile, type: PlaceType.Merge };
     }
 
