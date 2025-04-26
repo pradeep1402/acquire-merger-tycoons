@@ -16,6 +16,7 @@ export type TradeStats = {
   target: HotelName;
   count: number;
 };
+
 export type BuyStocks = {
   hotel: HotelName;
   count: number;
@@ -47,9 +48,15 @@ export class Merger implements Game {
   private acquirer: HotelName | null;
   private target: HotelName[];
   private hotelsAffected: HotelDetails[];
+  private currentPlayerIndex;
+  private playersIds;
+  private countOfTurns;
 
   constructor(game: Game) {
     this.original = game;
+    this.currentPlayerIndex = this.getCurrentPlayerIndex();
+    this.countOfTurns = 0;
+    this.playersIds = this.getPlayerIds();
     this.acquirer = null;
     this.target = [];
     this.hotelsAffected = [];
@@ -98,6 +105,7 @@ export class Merger implements Game {
       return { typeofMerge: MergeType.SelectiveMerge, hotels };
     }
     const [highest, lowest] = this.getHighestAndSmallestHotel(hotels);
+
     this.acquirer = highest.name as HotelName;
     this.target.push(lowest.name as HotelName);
 
@@ -122,6 +130,10 @@ export class Merger implements Game {
 
   getPlayerIds() {
     return this.original.getPlayerIds();
+  }
+
+  getCurrentPlayerIndex(): number {
+    return this.original.getCurrentPlayerIndex();
   }
 
   getPlayerDetails(playerId: string) {
@@ -172,13 +184,27 @@ export class Merger implements Game {
     return this.getPlayerDetails(playerId);
   }
 
+  private getCurrentPlayer(): string {
+    return this.playersIds[this.currentPlayerIndex];
+  }
+
+  doesPlayerHasStocks() {
+    const player = this.getPlayer(this.getCurrentPlayer());
+
+    return player?.hasStocksOf(this.target[0]);
+  }
+
   changeTurn() {
-    return this.original.changeTurn();
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
+      this.playersIds.length;
+
+    return { status: this.getCurrentPlayer() };
   }
 
   getPlayer(playerId: string) {
     return this.original.getPlayer(playerId);
   }
+
   getHotel(hotelName: HotelName) {
     return this.original.getHotel(hotelName);
   }

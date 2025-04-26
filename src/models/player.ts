@@ -93,4 +93,10 @@ export class Player {
   doesPlayerMatch(playerId: string) {
     return this.playerId === playerId;
   }
+
+  hasStocksOf(hotelName: HotelName): boolean {
+    const stocks = this.stocks[hotelName];
+
+    return stocks > 0;
+  }
 }

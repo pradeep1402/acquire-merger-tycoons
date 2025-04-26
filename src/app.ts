@@ -9,6 +9,7 @@ import {
   handleLogin,
   handlePlaceTile,
   handleQuickPlay,
+  handleSellAndTradeStocks,
   serveGame,
   serveGameStatus,
 } from "./handlers/game_handler.ts";
@@ -124,6 +125,7 @@ const createAuthenticatedRoutes = () => {
   router.post("acquire/home/quick-play", handleQuickPlay);
   router.get("/acquire/game-status", serveGameStatus);
   router.patch("/acquire/buy-stocks", handleBuyStocks);
+  router.patch("/acquire/merger/sell-trade-stocks", handleSellAndTradeStocks);
   router.patch("/acquire/end-turn", handleEndTurn);
   router.get("/acquire/game-stats", serveGame);
   router.patch("/acquire/place-tile/:tile", handlePlaceTile);

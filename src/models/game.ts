@@ -1,7 +1,12 @@
 import _ from "lodash";
 import { HotelName, Player } from "./player.ts";
 
-import { buildingHotel, InactiveHotels, TileStatus } from "./board.ts";
+import {
+  buildingHotel,
+  HotelDetails,
+  InactiveHotels,
+  TileStatus,
+} from "./board.ts";
 
 import { Hotel } from "./hotel.ts";
 import { BuyStocks, MergerType, TradeStats } from "./merger.ts";
@@ -56,6 +61,12 @@ export type PlaceTile =
   | {
     tile: string;
     type: TileStatus;
+    hotel?: HotelDetails;
+    inActiveHotels?: InactiveHotels;
+  }
+  | {
+    tile: string;
+    type: TileStatus;
     hotel: {
       name: string;
       tiles: string[];
@@ -68,14 +79,9 @@ export type PlaceTile =
   | {
     tile: string;
     type: TileStatus;
-  }
-  | {
-    tile: string;
-    type: TileStatus;
     inActiveHotels?: InactiveHotels;
     mergeDetails?: MergerType;
   };
-
 export type FoundHotel =
   | {
     name: string;
@@ -111,4 +117,5 @@ export interface Game {
   getPlayer: (PlayerId: string) => Player | undefined;
   getHotel: (hotelName: HotelName) => Hotel | undefined;
   setupMergerEntities: (hotelName: HotelName) => MergerData | { error: string };
+  getCurrentPlayerIndex: () => number;
 }

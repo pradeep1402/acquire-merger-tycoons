@@ -8,7 +8,9 @@ import { assertSpyCallArgs, stub } from "testing/mock";
 import { Lobby } from "../src/models/lobby.ts";
 import { StdGame } from "../src/models/stdGame.ts";
 import { CurrentGame } from "../src/models/CurrentGame.ts";
-import { BuyStocks } from "../src/models/merger.ts";
+import { BuyStocks, Merger } from "../src/models/merger.ts";
+// import { Player } from "../src/models/player.ts";
+import { Game } from "../src/models/game.ts";
 
 describe("App: /login", () => {
   it("should receive a cookie and redirect to index page", async () => {
@@ -646,5 +648,81 @@ describe("buyStocks() method", () => {
       },
       tiles: [],
     });
+  });
+});
+
+const createTestAppWithMergerStocks = (username: string) => {
+  let id = 0;
+  const idGenerator = () => `${id++}`;
+
+  const gameManager = new GameManager();
+  const sessions = new Sessions(idGenerator);
+  const app = createApp(sessions, gameManager);
+  stub(sessions, "isSessionIdExist", () => true);
+  stub(sessions, "getPlayerName", () => username);
+
+  const imperial = new Hotel("Imperial", 2);
+  const continental = new Hotel("Continental", 2);
+
+  const game = new StdGame(
+    ["1A", "2A", "3A", "4A", "5A", "6A"],
+    ["player1"],
+    [continental, imperial],
+  );
+
+  const mergerGame = new Merger(game) as Game;
+
+  return { app, gameManager, mergerGame };
+};
+
+describe("tradeAndSellStocks() method", () => {
+  it("should return the playerDetails and using mock methods", async () => {
+    const playerDetails = {
+      playerId: "player1",
+      cash: 7000,
+      tiles: [],
+      stocks: {
+        Sackson: 0,
+        Tower: 0,
+        Festival: 0,
+        Worldwide: 0,
+        American: 0,
+        Continental: 1,
+        Imperial: 1,
+      },
+    };
+    const { mergerGame, gameManager, app } = createTestAppWithMergerStocks(
+      "Kungfu Panda",
+    );
+
+    const currentGame = new CurrentGame(mergerGame);
+    stub(gameManager, "getCurrentGame", () => currentGame);
+    const stubedTradeAndSell = stub(
+      mergerGame,
+      "tradeAndSellStocks",
+      () => playerDetails,
+    );
+
+    const tradeStats = {
+      acquirer: "Imperial",
+      target: "Continental",
+      count: 2,
+    };
+    const playerId = "2";
+    const stocks: BuyStocks[] = [{ hotel: "Continental", count: 2 }];
+
+    const data = { tradeStats, stocks, playerId };
+    const res = await app.request("/acquire/merger/sell-trade-stocks", {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+        cookie: "sessionId=2;gameId=0",
+      },
+      body: JSON.stringify(data),
+    });
+
+    assertEquals(res.status, 200);
+    assertEquals(await res.json(), playerDetails);
+    assertSpyCallArgs(stubedTradeAndSell, 0, [tradeStats, stocks, playerId]);
   });
 });

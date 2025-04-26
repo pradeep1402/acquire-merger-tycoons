@@ -95,3 +95,12 @@ export const handleEndTurn = (ctx: Context) => {
   const response = game.changeTurn();
   return ctx.json(response);
 };
+
+export const handleSellAndTradeStocks = async (ctx: Context) => {
+  const game = ctx.get("game") as Game;
+  const playerId: string = ctx.get("sessionId");
+  const { tradeStats, stocks } = await ctx.req.json();
+  const result = game.tradeAndSellStocks(tradeStats, stocks, playerId);
+
+  return ctx.json(result);
+};

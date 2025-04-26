@@ -109,6 +109,10 @@ export class StdGame implements Game {
     return this.players.map((player) => player.getPlayerDetails().playerId);
   }
 
+  getCurrentPlayerIndex(): number {
+    return this.currentPlayerIndex;
+  }
+
   private getTiles(count: number): string[] {
     return this.pile.splice(0, count);
   }
