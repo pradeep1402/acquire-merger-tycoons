@@ -123,8 +123,8 @@ export class Board {
     };
   }
 
-  getHotel(hotelName: string): Hotel[] {
-    return this.hotels.filter((hotel) => hotel.isAMatch(hotelName));
+  getHotel(hotelName: string): Hotel | undefined {
+    return this.hotels.find((hotel) => hotel.isAMatch(hotelName));
   }
 
   private moveToHotel(tiles: Tile[], hotel: Hotel | undefined): void {

@@ -104,11 +104,27 @@ describe("Player model", () => {
   });
 
   describe("deductCash() method", () => {
-    it("should add the stock to a perticular hotel ", () => {
+    it("should add the stock to a particular hotel ", () => {
       const tiles: string[] = ["1A", "2A"];
       const player = new Player("121", tiles);
 
       assertEquals(player.deductCash(200), 5800);
+    });
+  });
+
+  describe("countSharesOf(hotel) method", () => {
+    it("should return the stock count to a particular hotel ", () => {
+      const tiles: string[] = ["1A", "2A"];
+      const player = new Player("121", tiles);
+
+      assertEquals(player.countSharesOf("Tower"), 0);
+    });
+    it("should return the stock count to a particular hotel ", () => {
+      const tiles: string[] = ["1A", "2A"];
+      const player = new Player("121", tiles);
+      player.addStock(2, "Tower");
+
+      assertEquals(player.countSharesOf("Tower"), 2);
     });
   });
 });

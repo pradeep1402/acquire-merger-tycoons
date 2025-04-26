@@ -134,7 +134,7 @@ export class Merger implements Game {
     for (const { hotel, count } of stocks) {
       const hotelInstance = this.getHotel(hotel);
       const priceGained = hotelInstance?.calculatePrice(count) as number;
-      player.addCash(priceGained);
+      player.creditCash(priceGained);
       player.deductStock(count, hotel);
     }
 

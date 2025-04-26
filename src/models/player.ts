@@ -55,12 +55,16 @@ export class Player {
     return this.stocks[stockName];
   }
 
+  countSharesOf(hotel: HotelName) {
+    return this.stocks[hotel];
+  }
+
   deductCash(price: number) {
     return (this.cash = this.cash - price);
   }
 
-  addCash(price: number) {
-    return (this.cash = this.cash + price);
+  creditCash(price: number) {
+    return this.cash = this.cash + price;
   }
 
   getPlayerDetails() {

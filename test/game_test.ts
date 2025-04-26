@@ -1,10 +1,11 @@
 import { assertEquals } from "assert";
 import { describe, it } from "testing/bdd";
-import { TileStatus } from "../src/models/board.ts";
-import { Hotel } from "../src/models/hotel.ts";
+import { stub } from "testing/mock";
 import { BuyStocks, Merger, MergeType } from "../src/models/merger.ts";
 import { StdGame } from "../src/models/stdGame.ts";
 import { BoardDetails, GameStats } from "../src/models/game.ts";
+import { Board, TileStatus } from "../src/models/board.ts";
+import { Hotel } from "../src/models/hotel.ts";
 import { Player } from "../src/models/player.ts";
 
 describe("Game model", () => {
@@ -379,6 +380,181 @@ describe("Game model", () => {
       const currentPlayerId = "Adi";
       const gameStats: GameStats = { board, playersId, currentPlayerId };
       assertEquals(game.getGameStats(), gameStats);
+    });
+  });
+
+  describe("distributeBonus() method", () => {
+    const csv = (text: string, separator = " ") => text.split(separator);
+    it("should distribute bonus in the order of number of stocks from primary to secondary", () => {
+      const playerIds: string[] = ["1", "2", "3"];
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const hotels = [new Hotel("Imperial", 2), new Hotel("Continental", 2)];
+      const game = new StdGame(tiles, playerIds, hotels);
+
+      assertEquals(game.getPlayerDetails("1")?.cash, 6000);
+
+      stub(hotels[0], "getPrimaryBonus", () => 2000);
+      stub(hotels[0], "getSecondaryBonus", () => 1000);
+
+      const players: Player[] = game.getPlayersForTesting();
+
+      const player1 = players.find((player) => player.doesPlayerMatch("1"));
+      const player2 = players.find((player) => player.doesPlayerMatch("2"));
+
+      player1?.addStock(5, "Imperial");
+      player2?.addStock(3, "Imperial");
+
+      const result = game.distributeBonus("Imperial");
+
+      assertEquals(result.status, "bonus distributed");
+      assertEquals(game.getPlayerDetails("1")?.cash, 8000);
+      assertEquals(game.getPlayerDetails("2")?.cash, 7000);
+    });
+
+    it("should distribute average of both bonuses for the players having highest equal no.of stocks", () => {
+      const playerIds: string[] = ["1", "2", "3"];
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const hotels = [new Hotel("Imperial", 2), new Hotel("Continental", 2)];
+      const game = new StdGame(tiles, playerIds, hotels);
+
+      assertEquals(game.getPlayerDetails("1")?.cash, 6000);
+
+      stub(hotels[0], "getPrimaryBonus", () => 2000);
+      stub(hotels[0], "getSecondaryBonus", () => 1000);
+
+      const players: Player[] = game.getPlayersForTesting();
+
+      const player1 = players.find((player) => player.doesPlayerMatch("1"));
+      const player2 = players.find((player) => player.doesPlayerMatch("2"));
+      const player3 = players.find((player) => player.doesPlayerMatch("3"));
+
+      player1?.addStock(5, "Imperial");
+      player2?.addStock(5, "Imperial");
+      player3?.addStock(3, "Imperial");
+
+      const result = game.distributeBonus("Imperial");
+
+      assertEquals(result.status, "bonus distributed");
+      assertEquals(game.getPlayerDetails("1")?.cash, 7500);
+      assertEquals(game.getPlayerDetails("2")?.cash, 7500);
+      assertEquals(game.getPlayerDetails("3")?.cash, 6000);
+    });
+
+    it("should distribute average of both bonuses for the players having highest equal no.of stocks", () => {
+      const playerIds: string[] = ["1", "2", "3"];
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const hotels = [new Hotel("Imperial", 2), new Hotel("Continental", 2)];
+      const game = new StdGame(tiles, playerIds, hotels);
+
+      assertEquals(game.getPlayerDetails("1")?.cash, 6000);
+
+      stub(hotels[0], "getPrimaryBonus", () => 2000);
+      stub(hotels[0], "getSecondaryBonus", () => 1000);
+
+      const players: Player[] = game.getPlayersForTesting();
+
+      const player1 = players.find((player) => player.doesPlayerMatch("1"));
+      const player2 = players.find((player) => player.doesPlayerMatch("2"));
+      const player3 = players.find((player) => player.doesPlayerMatch("3"));
+
+      player1?.addStock(5, "Imperial");
+      player2?.addStock(5, "Imperial");
+      player3?.addStock(5, "Imperial");
+
+      const result = game.distributeBonus("Imperial");
+
+      assertEquals(result.status, "bonus distributed");
+      assertEquals(game.getPlayerDetails("1")?.cash, 7000);
+      assertEquals(game.getPlayerDetails("2")?.cash, 7000);
+      assertEquals(game.getPlayerDetails("3")?.cash, 7000);
+    });
+
+    it("should distribute primary to highestStockHolder and average of secondary bonus for the players having second highest equal no.of stocks", () => {
+      const playerIds: string[] = ["1", "2", "3"];
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const hotels = [new Hotel("Imperial", 2), new Hotel("Continental", 2)];
+      const game = new StdGame(tiles, playerIds, hotels);
+
+      assertEquals(game.getPlayerDetails("1")?.cash, 6000);
+
+      stub(hotels[0], "getPrimaryBonus", () => 2000);
+      stub(hotels[0], "getSecondaryBonus", () => 1000);
+
+      const players: Player[] = game.getPlayersForTesting();
+
+      const player1 = players.find((player) => player.doesPlayerMatch("1"));
+      const player2 = players.find((player) => player.doesPlayerMatch("2"));
+      const player3 = players.find((player) => player.doesPlayerMatch("3"));
+
+      player1?.addStock(5, "Imperial");
+      player2?.addStock(3, "Imperial");
+      player3?.addStock(3, "Imperial");
+
+      const result = game.distributeBonus("Imperial");
+
+      assertEquals(result.status, "bonus distributed");
+      assertEquals(game.getPlayerDetails("1")?.cash, 8000);
+      assertEquals(game.getPlayerDetails("2")?.cash, 6500);
+      assertEquals(game.getPlayerDetails("3")?.cash, 6500);
+    });
+
+    it("should distribute both bonuses for the players having highest no.of stocks and if second highest stock count is 0", () => {
+      const playerIds: string[] = ["1", "2", "3"];
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const hotels = [new Hotel("Imperial", 2), new Hotel("Continental", 2)];
+      const game = new StdGame(tiles, playerIds, hotels);
+
+      assertEquals(game.getPlayerDetails("1")?.cash, 6000);
+
+      stub(hotels[0], "getPrimaryBonus", () => 2000);
+      stub(hotels[0], "getSecondaryBonus", () => 1000);
+
+      const players: Player[] = game.getPlayersForTesting();
+
+      const player1 = players.find((player) => player.doesPlayerMatch("1"));
+      const player2 = players.find((player) => player.doesPlayerMatch("2"));
+      const player3 = players.find((player) => player.doesPlayerMatch("3"));
+
+      player1?.addStock(1, "Imperial");
+      player2?.addStock(0, "Imperial");
+      player3?.addStock(0, "Imperial");
+
+      const result = game.distributeBonus("Imperial");
+
+      assertEquals(result.status, "bonus distributed");
+      assertEquals(game.getPlayerDetails("1")?.cash, 9000);
+      assertEquals(game.getPlayerDetails("2")?.cash, 6000);
+      assertEquals(game.getPlayerDetails("3")?.cash, 6000);
+    });
+
+    it("should not distribute bonuses if hotel is not merging", () => {
+      const playerIds: string[] = ["1", "2", "3"];
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const hotels = [new Hotel("Imperial", 2), new Hotel("Continental", 2)];
+      const game = new StdGame(tiles, playerIds, hotels);
+      const board: Board = game.getBoardForTesting();
+
+      assertEquals(game.getPlayerDetails("1")?.cash, 6000);
+
+      stub(hotels[0], "getPrimaryBonus", () => 2000);
+      stub(hotels[0], "getSecondaryBonus", () => 1000);
+      stub(board, "getHotel", () => undefined);
+
+      const result = game.distributeBonus("Imperial");
+
+      assertEquals(result.status, "bonus is not distributed");
     });
   });
 });
