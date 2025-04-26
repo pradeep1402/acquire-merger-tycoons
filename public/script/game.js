@@ -109,7 +109,7 @@ const main = () => {
   showStartingTilesPopup();
   renderGameBoard();
 
-  new StockExchangeView(40).render();
+  new StockExchangeView(3).render();
   const polling = new Poller(1000, startGamePolling);
   polling.start();
 };

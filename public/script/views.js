@@ -558,14 +558,20 @@ export class StockExchangeView {
   #keep;
   #sell;
   #trade;
-  #btn;
+  #button;
+  #acquirer;
+  #target;
+  #popup;
 
-  constructor(stocksAvailable) {
+  constructor(stocksAvailable, acquirer, target) {
     this.#stockAvailable = stocksAvailable;
+    this.#acquirer = acquirer;
+    this.#target = target;
     this.#keep = document.querySelector("#keep");
     this.#sell = document.querySelector("#sell");
     this.#trade = document.querySelector("#trade");
-    this.#btn = document.querySelector("#merger");
+    this.#button = document.querySelector("#merger");
+    this.#popup = document.querySelector("#merger-pop");
   }
 
   renderKeep() {
@@ -574,52 +580,97 @@ export class StockExchangeView {
     this.#keep.min = 0;
   }
 
-  #updateKeepAndLimits() {
-    const sell = parseInt(this.#sell.value) || 0;
-    const trade = parseInt(this.#trade.value) || 0;
+  #incrementValue() {
+    const keepValue = Number(this.#keep.value);
+    if (keepValue < 2) return;
 
-    const totalUsed = sell + trade * 2;
-    const remaining = Math.max(this.#stockAvailable - totalUsed, 0);
+    this.#trade.value = Number(this.#trade.value) + 2;
+    this.#keep.value = keepValue - 2;
+  }
 
-    this.#keep.value = remaining;
-    this.#keep.max = remaining;
+  #decrementValue() {
+    const tradeValue = Number(this.#trade.value);
+    if (tradeValue <= 0) return;
 
-    const availableForSell = this.#stockAvailable - trade * 2;
-    this.#sell.max = Math.max(availableForSell, 0);
+    this.#trade.stepDown();
+    this.#keep.value = Number(this.#keep.value) + 2;
+    this.#keep.max = this.#stockAvailable;
+  }
 
-    const availableForTrade = Math.floor((this.#stockAvailable - sell) / 2);
-    this.#trade.max = Math.max(availableForTrade, 0);
+  #attachStepTradeButtons(increment, decrement) {
+    increment.addEventListener("click", this.#incrementValue.bind(this));
+    decrement.addEventListener("click", this.#decrementValue.bind(this));
+  }
+
+  #decrementSellValue() {
+    const tradeValue = Number(this.#sell.value);
+    if (tradeValue <= 0) return;
+
+    this.#sell.stepDown();
+    this.#keep.value = Number(this.#keep.value) + 1;
+    this.#keep.max = this.#stockAvailable;
+  }
+
+  #incrementSellValue() {
+    const keepValue = Number(this.#keep.value);
+    if (keepValue <= 0) return;
+
+    this.#sell.value = Number(this.#sell.value) + 1;
+    this.#keep.value = keepValue - 1;
+  }
+
+  #attachStepSellButtons(increment, decrement) {
+    increment.addEventListener("click", this.#incrementSellValue.bind(this));
+    decrement.addEventListener("click", this.#decrementSellValue.bind(this));
   }
 
   renderSell() {
     this.#sell.max = this.#stockAvailable;
     this.#sell.min = 0;
-    this.#sell.addEventListener("input", this.#updateKeepAndLimits.bind(this));
+
+    const increment = document.querySelector(".sell-step-up");
+    const decrement = document.querySelector(".sell-step-down");
+    this.#attachStepSellButtons(increment, decrement);
   }
 
   renderTrade() {
-    const maxTradable = Math.floor(this.#stockAvailable / 2);
-    this.#trade.max = maxTradable;
+    this.#trade.max = Math.floor(this.#stockAvailable / 2);
     this.#trade.min = 0;
-    this.#trade.addEventListener("input", this.#updateKeepAndLimits.bind(this));
+
+    const increment = document.querySelector(".trade-step-up");
+    const decrement = document.querySelector(".trade-step-down");
+
+    this.#attachStepTradeButtons(increment, decrement);
   }
 
   async #completeMerge() {
     const keep = this.#keep.value;
     const sell = this.#sell.value;
     const trade = this.#trade.value;
+    const tradeStats = {
+      acquirer: this.#acquirer,
+      target: this.#target,
+      count: trade,
+    };
+
     await fetch("/acquire/continue-merger/exchange", {
-      body: JSON.stringify({ keep, sell, trade }),
+      body: JSON.stringify({ keep, sell, tradeStats }),
       headers: {
         method: "PATCH",
       },
     });
+
+    this.#popup.classList.add("hidden");
+    this.#popup.classList.remove("merger-pop-container");
   }
+
   render() {
+    this.#popup.classList.add("merger-pop-container");
+    this.#popup.classList.remove("hidden");
     this.renderKeep();
     this.renderSell();
     this.renderTrade();
-    this.#btn.addEventListener("submit", this.#completeMerge.bind(this));
+    this.#button.addEventListener("click", this.#completeMerge.bind(this));
   }
 }
 

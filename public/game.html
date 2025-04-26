@@ -74,34 +74,47 @@
       <button id="buy">BUY</button>
     </div>
 
-    <div class="merger-pop-container">
+    <div id="merger-pop" class="hidden">
       <h1>MERGER</h1>
-      <form>
-        <div class="form-group">
-          <label for="keep">Keep</label>
-          <input type="number" id="keep" value="10" />
-        </div>
+      <div class="form-group">
+        <label for="keep">Keep</label>
+        <input type="number" id="keep" value="0" />
+      </div>
 
-        <div class="form-group">
-          <label for="sell">Sell</label>
-          <input
-            type="number"
-            id="sell"
-            placeholder="How many you want to sell?"
-          />
-        </div>
+      <div class="form-group">
+        <label for="sell">Sell</label>
+        <button class="sell-step-down" type="button">-</button>
+        <input
+          id="sell"
+          placeholder="How many you want to sell?"
+          type="number"
+          name="stock-count"
+          class="count-input"
+          min="0"
+          value="0"
+          disabled
+        />
+        <button class="sell-step-up">+</button>
+      </div>
 
-        <div class="form-group">
-          <label for="trade">Trade</label>
-          <input
-            type="number"
-            id="trade"
-            placeholder="How many you want to trade?"
-          />
-        </div>
+      <div class="form-group">
+        <label for="trade">Trade</label>
+        <button class="trade-step-down" type="button">-</button>
+        <input
+          id="trade"
+          type="number"
+          placeholder="How many you want to trade?"
+          name="stock-count"
+          class="count-input"
+          min="0"
+          value="0"
+          step="2"
+          disabled
+        />
+        <button class="trade-step-up">+</button>
+      </div>
 
-        <button id="merger" type="submit">Complete Merger</button>
-      </form>
+      <button id="merger" type="submit">Complete Merger</button>
     </div>
 
     <template id="hotel-template">
