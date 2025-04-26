@@ -210,10 +210,25 @@ class BuyStocksView {
 
     allInputs.forEach((input) => {
       const currentValue = parseInt(input.value || 0);
+      const originalMax = parseInt(input.dataset.originalMax, 10);
       const otherTotal = totalSelected - currentValue;
-      input.max = Math.max(0, input.max - otherTotal);
+      input.max = Math.max(0, originalMax - otherTotal);
     });
   }
+
+  // #updateMax() {
+  //   const allInputs = this.#hotelsContainer.querySelectorAll("input");
+
+  //   const totalSelected = Array.from(allInputs).reduce((sum, input) => {
+  //     return sum + parseInt(input.value || 0);
+  //   }, 0);
+
+  //   allInputs.forEach((input) => {
+  //     const currentValue = parseInt(input.value || 0);
+  //     const otherTotal = totalSelected - currentValue;
+  //     input.max = Math.max(0, input.max - otherTotal);
+  //   });
+  // }
 
   #setHotelInfo(template, name, price, maxStocks) {
     template.querySelector("#hotel").textContent = name;
@@ -221,6 +236,7 @@ class BuyStocksView {
 
     const input = template.querySelector("input");
     input.id = name;
+    input.dataset.originalMax = maxStocks;
     input.max = maxStocks;
     input.value = 0;
   }
