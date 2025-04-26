@@ -402,7 +402,7 @@ export class PlayerTurnView {
     const res = await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
       method: "PATCH",
     });
-    const stockAllotted = await res.json().stockAllotted;
+    const { stockAllotted } = await res.json();
 
     if (!stockAllotted) {
       alert("No stocks available for this hotel...");
