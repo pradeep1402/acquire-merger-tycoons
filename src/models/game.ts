@@ -1,6 +1,13 @@
 import _ from "lodash";
-import { buildingHotel, InactiveHotels, TileStatus } from "./board.ts";
 import { HotelName, Player } from "./player.ts";
+
+import {
+  buildingHotel,
+  HotelDetails,
+  InactiveHotels,
+  TileStatus,
+} from "./board.ts";
+
 import { Hotel } from "./hotel.ts";
 import { BuyStocks, MergerType, TradeStats } from "./merger.ts";
 
@@ -49,8 +56,8 @@ export type PlaceTile =
   | {
     tile: string;
     type: TileStatus;
-    hotel?: undefined;
-    inActiveHotels?: undefined;
+    hotel?: HotelDetails;
+    inActiveHotels?: InactiveHotels;
   }
   | {
     tile: string;
@@ -62,7 +69,7 @@ export type PlaceTile =
       stockPrice: number;
       baseTile: string;
     };
-    inActiveHotels?: undefined;
+    inActiveHotels?: InactiveHotels;
   }
   | {
     tile: string;
