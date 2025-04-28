@@ -9,7 +9,7 @@ import { Lobby } from "../src/models/lobby.ts";
 import { StdGame } from "../src/models/stdGame.ts";
 import { CurrentGame } from "../src/models/CurrentGame.ts";
 import { BuyStocks, Merger } from "../src/models/merger.ts";
-import { Game } from "../src/models/game.ts";
+import { Game, MergerData } from "../src/models/game.ts";
 
 describe("App: /login", () => {
   it("should receive a cookie and redirect to index page", async () => {
@@ -740,8 +740,32 @@ describe("tradeAndSellStocks() method", () => {
     assertSpyCallArgs(stubedTradeAndSell, 0, [tradeStats, stocks, playerId]);
   });
 });
-// describe("handleMerge()", () => {
-//   it("should update acquirer and return acquirer and target info", async () => {
-//     const
-//   });
-// });
+
+describe("handleMerge() method", () => {
+  it("should update and return acquirer and target", async () => {
+    const mergerInfo: MergerData = { acquirer: "Tower", target: ["Sackson"] };
+    const { mergerGame, gameManager, app } = createTestAppWithMergerStocks(
+      "Kungfu Panda",
+    );
+
+    const currentGame = new CurrentGame(mergerGame);
+    stub(gameManager, "getCurrentGame", () => currentGame);
+    const stubedSetupMergerEntities = stub(
+      mergerGame,
+      "setupMergerEntities",
+      () => mergerInfo,
+    );
+
+    const acquirer = "Imperial";
+    const res = await app.request(`/acquire/continue-merge/${acquirer}`, {
+      method: "PATCH",
+      headers: {
+        cookie: "sessionId=2;gameId=0",
+      },
+    });
+
+    assertEquals(res.status, 200);
+    assertEquals(await res.json(), mergerInfo);
+    assertSpyCallArgs(stubedSetupMergerEntities, 0, [acquirer]);
+  });
+});

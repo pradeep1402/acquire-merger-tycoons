@@ -589,8 +589,7 @@ class MergerView {
     this.#attachImgs();
     setTimeout(() => this.#toggleDisplay(), 2500);
     this.#indicateMergingTile();
-    const res = await this.#handleMerge(this.#acquirer.name);
-    console.log("###########", res.acquirer, res.target);
+    await this.#handleMerge(this.#acquirer.name);
   }
 
   #toggleHighlight() {

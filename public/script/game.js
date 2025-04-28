@@ -30,7 +30,7 @@ const renderStocksAndPlayers = (
   players,
   currentPlayer,
   inActiveHotels,
-  activeHotels,
+  activeHotels
 ) => {
   new HotelsView(activeHotels, inActiveHotels).renderStocks();
   new PlayersView(players, currentPlayer).renderPlayers();
@@ -38,9 +38,8 @@ const renderStocksAndPlayers = (
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   const tilesEle = tiles.map((tile) => {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = tile;
     return playerTile;
   });
@@ -94,9 +93,10 @@ const renderGameEndBtn = () => {
   btn.style.visibility = "visible";
   btn.addEventListener("click", async () => await fetch("acquire/game-end"));
 };
-// const keepSellTrade = (portfolio, acquirer, target) => {
-//   console.log(portfolio, acquirer, target);
-// };
+
+const keepSellTrade = (portfolio, acquirer, target) => {
+  console.log(portfolio, acquirer, target, ">>>>>>>>>>>>>>>>>>>>");
+};
 
 const startGamePolling = async (poller) => {
   const stats = await getResource("/acquire/game-stats");
@@ -107,18 +107,19 @@ const startGamePolling = async (poller) => {
     currentPlayer,
     playerPortfolio,
     isGameEnd,
-    // mode,
-    // acquirer,
-    // target,
+    mode,
+    acquirer,
+    target,
   } = stats;
+
   const { tiles } = playerPortfolio;
   const { inActiveHotels, activeHotels } = board;
   console.log(isGameEnd);
   if (isGameEnd) renderGameEndBtn();
 
-  // if (mode === "Merge" && isMyTurn) {
-  //   keepSellTrade(playerPortfolio, acquirer, target);
-  // }
+  if (mode === "Merge" && isMyTurn) {
+    keepSellTrade(playerPortfolio, acquirer, target);
+  }
 
   renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);
   renderPlayerTurn(isMyTurn, tiles, poller);
