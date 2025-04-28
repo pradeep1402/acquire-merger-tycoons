@@ -605,3 +605,12 @@ label {
   right: 50px;
   bottom: 50px;
 }
+
+#flash-msg-box {
+  visibility: hidden;
+  position: absolute;
+  right: 5%;
+  top: 2%;
+  padding: 10px;
+  border: 1px solid black;
+}

@@ -103,6 +103,17 @@ const keepSellTrade = (portfolio, { acquirer, target }, poller) => {
   new StockExchangeView(stocks, acquirer, target, poller).render();
 };
 
+const renderFlashMsg = (msg) => {
+  const msgBox = document.getElementById("flash-msg-box");
+  msgBox.style.visibility = "visible";
+  const textBox = msgBox.querySelector("p");
+  textBox.textContent = msg;
+  setTimeout(() => {
+    msgBox.style.visibility = "hidden";
+    textBox.textContent = "";
+  }, 3000);
+};
+
 const startGamePolling = async (poller) => {
   const stats = await getResource("/acquire/game-stats");
   const {
@@ -117,8 +128,12 @@ const startGamePolling = async (poller) => {
 
   const { tiles } = playerPortfolio;
   const { inActiveHotels, activeHotels } = board;
-  console.log(isGameEnd);
-  if (isGameEnd) renderGameEndBtn();
+
+  if (isGameEnd) {
+    const msg = "You can end the game";
+    renderFlashMsg(msg);
+    renderGameEndBtn();
+  }
 
   if (mergeData && mergeData.mode === "Merge" && isMyTurn) {
     keepSellTrade(playerPortfolio, mergeData, poller);
