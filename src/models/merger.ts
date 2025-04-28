@@ -188,15 +188,21 @@ export class Merger implements Game {
     return this.playersIds[this.currentPlayerIndex];
   }
 
-  doesPlayerHasStocks() {
+  private doesPlayerHasStocks() {
     const player = this.getPlayer(this.getCurrentPlayer());
 
     return player?.hasStocksOf(this.target[0]);
   }
 
-  changeTurn() {
+  private updatePlayerIndex() {
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
       this.playersIds.length;
+  }
+
+  changeTurn() {
+    this.updatePlayerIndex();
+
+    if (this.doesPlayerHasStocks()) this.changeTurn();
 
     return { status: this.getCurrentPlayer() };
   }

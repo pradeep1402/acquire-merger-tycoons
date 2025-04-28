@@ -128,3 +128,20 @@ describe("Player model", () => {
     });
   });
 });
+
+describe("hasStocksOf() method", () => {
+  it("should return the false when player doesn't have the stock of a perticular stock", () => {
+    const tiles: string[] = ["1A", "2A"];
+    const player = new Player("121", tiles);
+
+    assertFalse(player.hasStocksOf("Imperial"));
+  });
+
+  it("should return the true when player has the stocks of a particular hotel", () => {
+    const tiles: string[] = ["1A", "2A"];
+    const player = new Player("121", tiles);
+    player.addStock(2, "Imperial");
+
+    assert(player.hasStocksOf("Imperial"));
+  });
+});

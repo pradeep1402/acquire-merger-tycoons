@@ -248,7 +248,8 @@ describe("Merger class", () => {
       target: ["Continental"],
     });
   });
-  it("should return the acquirer and targets along with the players who got the primart and secondary bonuses.", () => {
+
+  it("should return the acquirer and targets along with the players who got the primary and secondary bonuses.", () => {
     const imperial = new Hotel("Imperial", 2);
     imperial.addTile("1A");
     imperial.addTile("2A");

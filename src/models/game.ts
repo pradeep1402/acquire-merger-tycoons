@@ -82,6 +82,7 @@ export type PlaceTile =
     inActiveHotels?: InactiveHotels;
     mergeDetails?: MergerType;
   };
+
 export type FoundHotel =
   | {
     name: string;

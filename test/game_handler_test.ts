@@ -9,7 +9,6 @@ import { Lobby } from "../src/models/lobby.ts";
 import { StdGame } from "../src/models/stdGame.ts";
 import { CurrentGame } from "../src/models/CurrentGame.ts";
 import { BuyStocks, Merger } from "../src/models/merger.ts";
-// import { Player } from "../src/models/player.ts";
 import { Game } from "../src/models/game.ts";
 
 describe("App: /login", () => {
