@@ -18,7 +18,7 @@ describe("Merger class", () => {
     const game: Game = new StdGame([], [], []);
     const merger = new Merger(game);
 
-    assertEquals(merger.playTurn("3A"), game);
+    assertEquals(merger.playTurn("3A"), merger);
   });
 
   it("should return the size of hotel", () => {
@@ -312,5 +312,21 @@ describe("Merger class", () => {
       acquirer: "Imperial",
       target: ["Continental"],
     });
+  });
+
+  it("should return the StdInstance instance if the merger is commpleted", () => {
+    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const merger = new Merger(game);
+    const instance = merger.playTurn();
+
+    assert(instance instanceof StdGame);
+  });
+
+  it("should return the merger instance if the merger is not completed", () => {
+    const game = new StdGame(["1A"], ["p1", "p2", "p3"], []);
+    const merger = new Merger(game);
+    const instance = merger.playTurn("1A");
+
+    assert(instance instanceof Merger);
   });
 });

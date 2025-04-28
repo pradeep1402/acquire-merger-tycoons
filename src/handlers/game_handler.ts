@@ -93,6 +93,9 @@ export const handleBuyStocks = async (ctx: Context) => {
 export const handleEndTurn = (ctx: Context) => {
   const game = ctx.get("game");
   const response = game.changeTurn();
+  const currentGame = ctx.get("currentGame");
+  currentGame.playTurn();
+
   return ctx.json(response);
 };
 

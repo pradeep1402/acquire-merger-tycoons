@@ -26,7 +26,9 @@ export class StdGame implements Game {
     this.currentPlayerIndex = 0;
   }
 
-  playTurn(tile: Tile): Game {
+  playTurn(tile: Tile = "default"): Game {
+    if (tile === "default") return this;
+
     const placeInfo = this.board.getPlaceTileType(tile);
 
     if (placeInfo.type === TileStatus.Merge) {

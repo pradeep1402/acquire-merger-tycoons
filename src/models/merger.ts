@@ -59,6 +59,7 @@ export class Merger implements Game {
   private playersIds;
   private countOfTurns;
   private mode: string | null;
+  private turnsCount: number;
 
   constructor(game: Game) {
     this.original = game;
@@ -69,12 +70,15 @@ export class Merger implements Game {
     this.target = [];
     this.hotelsAffected = [];
     this.mode = null;
+    this.turnsCount = 0;
   }
 
-  playTurn(tile: Tile) {
-    console.log(tile);
+  playTurn(tile: Tile = "default"): Game {
+    if (tile === "default" && this.countOfTurns === this.turnsCount) {
+      return this.original;
+    }
 
-    return this.original;
+    return this;
   }
 
   placeTile(tile: Tile): PlaceTile {
@@ -221,6 +225,7 @@ export class Merger implements Game {
   private updatePlayerIndex() {
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
       this.playersIds.length;
+    this.turnsCount += 1;
   }
 
   changeTurn() {
@@ -245,6 +250,7 @@ export class Merger implements Game {
       .filter(({ name }) => name !== acquirer)
       .map(({ name }) => name as HotelName);
     this.mode = "Merge";
+    // call intiatieProcess()
 
     return { acquirer: this.acquirer, target: this.target };
   }
