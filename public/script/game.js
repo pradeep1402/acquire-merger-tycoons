@@ -30,7 +30,7 @@ const renderStocksAndPlayers = (
   players,
   currentPlayer,
   inActiveHotels,
-  activeHotels,
+  activeHotels
 ) => {
   new HotelsView(activeHotels, inActiveHotels).renderStocks();
   new PlayersView(players, currentPlayer).renderPlayers();
@@ -38,9 +38,8 @@ const renderStocksAndPlayers = (
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   const tilesEle = tiles.map((tile) => {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = tile;
     return playerTile;
   });
@@ -98,7 +97,6 @@ const renderGameEndBtn = () => {
 const keepSellTrade = (portfolio, { acquirer, target }, poller) => {
   poller.pause();
   const stocks = portfolio.stocks[target];
-  console.log(stocks, "eeeeeeee");
 
   new StockExchangeView(stocks, acquirer, target, poller).render();
 };

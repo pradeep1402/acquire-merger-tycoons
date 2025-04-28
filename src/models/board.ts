@@ -160,13 +160,13 @@ export class Board {
 
   private getAdjacentTiles(
     tile: Tile,
-    adjacentTiles: Set<Tile> = new Set(),
+    adjacentTiles: Set<Tile> = new Set()
   ): Set<Tile> {
     const tilesAdjacent = this.getAdjacentOf(tile);
 
     const tilesFound = tilesAdjacent.filter(
       (adjTile: Tile) =>
-        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile),
+        this.independentTiles.has(adjTile) && !adjacentTiles.has(adjTile)
     );
 
     for (const adjTile of tilesFound) {
@@ -194,8 +194,7 @@ export class Board {
 
     return candidates
       .filter(
-        ([num, letter]) =>
-          num >= 1 && num <= 12 && letter >= 65 && letter <= 73,
+        ([num, letter]) => num >= 1 && num <= 12 && letter >= 65 && letter <= 73
       )
       .map(([num, letter]) => `${num}${String.fromCharCode(letter)}`);
   }
@@ -236,11 +235,8 @@ export class Board {
   isGameEnd(): boolean {
     const isAnyHotel41 = this.hotels.some((hotel) => hotel.getSize() >= 41);
     const areActiveHotelsSafe = this.hotels.every(
-      (hotel) => hotel.isActive() && hotel.getSize() >= 11,
+      (hotel) => hotel.isActive() && hotel.getSize() >= 11
     );
-
-    console.log("is any 41 =>", isAnyHotel41);
-    console.log("are active hotels safe => ", areActiveHotelsSafe);
 
     return isAnyHotel41 || areActiveHotelsSafe;
   }

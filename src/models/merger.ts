@@ -31,19 +31,19 @@ export type BuyStocks = {
 
 export type MergerType =
   | {
-    typeofMerge: MergeType;
-    hotels: {
-      name: string;
-      size: number;
-      baseTile: Tile;
-    }[];
-  }
+      typeofMerge: MergeType;
+      hotels: {
+        name: string;
+        size: number;
+        baseTile: Tile;
+      }[];
+    }
   | {
-    typeofMerge: MergeType;
-    acquirer: HotelDetails;
-    target: HotelDetails[];
-    hotels?: undefined;
-  };
+      typeofMerge: MergeType;
+      acquirer: HotelDetails;
+      target: HotelDetails[];
+      hotels?: undefined;
+    };
 
 export enum MergeType {
   AutoMerge = "AutoMerge",
@@ -74,7 +74,7 @@ export class Merger implements Game {
   }
 
   playTurn(tile: Tile = "default"): Game {
-    if (tile === "default" && this.countOfTurns === this.turnsIndex) {
+    if (tile === "default" && this.countOfTurns <= this.turnsIndex) {
       return this.original;
     }
 
@@ -161,7 +161,6 @@ export class Merger implements Game {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();
-    console.log(playersId, "Inside merger");
 
     return {
       board,
@@ -183,8 +182,10 @@ export class Merger implements Game {
     for (const { hotel, count } of stocks) {
       const hotelInstance = this.getHotel(hotel);
       const priceGained = hotelInstance?.calculatePrice(count) as number;
+
       player.creditCash(priceGained);
       player.deductStock(count, hotel);
+      hotelInstance?.incrementStocks(count);
     }
 
     return player.getPlayerDetails();
@@ -194,7 +195,6 @@ export class Merger implements Game {
     const acquirerHotel = this.getHotel(acquirer);
     acquirerHotel?.decrementStocks(Math.floor(count / 2));
     player.addStock(Math.floor(count / 2), acquirer);
-
     const targetHotel = this.getHotel(target);
     targetHotel?.incrementStocks(count);
     player.deductStock(count, target);
@@ -205,10 +205,9 @@ export class Merger implements Game {
   tradeAndSellStocks(
     tradeStats: TradeStats,
     stocks: BuyStocks[],
-    playerId: string,
+    playerId: string
   ): PlayerDetails | undefined {
     const player = this.getPlayer(playerId) as Player;
-
     this.sellStocks(player, stocks);
     this.tradeStocks(player, tradeStats);
 
@@ -226,8 +225,8 @@ export class Merger implements Game {
   }
 
   private updatePlayerIndex() {
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
-      this.playersIds.length;
+    this.currentPlayerIndex =
+      (this.currentPlayerIndex + 1) % this.playersIds.length;
     this.turnsIndex += 1;
   }
 
@@ -249,11 +248,6 @@ export class Merger implements Game {
 
   private initiateProcess() {
     this.countOfTurns = this.target.length * 3;
-    console.log(
-      this.countOfTurns,
-      `this is count of turns from initiate process`,
-    );
-
     // this.original.distributeBonus();
   }
 

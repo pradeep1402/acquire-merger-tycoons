@@ -7,9 +7,8 @@ class TileView {
   }
 
   render() {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = this.#label;
 
     return playerTile;
@@ -40,9 +39,8 @@ export class PortfolioView {
   }
 
   #renderStocks([name, count]) {
-    const hotelStocks = cloneTemplate("stocks-template").querySelector(
-      ".hotel-stocks",
-    );
+    const hotelStocks =
+      cloneTemplate("stocks-template").querySelector(".hotel-stocks");
     const [img, hotelName, stockCount] = hotelStocks.children;
 
     img.src = `/images/hotels/${name.toLowerCase()}.png`;
@@ -74,9 +72,8 @@ class HotelView {
   }
 
   renderStocks() {
-    const hotelStocks = cloneTemplate("stocks-template").querySelector(
-      ".hotel-stocks",
-    );
+    const hotelStocks =
+      cloneTemplate("stocks-template").querySelector(".hotel-stocks");
     const [img, hotelName, stockCount, price] = hotelStocks.children;
 
     img.src = `/images/hotels/${this.#name.toLowerCase()}.png`;
@@ -285,13 +282,11 @@ class BuyStocksView {
 
   #attachStepButtons(template, input, stockPrice) {
     const [decrement, increment] = template.querySelectorAll("button");
-    increment.addEventListener(
-      "click",
-      () => this.#incrementValue(input, stockPrice),
+    increment.addEventListener("click", () =>
+      this.#incrementValue(input, stockPrice)
     );
-    decrement.addEventListener(
-      "click",
-      () => this.#decrementValue(input, stockPrice),
+    decrement.addEventListener("click", () =>
+      this.#decrementValue(input, stockPrice)
     );
   }
 
@@ -309,7 +304,7 @@ class BuyStocksView {
 
   #renderAllHotels() {
     const hotels = this.#activeHotels.filter(
-      ({ stocksAvailable }) => stocksAvailable,
+      ({ stocksAvailable }) => stocksAvailable
     );
     if (!hotels.length) return this.#changeTurn();
 
@@ -399,7 +394,7 @@ export class PlayerTurnView {
     new BuyStocksView(
       board.activeHotels,
       playerPortfolio.cash,
-      this.#poller,
+      this.#poller
     ).render();
   }
 
@@ -463,9 +458,8 @@ export class PlayerTurnView {
       outerDiv.appendChild(hotelName);
       outerDiv.appendChild(div);
 
-      outerDiv.addEventListener(
-        "click",
-        () => this.#handleFoundHotel(tileLabel, hotel.name, this.#poller),
+      outerDiv.addEventListener("click", () =>
+        this.#handleFoundHotel(tileLabel, hotel.name, this.#poller)
       );
       return outerDiv;
     });
@@ -564,7 +558,6 @@ class MergerView {
   #attachImgs() {
     const target = this.#target[0].name;
     const acquirer = this.#acquirer.name;
-    console.log(target, acquirer);
     const acquirerEle = this.#mergerEle.querySelector("#acquirer");
     acquirerEle.src = `/images/hotels/${acquirer.toLowerCase()}.png`;
 
@@ -715,12 +708,12 @@ export class StockExchangeView {
   }
 
   async #completeMerge() {
-    const stocks = this.#sell.value;
+    const stocks = [{ count: Number(this.#sell.value), hotel: this.#target }];
     const trade = this.#trade.value;
     const tradeStats = {
       acquirer: this.#acquirer,
       target: this.#target,
-      count: trade,
+      count: Number(trade),
     };
 
     await fetch("/acquire/merger/sell-trade-stocks", {

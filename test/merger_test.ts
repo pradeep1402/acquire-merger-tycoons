@@ -82,14 +82,15 @@ describe("Merger class", () => {
 
   it("should return game stats", () => {
     const tiles = csv(
-      "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H"
     );
+
     const game = new StdGame(tiles, createPlayers("p1 p2 p3"), [
       new Hotel("Continental", 2),
     ]);
+
     const merger = new Merger(game);
     const gameStats = merger.getGameStats();
-    console.log(gameStats);
 
     assertEquals(gameStats, {
       board: {
@@ -163,14 +164,14 @@ describe("Merger class", () => {
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
       createPlayers("player1"),
-      [continental, imperial],
+      [continental, imperial]
     );
     const merger = new Merger(game);
 
     assertEquals(merger.getAffectedHotels("3A")[0].getHotelName(), "Imperial");
     assertEquals(
       merger.getAffectedHotels("3A")[1].getHotelName(),
-      "Continental",
+      "Continental"
     );
   });
 
@@ -184,7 +185,7 @@ describe("Merger class", () => {
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
       createPlayers("player1"),
-      [continental, imperial],
+      [continental, imperial]
     );
     const merger = new Merger(game);
 
@@ -212,7 +213,7 @@ describe("Merger class", () => {
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
       createPlayers("player1"),
-      [continental, imperial],
+      [continental, imperial]
     );
     const merger = new Merger(game);
 
@@ -238,7 +239,7 @@ describe("Merger class", () => {
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
       createPlayers("player1"),
-      [continental, imperial],
+      [continental, imperial]
     );
     const player = new Player("player1");
     player.addStock(5, "Continental");
@@ -269,7 +270,7 @@ describe("Merger class", () => {
           Continental: 1,
           Imperial: 1,
         },
-      },
+      }
     );
   });
 
@@ -283,7 +284,7 @@ describe("Merger class", () => {
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
       createPlayers("player1"),
-      [continental, imperial],
+      [continental, imperial]
     );
     const merger = new Merger(game);
 
@@ -305,7 +306,7 @@ describe("Merger class", () => {
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
       createPlayers("player1"),
-      [continental, imperial],
+      [continental, imperial]
     );
     const merger = new Merger(game);
 
@@ -346,7 +347,7 @@ describe("Merger class", () => {
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
       [new Player("player1")],
-      [continental, imperial],
+      [continental, imperial]
     );
 
     const merger = new Merger(game);
