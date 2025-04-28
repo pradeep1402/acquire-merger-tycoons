@@ -333,4 +333,36 @@ describe("Merger class", () => {
 
     assert(instance instanceof Merger);
   });
+
+  it("should return the stdGame after every turn is done", () => {
+    let index = 0;
+
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("4A");
+    continental.addTile("5A");
+
+    const game = new StdGame(
+      ["1A", "2A", "3A", "4A", "5A", "6A"],
+      ["player1"],
+      [continental, imperial],
+    );
+
+    const merger = new Merger(game);
+    stub(merger, "doesPlayerHasStocks", () => {
+      const value = [true, true, true, true][index++];
+      return value;
+    });
+
+    merger.placeTile("3A");
+    merger.setupMergerEntities("Imperial");
+    merger.changeTurn();
+    merger.playTurn();
+    merger.changeTurn();
+    merger.playTurn();
+    merger.changeTurn();
+    assert(merger.playTurn() instanceof StdGame);
+  });
 });
