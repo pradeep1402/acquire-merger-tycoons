@@ -38,7 +38,7 @@ const renderStocksAndPlayers = (
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   const tilesEle = tiles.map((tile) => {
-    const playerTile = cloneTemplates("assigned-tile").querySelector(
+    const playerTile = cloneTemplate("assigned-tile").querySelector(
       ".player-tile",
     );
     playerTile.textContent = tile;
@@ -61,13 +61,13 @@ const showStartingTilesPopup = async () => {
   }, 2000);
 };
 
-export const cloneTemplates = (id) => {
+export const cloneTemplate = (id) => {
   const template = document.getElementById(id);
   return template.content.cloneNode(true);
 };
 
 const createTile = (tileLabel) => {
-  const board = cloneTemplates("board");
+  const board = cloneTemplate("board");
   const tile = board.querySelector(".tile");
   tile.textContent = tileLabel;
   tile.id = tileLabel;

@@ -1,4 +1,4 @@
-import { cloneTemplates, getResource } from "./game.js";
+import { cloneTemplate, getResource } from "./game.js";
 
 class TileView {
   #label;
@@ -7,7 +7,7 @@ class TileView {
   }
 
   render() {
-    const playerTile = cloneTemplates("assigned-tile").querySelector(
+    const playerTile = cloneTemplate("assigned-tile").querySelector(
       ".player-tile",
     );
     playerTile.textContent = this.#label;
@@ -40,7 +40,7 @@ export class PortfolioView {
   }
 
   #renderStocks([name, count]) {
-    const hotelStocks = cloneTemplates("stocks-template").querySelector(
+    const hotelStocks = cloneTemplate("stocks-template").querySelector(
       ".hotel-stocks",
     );
     const [img, hotelName, stockCount] = hotelStocks.children;
@@ -74,7 +74,7 @@ class HotelView {
   }
 
   renderStocks() {
-    const hotelStocks = cloneTemplates("stocks-template").querySelector(
+    const hotelStocks = cloneTemplate("stocks-template").querySelector(
       ".hotel-stocks",
     );
     const [img, hotelName, stockCount, price] = hotelStocks.children;
@@ -121,7 +121,7 @@ export class PlayersView {
   }
 
   #createPlayerAvatar({ name, isTheSamePlayer }) {
-    const playerTemplate = cloneTemplates("players-template");
+    const playerTemplate = cloneTemplate("players-template");
     const player = playerTemplate.querySelector("#player");
     const avatar = player.querySelector(".player-avatar");
 
@@ -160,7 +160,6 @@ export class BoardView {
 
   #renderMergerTile() {
     const mergerTile = document.getElementById(this.#mergerTile);
-
     mergerTile.style.backgroundColor = "navy";
     mergerTile.style.color = "white";
     mergerTile.textContent = "Merger";
@@ -169,6 +168,7 @@ export class BoardView {
   #renderHotel = ({ name, tiles, baseTile }) => {
     const hotelTile = document.getElementById(baseTile);
     hotelTile.classList.add(name.toLowerCase());
+    hotelTile.classList.add("base-tile");
     hotelTile.textContent = "";
 
     tiles.forEach((tile) => {
@@ -184,7 +184,6 @@ export class BoardView {
 
   render() {
     this.#renderIndependentTile();
-
     if (this.#mergerTile) this.#renderMergerTile();
     if (this.#hotelTiles.length) this.#renderHotelTiles();
   }
@@ -295,7 +294,7 @@ class BuyStocksView {
   }
 
   #renderHotel({ name, stocksAvailable, stockPrice }) {
-    const template = cloneTemplates("hotel-template");
+    const template = cloneTemplate("hotel-template");
     const maxStocks = stocksAvailable >= 3 ? 3 : stocksAvailable;
     const input = template.querySelector("input");
 

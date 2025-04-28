@@ -270,7 +270,7 @@ describe("App: /", () => {
       },
     });
 
-    assertEquals(res.status, 200);
+    assertEquals(res.status, 303);
   });
 
   it("should redirect to lobby when accessing lobby page", async () => {

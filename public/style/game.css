@@ -76,10 +76,13 @@ body {
   height: 40vh;
   background-color: var(--color);
   border: 1px solid var(--tray-color);
+  box-shadow: 10px 10px 70px rgba(0, 0, 0, 0.7);
+  border-radius: 6px;
+  z-index: 5;
   font-family: "Times New Roman", serif;
   position: absolute;
-  top: 23%;
-  left: 28.5%;
+  top: 18%;
+  left: 28%;
 }
 
 #tiles-container {
@@ -125,20 +128,33 @@ body {
 }
 
 #portfolio-header {
-  color: var(--light-color);
-  font-size: 1.5rem;
   height: 1.3em;
   width: 50vw;
+  font-size: 1.4rem;
+  color: var(--light-color);
+  font-weight: 600;
+  text-align: center;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
+  padding: 2%;
+}
+
+.portfolio-resources {
+  padding-left: 50px;
+  width: 92%;
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
 }
 
 #portfolio-body {
   border-top: 3px solid var(--light-color);
   width: 50vw;
   background-color: var(--color);
-  padding: 1%;
+  justify-content: space-around;
+  text-align: center;
+  padding: 2% 1% 1% 1%;
 }
 
 .portfolio-section {
@@ -164,6 +180,7 @@ body {
   justify-content: center;
   align-items: center;
   font-size: 1rem;
+  box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.2);
 }
 
 .tiles-portfolio {
@@ -305,29 +322,24 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* border: 1px solid black; */
   border-radius: 0.2em;
-  /* background-color: #e9e3db; */
   box-shadow: 0px 0px 10px lightgray;
   z-index: 1;
 }
 
 #popup {
   display: none;
-  position: fixed;
+  position: absolute;
   top: 30%;
   left: 50%;
   transform: translate(-50%, -30%);
-  background-color: #fff;
-  border: 0.5px solid rgba(0, 0, 0, 0.2);
+  background-color: var(--color);
+  border: 0.5px solid var(--tray-color);
+  color: var(--dark-color);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-}
-
-#popup {
-  background-color: var(--dark-color);
+  z-index: 1;
 }
 
 #hotel-container {
@@ -363,81 +375,99 @@ body {
   margin: 8px;
 }
 
-.tower {
+.base-tile {
   box-shadow: none;
   background-color: whitesmoke;
-  background-image: url("/images/hotels/tower.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.tower {
+  background-image: url("/images/hotels/tower.png");
+  border: 2px solid #ffb404;
 }
 
 .imperial {
-  box-shadow: none;
-  background-color: whitesmoke;
   background-image: url("/images/hotels/imperial.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  border: 2px solid #ff7c14;
 }
 
 .continental {
-  box-shadow: none;
-  background-color: whitesmoke;
   background-image: url("/images/hotels/continental.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  border: 2px solid #28c4e4;
 }
 
 .sackson {
-  box-shadow: none;
-  background-color: whitesmoke;
   background-image: url("/images/hotels/sackson.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  border: 2px solid #ff5454;
 }
 
 .worldwide {
-  box-shadow: none;
-  background-color: whitesmoke;
   background-image: url("/images/hotels/worldwide.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  border: 2px solid #8054f4;
 }
 
 .american {
-  box-shadow: none;
-  background-color: whitesmoke;
   background-image: url("/images/hotels/american.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  border: 2px solid #288ce4;
 }
 
 .festival {
-  box-shadow: none;
-  background-color: whitesmoke;
   background-image: url("/images/hotels/festival.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  border: 2px solid #48c454;
 }
 
 #buy-stocks {
   width: 50vw;
   height: 50vh;
   position: fixed;
-  top: 15%;
-  left: 15%;
-  background-color: #b1d4e0;
-  color: #1e2a38;
-  border-radius: 20px;
+  top: 19%;
+  left: 23%;
+  background-color: var(--color);
+  color: var(--dark-color);
+  /* border: 1px solid var(--tray-color); */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+}
+
+.step-down {
+  border: none;
+  background-color: var(--tray-color);
+  color: var(--light-color);
+  font-weight: 700;
+  font-size: 1.2em;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.step-up {
+  border: none;
+  background-color: var(--tray-color);
+  color: var(--light-color);
+  font-weight: 700;
+  font-size: 1.2em;
+  border-radius: 2x;
+  display: inline-block;
+}
+
+.count-input {
+  font-size: 1.4em;
+  display: inline-block;
+}
+
+#buy {
+  width: 80%;
+  height: 30px;
+  background-color: var(--tray-color);
+  color: var(--light-color);
+  font-size: 1.2em;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
 }
 
 #active-hotels {
@@ -452,6 +482,10 @@ body {
 }
 
 .hotel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
   width: 100px;
   height: 100px;
   border: 1px solid black;

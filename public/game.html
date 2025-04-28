@@ -13,7 +13,7 @@
     <div class="gameBoard"></div>
 
     <div id="tiles-popup">
-      <h1 id="popup-header">You were assigned 6 tiles and $6000</h1>
+      <h1 id="popup-header">You were assigned 6 tiles and b</h1>
       <div id="tiles-container"></div>
     </div>
 
@@ -33,21 +33,21 @@
 
     <div id="portfolio-panel">
       <div id="portfolio-header">
-        PORTFOLIO <span class="open hidden"> ⬆</span>
-        <span class="collapse"> ⬇</span>
+        <div class="portfolio-resources">
+          <p>TILES</p>
+          <p>STOCKS</p>
+          <p>CASH</p>
+        </div>
       </div>
       <div id="portfolio-body" class="display">
         <div class="tiles-portfolio">
-          <h3>TILES</h3>
           <div id="portfolio-tiles"></div>
         </div>
         <div class="stocks-portfolio">
-          <h3>STOCKS</h3>
           <div id="stock-info"></div>
         </div>
 
         <div class="cash-portfolio">
-          <h3>CASH</h3>
           <div id="cash-info">
             <div id="money-emoji">💵</div>
             <p id="money-available"></p>
@@ -121,16 +121,18 @@
       <div class="hotel">
         <p id="hotel"></p>
         <p id="stock-value"></p>
-        <button class="step-down">-</button>
-        <input
-          type="number"
-          name="stock-count"
-          class="count-input"
-          min="0"
-          value="0"
-          disabled
-        />
-        <button class="step-up">+</button>
+        <div>
+          <button class="step-down">-</button>
+          <input
+            type="number"
+            name="stock-count"
+            class="count-input"
+            min="0"
+            value="0"
+            disabled
+          />
+          <button class="step-up">+</button>
+        </div>
       </div>
     </template>
     <template id="assigned-tile">

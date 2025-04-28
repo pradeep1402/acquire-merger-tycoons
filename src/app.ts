@@ -147,7 +147,7 @@ export const createApp = (
   app.get("/logout", (ctx: Context) => {
     deleteCookie(ctx, "sessionId");
     deleteCookie(ctx, "gameId");
-    return ctx.text("Logged out. Cookie removed.");
+    return ctx.redirect("/login.html", 303);
   });
 
   app.route("/", guestRoutes);
