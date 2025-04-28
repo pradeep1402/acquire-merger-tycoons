@@ -90,8 +90,7 @@ export class Board {
   }
 
   private validateMergeTile(tile: Tile): boolean {
-    const hotelsInMerge = this.dependentHotels(tile);
-    console.log(hotelsInMerge);
+    this.dependentHotels(tile);
 
     return true;
   }

@@ -1,4 +1,4 @@
-import { assertEquals } from "assert";
+import { assert, assertEquals, assertFalse } from "assert";
 import { describe, it } from "testing/bdd";
 import { Hotel } from "../src/models/hotel.ts";
 import {
@@ -11,13 +11,14 @@ import { stub } from "testing/mock";
 import { StdGame } from "../src/models/stdGame.ts";
 import { Player } from "../src/models/player.ts";
 import { TileStatus } from "../src/models/board.ts";
+import { Game } from "../src/models/game.ts";
 
 describe("Merger class", () => {
   it("should return the game state", () => {
-    const game = new StdGame([], [], []);
+    const game: Game = new StdGame([], [], []);
     const merger = new Merger(game);
 
-    assertEquals(merger.playTurn("3A"), game as StdGame);
+    assertEquals(merger.playTurn("3A"), game);
   });
 
   it("should return the size of hotel", () => {
@@ -42,11 +43,29 @@ describe("Merger class", () => {
   });
 
   it("should return changed player Id", () => {
+    let index = 0;
     const game = new StdGame([], ["p1", "p2", "p3"], []);
     const merger = new Merger(game);
+    stub(merger, "doesPlayerHasStocks", () => {
+      const value = [true, false][index++];
+      return value;
+    });
     const status = merger.changeTurn();
 
     assertEquals(status, { status: "p2" });
+  });
+
+  it("should return changed player Id", () => {
+    let index = 0;
+    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const merger = new Merger(game);
+    stub(merger, "doesPlayerHasStocks", () => {
+      const value = [false, true][index++];
+      return value;
+    });
+    const status = merger.changeTurn();
+
+    assertEquals(status, { status: "p3" });
   });
 
   it("should return playerIds", () => {
@@ -107,6 +126,26 @@ describe("Merger class", () => {
     });
   });
 
+  it("should return true when player have the stocks", () => {
+    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const player = new Player("Player1", []);
+    const merger = new Merger(game);
+    stub(merger, "getPlayer", () => player);
+    stub(player, "hasStocksOf", () => true);
+
+    assert(merger.doesPlayerHasStocks());
+  });
+
+  it("should return false when player doesn't have the stocks", () => {
+    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const player = new Player("Player1", []);
+    const merger = new Merger(game);
+    stub(merger, "getPlayer", () => player);
+    stub(player, "hasStocksOf", () => false);
+
+    assertFalse(merger.doesPlayerHasStocks());
+  });
+
   it("should return afftected hotels in merge", () => {
     const imperial = new Hotel("Imperial", 2);
     imperial.addTile("1A");
@@ -155,7 +194,7 @@ describe("Merger class", () => {
     });
   });
 
-  it("should return type of merge when two hotels with differnet length are merging", () => {
+  it("should return type of merge when two hotels with different length are merging", () => {
     const imperial = new Hotel("Imperial", 2);
     imperial.addTile("1A");
     imperial.addTile("2A");

@@ -3,7 +3,6 @@ import { HotelName, Player } from "./player.ts";
 import { TileStatus } from "./board.ts";
 import { Game, MergerData, PlaceTile, PlayerDetails, Tile } from "./game.ts";
 import { Hotel } from "./hotel.ts";
-import { StdGame } from "./stdGame.ts";
 
 export type HotelDetails = {
   name: string;
@@ -69,7 +68,7 @@ export class Merger implements Game {
   }
 
   placeTile(tile: Tile): PlaceTile {
-    const game = this.original as StdGame;
+    const game = this.original;
     const hotelsInMerge = game.getAffectedHotels(tile);
 
     const mergeDetails = this.findMergeType(hotelsInMerge);
@@ -188,7 +187,7 @@ export class Merger implements Game {
     return this.playersIds[this.currentPlayerIndex];
   }
 
-  private doesPlayerHasStocks() {
+  doesPlayerHasStocks() {
     const player = this.getPlayer(this.getCurrentPlayer());
 
     return player?.hasStocksOf(this.target[0]);
@@ -202,7 +201,7 @@ export class Merger implements Game {
   changeTurn() {
     this.updatePlayerIndex();
 
-    if (this.doesPlayerHasStocks()) this.changeTurn();
+    if (!this.doesPlayerHasStocks()) this.changeTurn();
 
     return { status: this.getCurrentPlayer() };
   }
