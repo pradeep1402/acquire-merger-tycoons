@@ -33,7 +33,7 @@ export class Hotel {
 
   getStockPrice() {
     const stockPrice = Hotel.stockInfo().find(
-      (s) => this.getSize() >= s.from && this.getSize() <= s.to
+      (s) => this.getSize() >= s.from && this.getSize() <= s.to,
     );
 
     return stockPrice?.value ? stockPrice.value + 100 * this.offset : 0;
