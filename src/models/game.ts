@@ -50,6 +50,9 @@ export type GameStats = {
   board: BoardDetails;
   playersId: string[];
   currentPlayerId: string;
+  mode?: string | null;
+  acquirer?: null | HotelName;
+  target?: null | HotelName;
 };
 
 export type MergerData = {

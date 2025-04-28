@@ -84,6 +84,7 @@ describe("Merger class", () => {
     );
     const merger = new Merger(game);
     const gameStats = merger.getGameStats();
+    console.log(gameStats);
 
     assertEquals(gameStats, {
       board: {
@@ -102,7 +103,9 @@ describe("Merger class", () => {
       },
       playersId: ["p1", "p2", "p3"],
       currentPlayerId: "p1",
-      mode: "Merge",
+      mode: null,
+      acquirer: null,
+      target: null,
     });
   });
 

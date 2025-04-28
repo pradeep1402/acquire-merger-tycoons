@@ -4,6 +4,7 @@ import { TileStatus } from "./board.ts";
 import {
   BoardDetails,
   Game,
+  GameStats,
   MergerData,
   PlaceTile,
   PlayerDetails,
@@ -57,6 +58,7 @@ export class Merger implements Game {
   private currentPlayerIndex;
   private playersIds;
   private countOfTurns;
+  private mode: string | null;
 
   constructor(game: Game) {
     this.original = game;
@@ -66,6 +68,7 @@ export class Merger implements Game {
     this.acquirer = null;
     this.target = [];
     this.hotelsAffected = [];
+    this.mode = null;
   }
 
   playTurn(tile: Tile) {
@@ -150,12 +153,19 @@ export class Merger implements Game {
     return this.original.getBoard();
   }
 
-  getGameStats() {
+  getGameStats(): GameStats {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();
 
-    return { board, playersId, currentPlayerId, mode: "Merge" };
+    return {
+      board,
+      playersId,
+      currentPlayerId,
+      mode: this.mode,
+      acquirer: this.acquirer,
+      target: this.target[0] || null,
+    };
   }
 
   getAffectedHotels(tile: Tile) {
@@ -234,6 +244,7 @@ export class Merger implements Game {
     this.target = this.hotelsAffected
       .filter(({ name }) => name !== acquirer)
       .map(({ name }) => name as HotelName);
+    this.mode = "Merge";
 
     return { acquirer: this.acquirer, target: this.target };
   }
