@@ -117,7 +117,7 @@ export class StdGame implements Game {
     return this.pile.splice(0, count);
   }
 
-  private getBoard(): BoardDetails {
+  getBoard(): BoardDetails {
     return this.board.getBoard();
   }
 

@@ -119,4 +119,5 @@ export interface Game {
   getHotel: (hotelName: HotelName) => Hotel | undefined;
   setupMergerEntities: (hotelName: HotelName) => MergerData | { error: string };
   getCurrentPlayerIndex: () => number;
+  getBoard: () => BoardDetails;
 }

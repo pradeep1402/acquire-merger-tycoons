@@ -102,6 +102,7 @@ describe("Merger class", () => {
       },
       playersId: ["p1", "p2", "p3"],
       currentPlayerId: "p1",
+      mode: "Merge",
     });
   });
 

@@ -1,7 +1,14 @@
 import _ from "lodash";
 import { HotelName, Player } from "./player.ts";
 import { TileStatus } from "./board.ts";
-import { Game, MergerData, PlaceTile, PlayerDetails, Tile } from "./game.ts";
+import {
+  BoardDetails,
+  Game,
+  MergerData,
+  PlaceTile,
+  PlayerDetails,
+  Tile,
+} from "./game.ts";
 import { Hotel } from "./hotel.ts";
 
 export type HotelDetails = {
@@ -139,8 +146,16 @@ export class Merger implements Game {
     return this.original.getPlayerDetails(playerId);
   }
 
+  getBoard(): BoardDetails {
+    return this.original.getBoard();
+  }
+
   getGameStats() {
-    return this.original.getGameStats();
+    const board = this.getBoard();
+    const currentPlayerId = this.getCurrentPlayer();
+    const playersId = this.getPlayerIds();
+
+    return { board, playersId, currentPlayerId, mode: "Merge" };
   }
 
   getAffectedHotels(tile: Tile) {
