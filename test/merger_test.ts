@@ -176,12 +176,12 @@ describe("Merger class", () => {
       mergeDetails: {
         typeofMerge: MergeType.AutoMerge,
         acquirer: { name: "Continental", size: 3, baseTile: "" },
-        target: { name: "Imperial", size: 2, baseTile: "" },
+        target: [{ name: "Imperial", size: 2, baseTile: "" }],
       },
     });
   });
 
-  it("should return player details", () => {
+  it("should return player details when the trade and sell stocks", () => {
     const imperial = new Hotel("Imperial", 2);
     imperial.addTile("1A");
     imperial.addTile("2A");
@@ -225,5 +225,48 @@ describe("Merger class", () => {
         },
       },
     );
+  });
+
+  it("should return the acquirer and targets along with the players who got the primart and secondary bonuses.", () => {
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("4A");
+    continental.addTile("5A");
+    const game = new StdGame(
+      ["1A", "2A", "3A", "4A", "5A", "6A"],
+      ["player1"],
+      [continental, imperial],
+    );
+    const merger = new Merger(game);
+
+    merger.placeTile("3A");
+    const mergerHotelsDetails = merger.setupMergerEntities("Imperial");
+    assertEquals(mergerHotelsDetails, {
+      acquirer: "Imperial",
+      target: ["Continental"],
+    });
+  });
+  it("should return the acquirer and targets along with the players who got the primart and secondary bonuses.", () => {
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("4A");
+    continental.addTile("5A");
+    const game = new StdGame(
+      ["1A", "2A", "3A", "4A", "5A", "6A"],
+      ["player1"],
+      [continental, imperial],
+    );
+    const merger = new Merger(game);
+
+    merger.placeTile("3A");
+    const mergerHotelsDetails = merger.setupMergerEntities("Imperial");
+    assertEquals(mergerHotelsDetails, {
+      acquirer: "Imperial",
+      target: ["Continental"],
+    });
   });
 });

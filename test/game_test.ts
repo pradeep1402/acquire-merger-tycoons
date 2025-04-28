@@ -45,6 +45,14 @@ describe("Game model", () => {
       assertEquals(error, "Not valid in Standard Game Mode");
     });
   });
+  describe("setupMergerEntities()", () => {
+    it("should return error with message when accessing setupMergerEntities", () => {
+      const game = new StdGame([], [], []);
+
+      const error = game.setupMergerEntities("Continental");
+      assertEquals(error, { error: "Not valid in Standard Game Mode" });
+    });
+  });
 
   describe("getPlayerDetails(playerId) method", () => {
     it("should return a specific player info", () => {
@@ -339,11 +347,13 @@ describe("Game model", () => {
         tile: "8B",
         type: TileStatus.Merge,
         mergeDetails: {
-          target: {
-            name: "Continental",
-            size: 2,
-            baseTile: "10B",
-          },
+          target: [
+            {
+              name: "Continental",
+              size: 2,
+              baseTile: "10B",
+            },
+          ],
           acquirer: {
             name: "Imperial",
             size: 3,

@@ -7,6 +7,7 @@ import {
   BoardDetails,
   Game,
   GameStats,
+  MergerData,
   PlaceTile,
   PlayerDetails,
   Tile,
@@ -152,7 +153,7 @@ export class StdGame implements Game {
     return this.players.find((player) => player.doesPlayerMatch(playerId));
   }
 
-  getHotel(hotelName: string): Hotel | undefined {
+  getHotel(hotelName: HotelName): Hotel | undefined {
     return this.board.hotels.find((hotel) => hotel.isAMatch(hotelName));
   }
 
@@ -164,9 +165,9 @@ export class StdGame implements Game {
   }
 
   private getPrimaryAndSecondaryHolders(hotelName: HotelName) {
-    const playersStockCount = this.players.map((
-      player,
-    ) => (this.getShareCount(player, hotelName)));
+    const playersStockCount = this.players.map((player) =>
+      this.getShareCount(player, hotelName)
+    );
     const groupedByStockCount = _.groupBy(
       playersStockCount,
       (value: { player: Player; count: number }) => value.count,
@@ -221,7 +222,6 @@ export class StdGame implements Game {
 
     return { status: "bonus distributed" };
   }
-  // getSizeOfHotel(hotelName: string) {}
 
   getPlayersForTesting() {
     return this.players;
@@ -229,5 +229,8 @@ export class StdGame implements Game {
 
   getBoardForTesting() {
     return this.board;
+  }
+  setupMergerEntities(_hotelName: HotelName): MergerData | { error: string } {
+    return { error: "Not valid in Standard Game Mode" };
   }
 }

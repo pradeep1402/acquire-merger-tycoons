@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { HotelName, Player } from "./player.ts";
-import { Game, PlaceTile, PlayerDetails, Tile } from "./game.ts";
 import { TileStatus } from "./board.ts";
+import { Game, MergerData, PlaceTile, PlayerDetails, Tile } from "./game.ts";
 import { Hotel } from "./hotel.ts";
 import { StdGame } from "./stdGame.ts";
 
@@ -33,7 +33,7 @@ export type MergerType =
   | {
     typeofMerge: MergeType;
     acquirer: HotelDetails;
-    target: HotelDetails;
+    target: HotelDetails[];
     hotels?: undefined;
   };
 
@@ -44,9 +44,15 @@ export enum MergeType {
 
 export class Merger implements Game {
   private original;
+  private acquirer: HotelName | null;
+  private target: HotelName[];
+  private hotelsAffected: HotelDetails[];
 
   constructor(game: Game) {
     this.original = game;
+    this.acquirer = null;
+    this.target = [];
+    this.hotelsAffected = [];
   }
 
   playTurn(tile: Tile) {
@@ -69,13 +75,13 @@ export class Merger implements Game {
   }
 
   private getHotelInfo(hotelsInMerge: Hotel[]) {
-    const hotels = hotelsInMerge.map((hotel) => ({
+    this.hotelsAffected = hotelsInMerge.map((hotel) => ({
       name: hotel.getHotelName(),
       size: hotel.getSize(),
       baseTile: hotel.getBaseTile(),
     }));
 
-    return hotels;
+    return this.hotelsAffected;
   }
 
   private getHighestAndSmallestHotel(hotels: HotelDetails[]): HotelDetails[] {
@@ -92,11 +98,13 @@ export class Merger implements Game {
       return { typeofMerge: MergeType.SelectiveMerge, hotels };
     }
     const [highest, lowest] = this.getHighestAndSmallestHotel(hotels);
+    this.acquirer = highest.name as HotelName;
+    this.target.push(lowest.name as HotelName);
 
     return {
       typeofMerge: MergeType.AutoMerge,
       acquirer: highest,
-      target: lowest,
+      target: [lowest],
     };
   }
 
@@ -127,8 +135,6 @@ export class Merger implements Game {
   getAffectedHotels(tile: Tile) {
     return this.original.getAffectedHotels(tile);
   }
-
-  // getSizeOfHotel: (hotelName: string) => number;
 
   private sellStocks(player: Player, stocks: BuyStocks[]) {
     for (const { hotel, count } of stocks) {
@@ -173,7 +179,16 @@ export class Merger implements Game {
   getPlayer(playerId: string) {
     return this.original.getPlayer(playerId);
   }
-  getHotel(hotelName: string) {
+  getHotel(hotelName: HotelName) {
     return this.original.getHotel(hotelName);
+  }
+
+  setupMergerEntities(acquirer: HotelName): MergerData {
+    this.acquirer = acquirer;
+    this.target = this.hotelsAffected
+      .filter(({ name }) => name !== acquirer)
+      .map(({ name }) => name as HotelName);
+
+    return { acquirer: this.acquirer, target: this.target };
   }
 }
