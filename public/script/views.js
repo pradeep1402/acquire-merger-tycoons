@@ -500,7 +500,7 @@ export class PlayerTurnView {
         break;
 
       case "Merge":
-        new MergerView(placeInfo.mergeDetails, tileLabel).merge();
+        new MergerView(placeInfo.mergeDetails, tileLabel, this.#poller).merge();
         break;
     }
   }
@@ -531,7 +531,9 @@ class MergerView {
   #target;
   #hotels;
   #board;
-  constructor(mergeInfo, tile) {
+  #poller;
+  constructor(mergeInfo, tile, poller) {
+    this.#poller = poller;
     this.#tile = tile;
     this.#mergeInfo = mergeInfo;
     this.#mergerEle = document.querySelector(".merge-popup");
@@ -560,6 +562,7 @@ class MergerView {
   #attachImgs() {
     const target = this.#target[0].name;
     const acquirer = this.#acquirer.name;
+    console.log(target, acquirer);
     const acquirerEle = this.#mergerEle.querySelector("#acquirer");
     acquirerEle.src = `/images/hotels/${acquirer.toLowerCase()}.png`;
 
@@ -611,6 +614,7 @@ class MergerView {
   }
 
   merge() {
+    this.#poller.start();
     if (this.#mergeInfo.typeofMerge === "AutoMerge") return this.#autoMerge();
     this.#selectiveMerge();
   }
@@ -625,8 +629,10 @@ export class StockExchangeView {
   #acquirer;
   #target;
   #popup;
+  #poller;
 
-  constructor(stocksAvailable, acquirer, target) {
+  constructor(stocksAvailable, acquirer, target, poller) {
+    this.#poller = poller;
     this.#stockAvailable = stocksAvailable;
     this.#acquirer = acquirer;
     this.#target = target;
@@ -707,8 +713,7 @@ export class StockExchangeView {
   }
 
   async #completeMerge() {
-    const keep = this.#keep.value;
-    const sell = this.#sell.value;
+    const stocks = this.#sell.value;
     const trade = this.#trade.value;
     const tradeStats = {
       acquirer: this.#acquirer,
@@ -716,13 +721,16 @@ export class StockExchangeView {
       count: trade,
     };
 
-    await fetch("/acquire/continue-merger/exchange", {
-      body: JSON.stringify({ keep, sell, tradeStats }),
+    await fetch("/acquire/merger/sell-trade-stocks", {
+      body: JSON.stringify({ tradeStats, stocks }),
+      method: "PATCH",
       headers: {
-        method: "PATCH",
+        "content-type": "application/json",
       },
     });
 
+    await fetch("/acquire/end-turn", { method: "PATCH" });
+    this.#poller.start();
     this.#popup.classList.add("hidden");
     this.#popup.classList.remove("merger-pop-container");
   }

@@ -161,14 +161,17 @@ export class Merger implements Game {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();
+    console.log(playersId, "Inside merger");
 
     return {
       board,
       playersId,
       currentPlayerId,
-      mode: this.mode,
-      acquirer: this.acquirer,
-      target: this.target[0] || null,
+      mergeData: {
+        mode: this.mode,
+        acquirer: this.acquirer,
+        target: this.target[0] || null,
+      },
     };
   }
 

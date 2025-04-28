@@ -1,5 +1,5 @@
 import Collapse from "./collapse.js";
-import { PlayersView, PlayerTurnView } from "./views.js";
+import { PlayersView, PlayerTurnView, StockExchangeView } from "./views.js";
 import Poller from "./polling.js";
 import { BoardView, HotelsView, PortfolioView } from "./views.js";
 
@@ -30,7 +30,7 @@ const renderStocksAndPlayers = (
   players,
   currentPlayer,
   inActiveHotels,
-  activeHotels
+  activeHotels,
 ) => {
   new HotelsView(activeHotels, inActiveHotels).renderStocks();
   new PlayersView(players, currentPlayer).renderPlayers();
@@ -38,8 +38,9 @@ const renderStocksAndPlayers = (
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   const tilesEle = tiles.map((tile) => {
-    const playerTile =
-      cloneTemplate("assigned-tile").querySelector(".player-tile");
+    const playerTile = cloneTemplate("assigned-tile").querySelector(
+      ".player-tile",
+    );
     playerTile.textContent = tile;
     return playerTile;
   });
@@ -94,8 +95,12 @@ const renderGameEndBtn = () => {
   btn.addEventListener("click", async () => await fetch("acquire/game-end"));
 };
 
-const keepSellTrade = (portfolio, acquirer, target) => {
-  console.log(portfolio, acquirer, target, ">>>>>>>>>>>>>>>>>>>>");
+const keepSellTrade = (portfolio, { acquirer, target }, poller) => {
+  poller.pause();
+  const stocks = portfolio.stocks[target];
+  console.log(stocks, "eeeeeeee");
+
+  new StockExchangeView(stocks, acquirer, target, poller).render();
 };
 
 const startGamePolling = async (poller) => {
@@ -107,9 +112,7 @@ const startGamePolling = async (poller) => {
     currentPlayer,
     playerPortfolio,
     isGameEnd,
-    mode,
-    acquirer,
-    target,
+    mergeData,
   } = stats;
 
   const { tiles } = playerPortfolio;
@@ -117,12 +120,13 @@ const startGamePolling = async (poller) => {
   console.log(isGameEnd);
   if (isGameEnd) renderGameEndBtn();
 
-  if (mode === "Merge" && isMyTurn) {
-    keepSellTrade(playerPortfolio, acquirer, target);
+  if (mergeData && mergeData.mode === "Merge" && isMyTurn) {
+    keepSellTrade(playerPortfolio, mergeData, poller);
+  } else {
+    renderPlayerTurn(isMyTurn, tiles, poller);
   }
 
   renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);
-  renderPlayerTurn(isMyTurn, tiles, poller);
   renderPortfolio(playerPortfolio);
   renderPlaceTilesBoard(board);
 };

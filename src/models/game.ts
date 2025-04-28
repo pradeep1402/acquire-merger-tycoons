@@ -49,9 +49,11 @@ export type GameStats = {
   board: BoardDetails;
   playersId: string[];
   currentPlayerId: string;
-  mode?: string | null;
-  acquirer?: null | HotelName;
-  target?: null | HotelName;
+  mergeData?: {
+    mode?: string | null;
+    acquirer?: null | HotelName;
+    target?: null | HotelName;
+  };
   isGameEnd?: boolean;
 };
 
