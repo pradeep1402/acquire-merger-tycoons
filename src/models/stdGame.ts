@@ -19,10 +19,13 @@ export class StdGame implements Game {
   private players: Player[];
   private currentPlayerIndex: number;
 
-  constructor(tiles: Tile[], playerIds: string[], hotels: Hotel[]) {
+  constructor(tiles: Tile[], players: Player[], hotels: Hotel[]) {
     this.board = new Board(hotels);
     this.pile = [...tiles];
-    this.players = this.initializePlayers(playerIds);
+    this.players = players;
+    const initTiles = (p: Player) =>
+      this.getTiles(6).forEach((tile) => p.addTile(tile));
+    this.players.forEach(initTiles);
     this.currentPlayerIndex = 0;
   }
 
@@ -35,15 +38,6 @@ export class StdGame implements Game {
       return new Merger(this);
     }
     return this;
-  }
-
-  private initializePlayers(playerIds: string[]) {
-    return playerIds.map((playerId: string): Player => {
-      const tiles = this.getTiles(6);
-      const player = new Player(playerId);
-      tiles.forEach((tile) => player.addTile(tile));
-      return player;
-    });
   }
 
   changeTurn(): { status: string } {

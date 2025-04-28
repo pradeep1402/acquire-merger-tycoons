@@ -3,6 +3,7 @@ import { CurrentGame } from "./CurrentGame.ts";
 import { Hotel } from "./hotel.ts";
 import _ from "lodash";
 import { StdGame } from "./stdGame.ts";
+import { Player } from "./player.ts";
 
 const getHotels = (): Hotel[] => {
   const hotelTexts = `Tower:0,Sackson:0,
@@ -36,8 +37,15 @@ class GameManager {
     this.gameStateMap = new Map();
   }
 
+  private createPlayers(playerIds: string[]): Player[] {
+    return playerIds.map((playerId) => new Player(playerId));
+  }
   createGame(gameId: string, playerIds: string[]): StdGame {
-    const game = new StdGame(this.tileGenerator(), playerIds, this.hotels());
+    const game = new StdGame(
+      this.tileGenerator(),
+      this.createPlayers(playerIds),
+      this.hotels(),
+    );
     const currentGame = new CurrentGame(game);
     this.gamesMap.set(gameId, game);
     this.gameStateMap.set(gameId, currentGame);

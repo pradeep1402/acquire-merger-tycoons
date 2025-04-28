@@ -10,6 +10,10 @@ import { StdGame } from "../src/models/stdGame.ts";
 import { CurrentGame } from "../src/models/CurrentGame.ts";
 import { BuyStocks, Merger } from "../src/models/merger.ts";
 import { Game, MergerData } from "../src/models/game.ts";
+import { Player } from "../src/models/player.ts";
+
+const createPlayers = (idTexts: string): Player[] =>
+  idTexts.split(" ").map((id: string) => new Player(id));
 
 describe("App: /login", () => {
   it("should receive a cookie and redirect to index page", async () => {
@@ -680,7 +684,7 @@ const createTestAppWithMergerStocks = (username: string) => {
 
   const game = new StdGame(
     ["1A", "2A", "3A", "4A", "5A", "6A"],
-    ["player1"],
+    createPlayers("player1"),
     [continental, imperial],
   );
 

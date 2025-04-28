@@ -13,6 +13,9 @@ import { Player } from "../src/models/player.ts";
 import { TileStatus } from "../src/models/board.ts";
 import { Game } from "../src/models/game.ts";
 
+const createPlayers = (idTexts: string): Player[] =>
+  idTexts.split(" ").map((id: string) => new Player(id));
+
 describe("Merger class", () => {
   const csv = (text: string, separator = " ") => text.split(separator);
   it("should return the game state", () => {
@@ -45,7 +48,7 @@ describe("Merger class", () => {
 
   it("should return changed player Id", () => {
     let index = 0;
-    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const game = new StdGame([], createPlayers("p1 p2 p3"), []);
     const merger = new Merger(game);
     stub(merger, "doesPlayerHasStocks", () => {
       const value = [true, false][index++];
@@ -58,7 +61,7 @@ describe("Merger class", () => {
 
   it("should return changed player Id", () => {
     let index = 0;
-    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const game = new StdGame([], createPlayers("p1 p2 p3"), []);
     const merger = new Merger(game);
     stub(merger, "doesPlayerHasStocks", () => {
       const value = [false, true][index++];
@@ -70,7 +73,7 @@ describe("Merger class", () => {
   });
 
   it("should return playerIds", () => {
-    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const game = new StdGame([], createPlayers("p1 p2 p3"), []);
     const merger = new Merger(game);
     const playerIds = merger.getPlayerIds();
 
@@ -81,11 +84,9 @@ describe("Merger class", () => {
     const tiles = csv(
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
-    const game = new StdGame(
-      tiles,
-      ["p1", "p2", "p3"],
-      [new Hotel("Continental", 2)],
-    );
+    const game = new StdGame(tiles, createPlayers("p1 p2 p3"), [
+      new Hotel("Continental", 2),
+    ]);
     const merger = new Merger(game);
     const gameStats = merger.getGameStats();
     console.log(gameStats);
@@ -112,7 +113,7 @@ describe("Merger class", () => {
   });
 
   it("should return playerDetails when id is given", () => {
-    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const game = new StdGame([], createPlayers("p1 p2 p3"), []);
     const merger = new Merger(game);
     const playerDetails = merger.getPlayerDetails("p1");
 
@@ -133,7 +134,7 @@ describe("Merger class", () => {
   });
 
   it("should return true when player have the stocks", () => {
-    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const game = new StdGame([], createPlayers("p1 p2 p3"), []);
     const player = new Player("Player1");
     const merger = new Merger(game);
     stub(merger, "getPlayer", () => player);
@@ -143,7 +144,7 @@ describe("Merger class", () => {
   });
 
   it("should return false when player doesn't have the stocks", () => {
-    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const game = new StdGame([], createPlayers("p1 p2 p3"), []);
     const player = new Player("Player1");
     const merger = new Merger(game);
     stub(merger, "getPlayer", () => player);
@@ -161,7 +162,7 @@ describe("Merger class", () => {
     continental.addTile("5A");
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
-      ["player1"],
+      createPlayers("player1"),
       [continental, imperial],
     );
     const merger = new Merger(game);
@@ -182,7 +183,7 @@ describe("Merger class", () => {
     continental.addTile("5A");
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
-      ["player1"],
+      createPlayers("player1"),
       [continental, imperial],
     );
     const merger = new Merger(game);
@@ -210,7 +211,7 @@ describe("Merger class", () => {
     continental.addTile("6A");
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
-      ["player1"],
+      createPlayers("player1"),
       [continental, imperial],
     );
     const merger = new Merger(game);
@@ -236,7 +237,7 @@ describe("Merger class", () => {
     continental.addTile("6A");
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
-      ["player1"],
+      createPlayers("player1"),
       [continental, imperial],
     );
     const player = new Player("player1");
@@ -281,7 +282,7 @@ describe("Merger class", () => {
     continental.addTile("5A");
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
-      ["player1"],
+      createPlayers("player1"),
       [continental, imperial],
     );
     const merger = new Merger(game);
@@ -303,7 +304,7 @@ describe("Merger class", () => {
     continental.addTile("5A");
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
-      ["player1"],
+      createPlayers("player1"),
       [continental, imperial],
     );
     const merger = new Merger(game);
@@ -317,7 +318,7 @@ describe("Merger class", () => {
   });
 
   it("should return the StdInstance instance if the merger is commpleted", () => {
-    const game = new StdGame([], ["p1", "p2", "p3"], []);
+    const game = new StdGame([], createPlayers("p1 p2 p3"), []);
     const merger = new Merger(game);
     const instance = merger.playTurn();
 
@@ -325,7 +326,7 @@ describe("Merger class", () => {
   });
 
   it("should return the merger instance if the merger is not completed", () => {
-    const game = new StdGame(["1A"], ["p1", "p2", "p3"], []);
+    const game = new StdGame(["1A"], createPlayers("p1 p2 p3"), []);
     const merger = new Merger(game);
     const instance = merger.playTurn("1A");
 
@@ -344,7 +345,7 @@ describe("Merger class", () => {
 
     const game = new StdGame(
       ["1A", "2A", "3A", "4A", "5A", "6A"],
-      ["player1"],
+      [new Player("player1")],
       [continental, imperial],
     );
 
