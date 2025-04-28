@@ -11,6 +11,7 @@ import { CurrentGame } from "../src/models/CurrentGame.ts";
 import { BuyStocks, Merger } from "../src/models/merger.ts";
 import { Game, MergerData } from "../src/models/game.ts";
 import { Player } from "../src/models/player.ts";
+import { Board } from "../src/models/board.ts";
 
 const createPlayers = (idTexts: string): Player[] =>
   idTexts.split(" ").map((id: string) => new Player(id));
@@ -562,7 +563,9 @@ const createTestAppWithLoggedInUser = (username: string) => {
   const idGenerator = () => `${id++}`;
   const gameManager = new GameManager();
   const sessions = new Sessions(idGenerator);
-  const game = new StdGame([], [], []);
+  const imperial = new Hotel("Imperial", 2);
+  const board = new Board([imperial]);
+  const game = new StdGame([], [], board);
   const app = createApp(sessions, gameManager);
   stub(sessions, "isSessionIdExist", () => true);
   stub(sessions, "getPlayerName", () => username);
@@ -681,11 +684,12 @@ const createTestAppWithMergerStocks = (username: string) => {
 
   const imperial = new Hotel("Imperial", 2);
   const continental = new Hotel("Continental", 2);
+  const board = new Board([continental, imperial]);
 
   const game = new StdGame(
     ["1A", "2A", "3A", "4A", "5A", "6A"],
     createPlayers("player1"),
-    [continental, imperial],
+    board,
   );
 
   const mergerGame = new Merger(game) as Game;

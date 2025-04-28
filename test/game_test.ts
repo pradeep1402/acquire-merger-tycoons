@@ -20,10 +20,14 @@ beforeEach(() => {
 describe("Game model", () => {
   describe("getPlayerIds(", () => {
     it("should return all the players ids", () => {
+      const imperial = new Hotel("Imperial", 2);
+      const continental = new Hotel("Continental", 2);
+      const board = new Board([continental, imperial]);
+
       const game = new StdGame(
         ["1A", "2A", "3A", "4A", "5A", "6A"],
         createPlayers("12 13 14"),
-        [],
+        board,
       );
 
       assertEquals(game.getPlayerIds(), ["12", "13", "14"]);
@@ -33,7 +37,8 @@ describe("Game model", () => {
 
 describe("getPlayer(", () => {
   it("should return  the player with id", () => {
-    const game = new StdGame([], createPlayers("12 13 14"), []);
+    const board = new Board([imperial]);
+    const game = new StdGame([], createPlayers("12 13 14"), board);
 
     assertEquals(game.getPlayer("12"), new Player("12"));
   });
@@ -41,7 +46,8 @@ describe("getPlayer(", () => {
 
 describe("tradeAndSellStocks()", () => {
   it("should return error with message when accessing tradeAndSellStocks", () => {
-    const game = new StdGame([], [], []);
+    const board = new Board([]);
+    const game = new StdGame([], [], board);
 
     const { error } = game.tradeAndSellStocks(
       { acquirer: "American", target: "Continental", count: 3 },
@@ -53,7 +59,8 @@ describe("tradeAndSellStocks()", () => {
 });
 describe("setupMergerEntities()", () => {
   it("should return error with message when accessing setupMergerEntities", () => {
-    const game = new StdGame([], [], []);
+    const board = new Board([]);
+    const game = new StdGame([], [], board);
 
     const error = game.setupMergerEntities("Continental");
     assertEquals(error, { error: "Not valid in Standard Game Mode" });
@@ -63,7 +70,8 @@ describe("setupMergerEntities()", () => {
 describe("getPlayerDetails(playerId) method", () => {
   it("should return a specific player info", () => {
     const tiles = ["1A"];
-    const game = new StdGame([...tiles], createPlayers("123"), []);
+    const board = new Board([]);
+    const game = new StdGame([...tiles], createPlayers("123"), board);
     const actual = game.getPlayerDetails("123");
 
     assertEquals(actual?.playerId, "123");
@@ -75,13 +83,23 @@ describe("getPlayerDetails(playerId) method", () => {
 
 describe("placeTile() method", () => {
   it("should return false for wrong tile", () => {
-    const game = new StdGame(["1A", "2A"], createPlayers("Adi Malli Aman"), []);
+    const board = new Board([]);
+    const game = new StdGame(
+      ["1A", "2A"],
+      createPlayers("Adi Malli Aman"),
+      board,
+    );
 
     assertEquals(game.placeTile("3A"), { status: false });
   });
 
   it("should return the tile info of placed tile", () => {
-    const game = new StdGame(["1A", "2A"], createPlayers("Adi Malli Aman"), []);
+    const board = new Board([]);
+    const game = new StdGame(
+      ["1A", "2A"],
+      createPlayers("Adi Malli Aman"),
+      board,
+    );
 
     assertEquals(game.placeTile("1A"), {
       tile: "1A",
@@ -90,7 +108,8 @@ describe("placeTile() method", () => {
   });
 
   it("should return the tile info when tile type is build", () => {
-    const game = new StdGame(["1A", "2A"], createPlayers("Adi"), [imperial]);
+    const board = new Board([imperial]);
+    const game = new StdGame(["1A", "2A"], createPlayers("Adi"), board);
     game.placeTile("2A");
 
     assertEquals(game.placeTile("1A"), {
@@ -111,9 +130,12 @@ describe("placeTile() method", () => {
 
 describe("foundHotel() method", () => {
   it("should return false for wrong tile", () => {
-    const game = new StdGame(["1A", "2A"], createPlayers("Adi Malli Aman"), [
-      imperial,
-    ]);
+    const board = new Board([imperial]);
+    const game = new StdGame(
+      ["1A", "2A"],
+      createPlayers("Adi Malli Aman"),
+      board,
+    );
 
     assertEquals(game.foundHotel("3A", "Imperial"), {
       hotel: {
@@ -130,10 +152,11 @@ describe("foundHotel() method", () => {
 
 describe("buyStocks() method", () => {
   it("should return updated player details when buying only one kind of stocks", () => {
+    const board = new Board([imperial]);
     const game = new StdGame(
       ["1A", "2A", "5A"],
       createPlayers("Adi Malli Aman"),
-      [imperial],
+      board,
     );
     game.placeTile("1A");
     game.changeTurn();
@@ -159,6 +182,7 @@ describe("buyStocks() method", () => {
   });
 
   it("should return updated player details when buying multiple kind of stocks", () => {
+    const board = new Board([imperial, continental]);
     const game = new StdGame(
       [
         "1A",
@@ -183,7 +207,7 @@ describe("buyStocks() method", () => {
         "11B",
       ],
       createPlayers("Adi Malli Aman"),
-      [imperial, continental],
+      board,
     );
     game.placeTile("8A");
     game.changeTurn();
@@ -236,6 +260,7 @@ describe("buyStocks() method", () => {
 
 describe("Testing mergers", () => {
   it("testing merger class when there two hotel merging of same size", () => {
+    const board = new Board([imperial, continental]);
     const game = new StdGame(
       [
         "1A",
@@ -260,7 +285,7 @@ describe("Testing mergers", () => {
         "11B",
       ],
       createPlayers("Adi Malli Aman"),
-      [imperial, continental],
+      board,
     );
     game.placeTile("8A");
     game.changeTurn();
@@ -311,6 +336,7 @@ describe("Testing mergers", () => {
   });
 
   it("testing merger class when there are two hotel merging of different size", () => {
+    const board = new Board([imperial, continental]);
     const game = new StdGame(
       [
         "6A",
@@ -327,7 +353,7 @@ describe("Testing mergers", () => {
         "1C",
       ],
       createPlayers("Adi Malli Aman"),
-      [imperial, continental],
+      board,
     );
     game.placeTile("8A");
 
@@ -372,12 +398,11 @@ describe("Testing mergers", () => {
 describe("getGameStats() method", () => {
   const csv = (text: string, separator = " ") => text.split(separator);
   it("should return game stats", () => {
+    const boardIns = new Board([imperial]);
     const tiles = csv(
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
-    const game = new StdGame(tiles, createPlayers("Adi Malli"), [
-      imperial,
-    ]);
+    const game = new StdGame(tiles, createPlayers("Adi Malli"), boardIns);
 
     const board: BoardDetails = {
       independentTiles: [],
@@ -409,21 +434,19 @@ describe("getGameStats() method", () => {
 describe("distributeBonus() method", () => {
   const csv = (text: string, separator = " ") => text.split(separator);
   it("should distribute bonus in the order of number of stocks from primary to secondary", () => {
+    const board = new Board([imperial, continental]);
     const tiles = csv(
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
-    const hotels = [imperial, continental];
-    const game = new StdGame(tiles, createPlayers("1 2 3"), hotels);
+    const player1 = new Player("1");
+    const player2 = new Player("2");
+    const player3 = new Player("3");
+    const game = new StdGame(tiles, [player1, player2, player3], board);
 
     assertEquals(game.getPlayerDetails("1")?.cash, 6000);
 
     stub(imperial, "getPrimaryBonus", () => 2000);
     stub(imperial, "getSecondaryBonus", () => 1000);
-
-    const players: Player[] = game.getPlayersForTesting();
-
-    const player1 = players.find((player) => player.doesPlayerMatch("1"));
-    const player2 = players.find((player) => player.doesPlayerMatch("2"));
 
     player1?.addStock(5, "Imperial");
     player2?.addStock(3, "Imperial");
@@ -439,19 +462,16 @@ describe("distributeBonus() method", () => {
     const tiles = csv(
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
-    const hotels = [imperial, continental];
-    const game = new StdGame(tiles, createPlayers("1 2 3"), hotels);
+    const board = new Board([imperial, continental]);
+    const player1 = new Player("1");
+    const player2 = new Player("2");
+    const player3 = new Player("3");
+    const game = new StdGame(tiles, [player1, player2, player3], board);
 
     assertEquals(game.getPlayerDetails("1")?.cash, 6000);
 
     stub(imperial, "getPrimaryBonus", () => 2000);
     stub(imperial, "getSecondaryBonus", () => 1000);
-
-    const players: Player[] = game.getPlayersForTesting();
-
-    const player1 = players.find((player) => player.doesPlayerMatch("1"));
-    const player2 = players.find((player) => player.doesPlayerMatch("2"));
-    const player3 = players.find((player) => player.doesPlayerMatch("3"));
 
     player1?.addStock(5, "Imperial");
     player2?.addStock(5, "Imperial");
@@ -469,19 +489,16 @@ describe("distributeBonus() method", () => {
     const tiles = csv(
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
-    const hotels = [imperial, continental];
-    const game = new StdGame(tiles, createPlayers("1 2 3"), hotels);
+    const board = new Board([imperial, continental]);
+    const player1 = new Player("1");
+    const player2 = new Player("2");
+    const player3 = new Player("3");
+    const game = new StdGame(tiles, [player1, player2, player3], board);
 
     assertEquals(game.getPlayerDetails("1")?.cash, 6000);
 
     stub(imperial, "getPrimaryBonus", () => 2000);
     stub(imperial, "getSecondaryBonus", () => 1000);
-
-    const players: Player[] = game.getPlayersForTesting();
-
-    const player1 = players.find((player) => player.doesPlayerMatch("1"));
-    const player2 = players.find((player) => player.doesPlayerMatch("2"));
-    const player3 = players.find((player) => player.doesPlayerMatch("3"));
 
     player1?.addStock(5, "Imperial");
     player2?.addStock(5, "Imperial");
@@ -499,19 +516,16 @@ describe("distributeBonus() method", () => {
     const tiles = csv(
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
-    const hotels = [imperial, continental];
-    const game = new StdGame(tiles, createPlayers("1 2 3"), hotels);
+    const board = new Board([imperial, continental]);
+    const player1 = new Player("1");
+    const player2 = new Player("2");
+    const player3 = new Player("3");
+    const game = new StdGame(tiles, [player1, player2, player3], board);
 
     assertEquals(game.getPlayerDetails("1")?.cash, 6000);
 
     stub(imperial, "getPrimaryBonus", () => 2000);
     stub(imperial, "getSecondaryBonus", () => 1000);
-
-    const players: Player[] = game.getPlayersForTesting();
-
-    const player1 = players.find((player) => player.doesPlayerMatch("1"));
-    const player2 = players.find((player) => player.doesPlayerMatch("2"));
-    const player3 = players.find((player) => player.doesPlayerMatch("3"));
 
     player1?.addStock(5, "Imperial");
     player2?.addStock(3, "Imperial");
@@ -530,19 +544,16 @@ describe("distributeBonus() method", () => {
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
 
-    const hotels = [imperial, continental];
-    const game = new StdGame(tiles, createPlayers("1 2 3"), hotels);
+    const board = new Board([imperial, continental]);
+    const player1 = new Player("1");
+    const player2 = new Player("2");
+    const player3 = new Player("3");
+    const game = new StdGame(tiles, [player1, player2, player3], board);
 
     assertEquals(game.getPlayerDetails("1")?.cash, 6000);
 
     stub(imperial, "getPrimaryBonus", () => 2000);
     stub(imperial, "getSecondaryBonus", () => 1000);
-
-    const players: Player[] = game.getPlayersForTesting();
-
-    const player1 = players.find((player) => player.doesPlayerMatch("1"));
-    const player2 = players.find((player) => player.doesPlayerMatch("2"));
-    const player3 = players.find((player) => player.doesPlayerMatch("3"));
 
     player1?.addStock(1, "Imperial");
     player2?.addStock(0, "Imperial");
@@ -560,9 +571,8 @@ describe("distributeBonus() method", () => {
     const tiles = csv(
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
-    const hotels = [imperial, continental];
-    const game = new StdGame(tiles, createPlayers("1 2 3"), hotels);
-    const board: Board = game.getBoardForTesting();
+    const board = new Board([imperial, continental]);
+    const game = new StdGame(tiles, createPlayers("1 2 3"), board);
 
     assertEquals(game.getPlayerDetails("1")?.cash, 6000);
 

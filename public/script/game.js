@@ -109,7 +109,7 @@ const renderFlashMsg = (msg) => {
   textBox.textContent = msg;
   setTimeout(() => {
     msgBox.style.visibility = "hidden";
-    textBox.textContent = "";
+    textBox.textContent = null;
   }, 3000);
 };
 

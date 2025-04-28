@@ -4,6 +4,7 @@ import { Hotel } from "./hotel.ts";
 import _ from "lodash";
 import { StdGame } from "./stdGame.ts";
 import { Player } from "./player.ts";
+import { Board } from "./board.ts";
 
 const getHotels = (): Hotel[] => {
   const hotelTexts = `Tower:0,Sackson:0,
@@ -44,7 +45,7 @@ class GameManager {
     const game = new StdGame(
       this.tileGenerator(),
       this.createPlayers(playerIds),
-      this.hotels(),
+      new Board(this.hotels()),
     );
     const currentGame = new CurrentGame(game);
     this.gamesMap.set(gameId, game);

@@ -19,8 +19,8 @@ export class StdGame implements Game {
   private players: Player[];
   private currentPlayerIndex: number;
 
-  constructor(tiles: Tile[], players: Player[], hotels: Hotel[]) {
-    this.board = new Board(hotels);
+  constructor(tiles: Tile[], players: Player[], board: Board) {
+    this.board = board;
     this.pile = [...tiles];
     this.players = players;
     const initTiles = (p: Player) =>
@@ -239,13 +239,6 @@ export class StdGame implements Game {
     return this.board.isGameEnd() || this.pile.length === 0;
   }
 
-  getPlayersForTesting() {
-    return this.players;
-  }
-
-  getBoardForTesting() {
-    return this.board;
-  }
   setupMergerEntities(_hotelName: HotelName): MergerData | { error: string } {
     return { error: "Not valid in Standard Game Mode" };
   }

@@ -123,7 +123,7 @@ const createAuthenticatedRoutes = () => {
   router.use(ensureAuthenticated);
   router.use(authenticatedContext);
   router.use("/", ensureGameId);
-  router.post("acquire/home/quick-play", handleQuickPlay);
+  router.post("/acquire/home/quick-play", handleQuickPlay);
   router.get("/acquire/game-status", serveGameStatus);
   router.patch("/acquire/buy-stocks", handleBuyStocks);
   router.patch("/acquire/merger/sell-trade-stocks", handleSellAndTradeStocks);
