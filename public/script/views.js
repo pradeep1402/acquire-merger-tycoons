@@ -173,6 +173,8 @@ export class BoardView {
 
     tiles.forEach((tile) => {
       const tileNode = document.getElementById(tile);
+      tileNode.style.border = `none`;
+      // tileNode.style.border = `2px solid ${color}`;
       tileNode.style.backgroundColor = hotelLookup(name).backgroundColor;
       tileNode.style.color = hotelLookup(name).color;
     });
@@ -750,7 +752,7 @@ const hotelLookup = (name) => {
     Tower: { backgroundColor: "#ffb404", color: "white" },
     Sackson: { backgroundColor: "#ff5454", color: "white" },
     Festival: {
-      backgroundColor: "#48c454",
+      backgroundColor: "#2EA47A",
       color: "white",
     },
     Continental: {
