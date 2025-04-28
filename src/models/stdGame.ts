@@ -38,9 +38,11 @@ export class StdGame implements Game {
   }
 
   private initializePlayers(playerIds: string[]) {
-    return playerIds.map((player: string): Player => {
+    return playerIds.map((playerId: string): Player => {
       const tiles = this.getTiles(6);
-      return new Player(player, tiles);
+      const player = new Player(playerId);
+      tiles.forEach((tile) => player.addTile(tile));
+      return player;
     });
   }
 

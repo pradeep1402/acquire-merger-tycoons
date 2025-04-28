@@ -134,7 +134,7 @@ describe("Merger class", () => {
 
   it("should return true when player have the stocks", () => {
     const game = new StdGame([], ["p1", "p2", "p3"], []);
-    const player = new Player("Player1", []);
+    const player = new Player("Player1");
     const merger = new Merger(game);
     stub(merger, "getPlayer", () => player);
     stub(player, "hasStocksOf", () => true);
@@ -144,7 +144,7 @@ describe("Merger class", () => {
 
   it("should return false when player doesn't have the stocks", () => {
     const game = new StdGame([], ["p1", "p2", "p3"], []);
-    const player = new Player("Player1", []);
+    const player = new Player("Player1");
     const merger = new Merger(game);
     stub(merger, "getPlayer", () => player);
     stub(player, "hasStocksOf", () => false);
@@ -239,7 +239,7 @@ describe("Merger class", () => {
       ["player1"],
       [continental, imperial],
     );
-    const player = new Player("player1", []);
+    const player = new Player("player1");
     player.addStock(5, "Continental");
 
     const mergerGame = new Merger(game);

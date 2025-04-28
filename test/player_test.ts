@@ -6,7 +6,9 @@ describe("Player model", () => {
   describe("getPlayerDetails() method", () => {
     it("should return all details of player", () => {
       const tiles: string[] = ["1A", "2A"];
-      const player = new Player("124", tiles);
+      const player = new Player("124");
+      "1A 2A".split(" ").forEach((tile) => player.addTile(tile));
+
       const person = player.getPlayerDetails();
 
       assertEquals(person.playerId, "124");
@@ -26,15 +28,13 @@ describe("Player model", () => {
 
   describe("doesPlayerMatch() method", () => {
     it("should return true when player id matches", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
 
       assert(player.doesPlayerMatch("121"));
     });
 
     it("should return false when player id doesn't matches", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
 
       assertFalse(player.doesPlayerMatch("101"));
     });
@@ -42,17 +42,16 @@ describe("Player model", () => {
 
   describe("addTile() method", () => {
     it("should return the tiles after adding ", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
 
-      assertEquals(player.addTile("3A"), ["1A", "2A", "3A"]);
+      assertEquals(player.addTile("3A"), ["3A"]);
     });
   });
 
   describe("removeTile() method", () => {
     it("should return the tiles after remove tile ", () => {
-      const tiles: string[] = ["1A", "2A", "3A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
+      "1A 2A 3A".split(" ").forEach((tile) => player.addTile(tile));
 
       assertEquals(player.removeTile("3A"), ["1A", "2A"]);
     });
@@ -60,15 +59,13 @@ describe("Player model", () => {
 
   describe("hasTile() method", () => {
     it("should return true when player has the tile ", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
-
+      const player = new Player("121");
+      player.addTile("1A");
       assert(player.hasTile("1A"));
     });
 
     it("should return false when player doesn't have the tile ", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
 
       assertFalse(player.hasTile("3A"));
     });
@@ -76,15 +73,13 @@ describe("Player model", () => {
 
   describe("addStock() method", () => {
     it("should add the stock to a perticular hotel ", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
 
       assertEquals(player.addStock(3, "American"), 3);
     });
 
     it("should add the stocks for multiple hotels", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
       player.addStock(3, "American");
       player.addStock(3, "Sackson");
       player.addStock(3, "Imperial");
@@ -105,8 +100,7 @@ describe("Player model", () => {
 
   describe("deductCash() method", () => {
     it("should add the stock to a particular hotel ", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
 
       assertEquals(player.deductCash(200), 5800);
     });
@@ -114,14 +108,12 @@ describe("Player model", () => {
 
   describe("countSharesOf(hotel) method", () => {
     it("should return the stock count to a particular hotel ", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
 
       assertEquals(player.countSharesOf("Tower"), 0);
     });
     it("should return the stock count to a particular hotel ", () => {
-      const tiles: string[] = ["1A", "2A"];
-      const player = new Player("121", tiles);
+      const player = new Player("121");
       player.addStock(2, "Tower");
 
       assertEquals(player.countSharesOf("Tower"), 2);
@@ -131,15 +123,13 @@ describe("Player model", () => {
 
 describe("hasStocksOf() method", () => {
   it("should return the false when player doesn't have the stock of a perticular stock", () => {
-    const tiles: string[] = ["1A", "2A"];
-    const player = new Player("121", tiles);
+    const player = new Player("121");
 
     assertFalse(player.hasStocksOf("Imperial"));
   });
 
   it("should return the true when player has the stocks of a particular hotel", () => {
-    const tiles: string[] = ["1A", "2A"];
-    const player = new Player("121", tiles);
+    const player = new Player("121");
     player.addStock(2, "Imperial");
 
     assert(player.hasStocksOf("Imperial"));

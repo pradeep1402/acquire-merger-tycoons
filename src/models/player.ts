@@ -36,10 +36,10 @@ export class Player {
   private tiles: Set<Tile>;
   private stocks: StocksCount;
 
-  constructor(playerId: string, tiles: Tile[]) {
+  constructor(playerId: string) {
     this.playerId = playerId;
     this.cash = 6000;
-    this.tiles = new Set(tiles);
+    this.tiles = new Set();
     this.stocks = allZeroStockCounts();
   }
 
@@ -64,7 +64,7 @@ export class Player {
   }
 
   creditCash(price: number) {
-    return this.cash = this.cash + price;
+    return (this.cash = this.cash + price);
   }
 
   getPlayerDetails() {

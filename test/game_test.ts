@@ -36,7 +36,7 @@ describe("Game model", () => {
       const players: string[] = ["12", "13", "14"];
       const game = new StdGame([], players, []);
 
-      assertEquals(game.getPlayer("12"), new Player("12", []));
+      assertEquals(game.getPlayer("12"), new Player("12"));
     });
   });
 
