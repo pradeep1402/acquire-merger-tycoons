@@ -4,6 +4,7 @@ import { Game } from "../models/game.ts";
 import { Sessions } from "../models/sessions.ts";
 import { Lobby } from "../models/lobby.ts";
 import { StdGame } from "../models/stdGame.ts";
+// import { HotelName } from "../models/player.ts";
 
 export const handleLogin = async (ctx: Context): Promise<Response> => {
   const fd = await ctx.req.formData();
@@ -114,3 +115,9 @@ export const handleSellAndTradeStocks = async (ctx: Context) => {
 
   return ctx.json(result);
 };
+// export const handleMerge = (ctx: Context) => {
+//   const game = ctx.get("game") as Game;
+//   const acquirer = ctx.req.param("acquirer");
+//   const res = game.setupMergerEntities(acquirer as HotelName);
+//   return ctx.json(res);
+// };

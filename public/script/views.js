@@ -541,7 +541,7 @@ class MergerView {
     this.#board = document.querySelector(".gameBoard");
   }
 
-  #handleHotelMerge(event) {
+  async #handleHotelMerge(event) {
     const id = event.target.id;
     const baseTiles = this.#hotels.map(({ baseTile }) => baseTile);
     if (!baseTiles.includes(id)) return;
@@ -553,10 +553,12 @@ class MergerView {
     this.#attachImgs();
     this.#toggleDisplay();
     setTimeout(() => this.#toggleDisplay(), 2500);
+    await this.#handleMerge(this.#acquirer.name);
+    // new StockExchangeView(6, res.acquirer, res.target).render();
   }
 
   #attachImgs() {
-    const target = this.#target.name;
+    const target = this.#target[0].name;
     const acquirer = this.#acquirer.name;
     const acquirerEle = this.#mergerEle.querySelector("#acquirer");
     acquirerEle.src = `/images/hotels/${acquirer.toLowerCase()}.png`;
@@ -572,11 +574,14 @@ class MergerView {
     mergerTile.textContent = "Merger";
   }
 
-  async #handleMerge(target) {
-    await fetch(`/acquire/continue-merge/${target}`, { method: "PATCH" });
+  async #handleMerge(acquirer) {
+    const res = await fetch(`/acquire/continue-merge/${acquirer}`, {
+      method: "PATCH",
+    });
+    return await res.json();
   }
 
-  #autoMerge() {
+  async #autoMerge() {
     this.#toggleDisplay();
     this.#acquirer = this.#mergeInfo.acquirer;
     this.#target = this.#mergeInfo.target;
@@ -584,6 +589,8 @@ class MergerView {
     this.#attachImgs();
     setTimeout(() => this.#toggleDisplay(), 2500);
     this.#indicateMergingTile();
+    const res = await this.#handleMerge(this.#acquirer.name);
+    console.log("###########", res.acquirer, res.target);
   }
 
   #toggleHighlight() {

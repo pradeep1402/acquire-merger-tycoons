@@ -740,3 +740,8 @@ describe("tradeAndSellStocks() method", () => {
     assertSpyCallArgs(stubedTradeAndSell, 0, [tradeStats, stocks, playerId]);
   });
 });
+// describe("handleMerge()", () => {
+//   it("should update acquirer and return acquirer and target info", async () => {
+//     const
+//   });
+// });

@@ -12,6 +12,7 @@ import {
   handleSellAndTradeStocks,
   serveGame,
   serveGameStatus,
+  // handleMerge,
 } from "./handlers/game_handler.ts";
 import { deleteCookie, getCookie } from "hono/cookie";
 import { Sessions } from "./models/sessions.ts";
@@ -130,6 +131,7 @@ const createAuthenticatedRoutes = () => {
   router.get("/acquire/game-stats", serveGame);
   router.patch("/acquire/place-tile/:tile", handlePlaceTile);
   router.patch("/acquire/place-tile/:tile/:hotel", handleFoundingHotel);
+  // router.patch("/acquire/continue-merge/:acquirer", handleMerge);
 
   router.get("/*", serveStatic({ root: "./public" }));
   return router;

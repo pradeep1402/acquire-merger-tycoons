@@ -94,6 +94,9 @@ const renderGameEndBtn = () => {
   btn.style.visibility = "visible";
   btn.addEventListener("click", async () => await fetch("acquire/game-end"));
 };
+// const keepSellTrade = (portfolio, acquirer, target) => {
+//   console.log(portfolio, acquirer, target);
+// };
 
 const startGamePolling = async (poller) => {
   const stats = await getResource("/acquire/game-stats");
@@ -104,11 +107,18 @@ const startGamePolling = async (poller) => {
     currentPlayer,
     playerPortfolio,
     isGameEnd,
+    // mode,
+    // acquirer,
+    // target,
   } = stats;
   const { tiles } = playerPortfolio;
   const { inActiveHotels, activeHotels } = board;
   console.log(isGameEnd);
   if (isGameEnd) renderGameEndBtn();
+
+  // if (mode === "Merge" && isMyTurn) {
+  //   keepSellTrade(playerPortfolio, acquirer, target);
+  // }
 
   renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);
   renderPlayerTurn(isMyTurn, tiles, poller);
@@ -124,7 +134,6 @@ const main = () => {
   showStartingTilesPopup();
   renderGameBoard();
 
-  // new StockExchangeView(3).render();
   const polling = new Poller(1000, startGamePolling);
   polling.start();
 };
