@@ -62,6 +62,7 @@ export const serveGame = (ctx: Context): Response => {
 
   const isMyTurn = sessionId === currentPlayerId;
   const currentPlayer = sessions.getPlayerName(currentPlayerId);
+  //hello
 
   const players = playersId.map((playerId: string) => {
     const isTheSamePlayer = sessionId === playerId;
