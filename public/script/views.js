@@ -91,7 +91,7 @@ class HotelView {
       );
     hotelStocks.style.backgroundColor = hotelLookup(this.#name).backgroundColor;
 
-    const [img, hotelName, stockCount, price] = hotelStocks.children;
+    const [hotelName, img, stockCount, price] = hotelStocks.children;
 
     img.src = `/images/hotels/${this.#name.toLowerCase()}.png`;
     hotelName.textContent = this.#name;
