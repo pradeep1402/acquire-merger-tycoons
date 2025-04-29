@@ -253,7 +253,7 @@ export class Merger implements Game {
   }
 
   isMergerRoundOver() {
-    return this.countOfTurns > this.turnsIndex;
+    return this.countOfTurns >= this.turnsIndex;
   }
 
   changeTurn() {

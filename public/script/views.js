@@ -582,8 +582,6 @@ class MergerView {
   }
 
   async #handleHotelMerge(event) {
-    console.log("inside handler");
-
     const id = event.target.id;
     const baseTiles = this.#hotels.map(({ baseTile }) => baseTile);
     if (!baseTiles.includes(id)) return;
@@ -668,7 +666,6 @@ class MergerView {
     this.#poller.start();
     if (this.#mergeInfo.typeofMerge === "AutoMerge") {
       this.#autoMerge();
-      console.log("after auto merge.....");
       const tileNode = document.getElementById(this.#tile);
       tileNode.classList.remove(`.${this.#target[0].name.toLowerCase()}`);
       tileNode.classList.remove("base-tile");
@@ -692,6 +689,10 @@ export class StockExchangeView {
   #target;
   #popup;
   #poller;
+  #incrementListener;
+  #decrementListener;
+  #incrementTradeListener;
+  #decrementTradeListener;
 
   constructor(stocksAvailable, acquirer, target, poller) {
     this.#poller = poller;
@@ -703,6 +704,10 @@ export class StockExchangeView {
     this.#trade = document.querySelector("#trade");
     this.#button = document.querySelector("#merger");
     this.#popup = document.querySelector("#merger-pop");
+    this.#incrementListener = this.#incrementSellValue.bind(this);
+    this.#decrementListener = this.#decrementSellValue.bind(this);
+    this.#incrementTradeListener = this.#incrementValue.bind(this);
+    this.#decrementTradeListener = this.#decrementValue.bind(this);
   }
 
   renderKeep() {
@@ -729,8 +734,8 @@ export class StockExchangeView {
   }
 
   #attachStepTradeButtons(increment, decrement) {
-    increment.addEventListener("click", this.#incrementValue.bind(this));
-    decrement.addEventListener("click", this.#decrementValue.bind(this));
+    increment.addEventListener("click", this.#incrementTradeListener);
+    decrement.addEventListener("click", this.#decrementTradeListener);
   }
 
   #decrementSellValue() {
@@ -751,8 +756,8 @@ export class StockExchangeView {
   }
 
   #attachStepSellButtons(increment, decrement) {
-    increment.addEventListener("click", this.#incrementSellValue.bind(this));
-    decrement.addEventListener("click", this.#decrementSellValue.bind(this));
+    increment.addEventListener("click", this.#incrementListener);
+    decrement.addEventListener("click", this.#decrementListener);
   }
 
   renderSell() {
@@ -761,6 +766,7 @@ export class StockExchangeView {
 
     const increment = document.querySelector(".sell-step-up");
     const decrement = document.querySelector(".sell-step-down");
+
     this.#attachStepSellButtons(increment, decrement);
   }
 
@@ -772,6 +778,18 @@ export class StockExchangeView {
     const decrement = document.querySelector(".trade-step-down");
 
     this.#attachStepTradeButtons(increment, decrement);
+  }
+
+  #removeStepUpListener() {
+    const incrementTrade = document.querySelector(".trade-step-up");
+    const decrementTrade = document.querySelector(".trade-step-down");
+    incrementTrade.removeEventListener("click", this.#incrementTradeListener);
+    decrementTrade.removeEventListener("click", this.#decrementTradeListener);
+
+    const incrementSell = document.querySelector(".sell-step-up");
+    const decrementSell = document.querySelector(".sell-step-down");
+    incrementSell.removeEventListener("click", this.#incrementListener);
+    decrementSell.removeEventListener("click", this.#decrementListener);
   }
 
   async #completeMerge() {
@@ -796,6 +814,14 @@ export class StockExchangeView {
 
     this.#popup.classList.add("hidden");
     this.#popup.classList.remove("merger-pop-container");
+    this.#resetValue();
+    this.#removeStepUpListener();
+  }
+
+  #resetValue() {
+    this.#keep.value = 0;
+    this.#sell.value = 0;
+    this.#trade.value = 0;
   }
 
   render() {
@@ -804,7 +830,9 @@ export class StockExchangeView {
     this.renderKeep();
     this.renderSell();
     this.renderTrade();
-    this.#button.addEventListener("click", this.#completeMerge.bind(this));
+    this.#button.addEventListener("click", this.#completeMerge.bind(this), {
+      once: true,
+    });
   }
 }
 

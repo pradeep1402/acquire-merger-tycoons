@@ -155,7 +155,6 @@ const startGamePolling = async (poller) => {
 
   const { tiles } = playerPortfolio;
   const { inActiveHotels, activeHotels } = board;
-  console.log(activeHotels);
 
   if (isGameEnd) {
     const msg = "You can end the game";
@@ -177,7 +176,6 @@ const startGamePolling = async (poller) => {
 };
 
 const handleLogout = async () => {
-  console.log("logout called");
   await fetch("./logout", { method: "GET" });
   globalThis.location.href = "./login.html";
 };
