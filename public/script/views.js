@@ -159,11 +159,21 @@ export class BoardView {
   #independentTiles;
   #hotelTiles;
   #mergerTile;
+  #hotels;
 
   constructor({ independentTiles, activeHotels = [], mergerTile }) {
     this.#independentTiles = independentTiles;
     this.#hotelTiles = activeHotels;
     this.#mergerTile = mergerTile;
+    this.#hotels = [
+      "tower",
+      "sackson",
+      "festival",
+      "american",
+      "worldwide",
+      "imperial",
+      "continental",
+    ];
   }
 
   #renderIndependentTile() {
@@ -180,6 +190,16 @@ export class BoardView {
     mergerTile.textContent = "Merger";
   }
 
+  #getCleanTileNode(tile) {
+    const tileNode = document.getElementById(tile);
+    this.#hotels.forEach((h) => {
+      tileNode.classList.remove(h);
+      tileNode.classList.remove("base-tile");
+    });
+
+    return tileNode;
+  }
+
   #renderHotel = ({ name, tiles, baseTile }) => {
     const hotelTile = document.getElementById(baseTile);
     hotelTile.classList.add(name.toLowerCase());
@@ -187,8 +207,10 @@ export class BoardView {
     hotelTile.textContent = "";
 
     tiles.forEach((tile) => {
-      const tileNode = document.getElementById(tile);
+      const tileNode = this.#getCleanTileNode(tile);
+
       tileNode.style.border = `none`;
+      tileNode.textContent = tile;
       tileNode.style.backgroundColor = hotelLookup(name).backgroundColor;
       tileNode.style.color = hotelLookup(name).color;
     });
@@ -563,13 +585,8 @@ class MergerView {
     this.#board.removeEventListener("click", this.#listener);
 
     const tileNode = document.getElementById(this.#tile);
-    console.log(tileNode, "Before tileNode");
     tileNode.textContent = tileNode.id;
     this.#tile = null;
-    console.log(tileNode, "After tileNode");
-
-    // tileNode.classList.remove(`.${this.#target[0].name.toLowerCase()}`);
-    // tileNode.classList.remove("base-tile");
 
     this.#poller.start();
   }
@@ -577,7 +594,6 @@ class MergerView {
   #attachImgs() {
     const target = this.#target[0].name;
     const acquirer = this.#acquirer.name;
-    console.log(target, acquirer);
     const acquirerEle = this.#mergerEle.querySelector("#acquirer");
     acquirerEle.src = `/images/hotels/${acquirer.toLowerCase()}.png`;
 
