@@ -2,6 +2,7 @@ import _ from "lodash";
 import { HotelName, Player } from "./player.ts";
 
 import {
+  Board,
   buildingHotel,
   HotelDetails,
   InactiveHotels,
@@ -55,6 +56,7 @@ export type GameStats = {
     target?: null | HotelName;
   };
   isGameEnd?: boolean;
+  mode?: string | null;
 };
 
 export type MergerData = {
@@ -98,6 +100,17 @@ export type FoundHotel =
   }
   | undefined;
 
+export type BonusDistribution =
+  | {
+    bonusHolders?: undefined;
+  }
+  | {
+    bonusHolders: {
+      primaryHolderIds?: undefined | string[];
+      secondaryHolderIds?: undefined | string[];
+    };
+  };
+
 export interface Game {
   playTurn: (tile: Tile) => Game;
   buyStocks: (
@@ -125,4 +138,6 @@ export interface Game {
   setupMergerEntities: (hotelName: HotelName) => MergerData | { error: string };
   getCurrentPlayerIndex: () => number;
   getBoard: () => BoardDetails;
+  distributeBonus: (hotelName: HotelName) => undefined | BonusDistribution;
+  getBoardInstance: () => Board;
 }

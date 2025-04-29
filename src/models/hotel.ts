@@ -53,6 +53,10 @@ export class Hotel {
     return [...this.tiles];
   }
 
+  getAllTiles() {
+    return [...this.tiles, this.baseTile];
+  }
+
   isAMatch(hotelName: string): boolean {
     return this.name === hotelName;
   }
@@ -98,6 +102,10 @@ export class Hotel {
 
   isTileBelongs(tile: Tile) {
     return this.tiles.has(tile) || this.baseTile === tile;
+  }
+
+  removeBaseTile() {
+    this.baseTile = "";
   }
 
   storeBaseTile(tile: Tile) {

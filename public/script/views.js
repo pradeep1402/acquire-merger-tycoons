@@ -203,7 +203,7 @@ export class BoardView {
   }
 }
 
-class BuyStocksView {
+export class BuyStocksView {
   #activeHotels;
   #cash;
   #poller;

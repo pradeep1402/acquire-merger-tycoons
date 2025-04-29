@@ -430,6 +430,7 @@ describe("App: /game-stats", () => {
       currentPlayer: "Adi",
       isMyTurn: true,
       isGameEnd: false,
+      mode: null,
     };
 
     assertEquals(res.status, 200);

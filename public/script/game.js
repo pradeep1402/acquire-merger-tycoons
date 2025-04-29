@@ -1,7 +1,12 @@
 import Collapse from "./collapse.js";
 import { PlayersView, PlayerTurnView, StockExchangeView } from "./views.js";
 import Poller from "./polling.js";
-import { BoardView, HotelsView, PortfolioView } from "./views.js";
+import {
+  BoardView,
+  BuyStocksView,
+  HotelsView,
+  PortfolioView,
+} from "./views.js";
 
 export const getResource = async (path) => {
   try {
@@ -96,6 +101,13 @@ const renderGameEndBtn = () => {
 };
 
 const keepSellTrade = (portfolio, { acquirer, target }, poller) => {
+  document
+    .querySelector(`.${target.toLowerCase()}`)
+    .classList.remove("base-tile");
+  document
+    .querySelector(`.${target.toLowerCase()}`)
+    .classList.remove(`.${target.toLowerCase()}`);
+
   poller.pause();
   const stocks = portfolio.stocks[target];
 
@@ -113,6 +125,11 @@ const renderFlashMsg = (msg) => {
   }, 3000);
 };
 
+const buyStocksAfterMerger = (board, playerPortfolio, poller) => {
+  poller.pause();
+  new BuyStocksView(board.activeHotels, playerPortfolio.cash, poller).render();
+};
+
 const startGamePolling = async (poller) => {
   const stats = await getResource("/acquire/game-stats");
   const {
@@ -120,6 +137,7 @@ const startGamePolling = async (poller) => {
     board,
     isMyTurn,
     currentPlayer,
+    mode,
     playerPortfolio,
     isGameEnd,
     mergeData,
@@ -138,6 +156,10 @@ const startGamePolling = async (poller) => {
     keepSellTrade(playerPortfolio, mergeData, poller);
   } else {
     renderPlayerTurn(isMyTurn, tiles, poller);
+  }
+
+  if (mode === "postMerge" && isMyTurn) {
+    buyStocksAfterMerger(board, playerPortfolio, poller);
   }
 
   renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);

@@ -50,7 +50,7 @@ export const serveGame = (ctx: Context): Response => {
   const sessions: Sessions = ctx.get("sessions");
   const sessionId: string = ctx.get("sessionId");
 
-  const { board, playersId, currentPlayerId, isGameEnd, mergeData } = game
+  const { board, playersId, currentPlayerId, isGameEnd, mergeData, mode } = game
     .getGameStats();
   const playerPortfolio = game.getPlayerDetails(sessionId);
   const isMyTurn = sessionId === currentPlayerId;
@@ -67,6 +67,7 @@ export const serveGame = (ctx: Context): Response => {
     board,
     players,
     isMyTurn,
+    mode,
     currentPlayer,
     playerPortfolio,
     isGameEnd,
