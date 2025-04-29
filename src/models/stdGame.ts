@@ -6,6 +6,7 @@ import { BuyStocks, Merger, TradeStats } from "./merger.ts";
 import {
   BoardDetails,
   BonusDistribution,
+  EndBonusDetails,
   Game,
   GameStats,
   MergerData,
@@ -242,7 +243,7 @@ export class StdGame implements Game {
 
   distributeBonus(hotelName: HotelName): BonusDistribution {
     const hotel = this.board.getHotel(hotelName);
-    if (!hotel) return { bonusHolders: undefined };
+    if (!hotel) return [];
 
     const primaryBonus = hotel?.getPrimaryBonus();
     const secondaryBonus = hotel?.getSecondaryBonus();
@@ -253,22 +254,33 @@ export class StdGame implements Game {
     const secondaryHolderIds = this.extractPlayerIds(secondaryHolders);
 
     if (primaryHolders.length > 1 || secondaryHolders[0].count === 0) {
-      this.creditBonusToPlayers(
-        primaryHolderIds,
-        primaryBonus + secondaryBonus,
-      );
-      return {
-        bonusHolders: { primaryHolderIds: primaryHolderIds },
-      };
+      const bonus = primaryBonus + secondaryBonus;
+      this.creditBonusToPlayers(primaryHolderIds, bonus);
+
+      return [
+        {
+          primaryHolderIds,
+          primaryBonus: primaryBonus / primaryHolders.length,
+        },
+        {
+          secondaryHolderIds: primaryHolderIds,
+          secondaryBonus: secondaryBonus / primaryHolders.length,
+        },
+      ];
     } else {
       this.creditBonusToPlayers(primaryHolderIds, primaryBonus);
       this.creditBonusToPlayers(secondaryHolderIds, secondaryBonus);
-      return {
-        bonusHolders: {
+
+      return [
+        {
           primaryHolderIds,
-          secondaryHolderIds,
+          primaryBonus: primaryBonus / primaryHolders.length,
         },
-      };
+        {
+          secondaryHolderIds,
+          secondaryBonus: secondaryBonus / secondaryHolders.length,
+        },
+      ];
     }
   }
 
@@ -282,7 +294,50 @@ export class StdGame implements Game {
 
   distributeEndGameBonus() {
     const hotels = this.board.getHotels();
+    const endBonusDetails: EndBonusDetails = {
+      Sackson: [],
+      Tower: [],
+      Festival: [],
+      Worldwide: [],
+      American: [],
+      Continental: [],
+      Imperial: [],
+    };
 
-    hotels.forEach((hotel) => this.distributeBonus(hotel));
+    const addToRespectiveHotel = (
+      hotel: HotelName,
+      id: string,
+      bonus: number,
+      category: string,
+    ) => {
+      const bonusDetails = {
+        id,
+        bonus,
+        category,
+      };
+
+      endBonusDetails[hotel].push(bonusDetails);
+    };
+
+    hotels.forEach((hotel) => {
+      const [primary, secondary] = this.distributeBonus(hotel);
+
+      primary?.primaryHolderIds?.forEach((id) =>
+        addToRespectiveHotel(hotel, id, primary.primaryBonus, "primary")
+      );
+
+      secondary?.secondaryHolderIds?.forEach((id) =>
+        addToRespectiveHotel(hotel, id, secondary.secondaryBonus, "secondary")
+      );
+    });
+    return endBonusDetails;
+  }
+
+  winner(): string | undefined {
+    const sortedByCash = this.players.sort(
+      (a, b) => a.getPlayerDetails().cash - b.getPlayerDetails().cash,
+    );
+
+    return sortedByCash.at(-1)?.getPlayerDetails().playerId;
   }
 }

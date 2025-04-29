@@ -110,7 +110,7 @@ export const handleBuyStocks = async (ctx: Context) => {
 };
 
 export const handleEndTurn = (ctx: Context) => {
-  const game = ctx.get("game");
+  const game = ctx.get("game") as Game;
   const response = game.changeTurn();
   const currentGame = ctx.get("currentGame");
   currentGame.playTurn();
@@ -133,4 +133,15 @@ export const handleMerge = (ctx: Context) => {
   const acquirer = ctx.req.param("acquirer");
   const res = game.setupMergerEntities(acquirer as HotelName);
   return ctx.json(res);
+};
+
+export const handleEndGame = (ctx: Context) => {
+  const game = ctx.get("game") as Game;
+  const sessions = ctx.get("sessions") as Sessions;
+
+  game.distributeEndGameBonus();
+  const winnerId = game.winner() || "";
+  const winner = sessions.getPlayerName(winnerId);
+
+  return ctx.json({ winner });
 };

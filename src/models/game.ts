@@ -102,15 +102,28 @@ export type FoundHotel =
   | undefined;
 
 export type BonusDistribution =
-  | {
-    bonusHolders?: undefined;
-  }
-  | {
-    bonusHolders: {
-      primaryHolderIds?: undefined | string[];
-      secondaryHolderIds?: undefined | string[];
-    };
-  };
+  | []
+  | [
+    {
+      primaryHolderIds: undefined | string[];
+      primaryBonus: number;
+    },
+    {
+      secondaryHolderIds: undefined | string[];
+      secondaryBonus: number;
+    },
+  ];
+
+type playerBonus = { id: string; category: string; bonus: number };
+export type EndBonusDetails = {
+  Sackson: playerBonus[];
+  Tower: playerBonus[];
+  Festival: playerBonus[];
+  Worldwide: playerBonus[];
+  American: playerBonus[];
+  Continental: playerBonus[];
+  Imperial: playerBonus[];
+};
 
 export interface Game {
   playTurn: (tile: Tile) => Game;
@@ -142,4 +155,6 @@ export interface Game {
   distributeBonus: (hotelName: HotelName) => undefined | BonusDistribution;
   getBoardInstance: () => Board;
   isGameEnd: () => boolean;
+  distributeEndGameBonus: () => EndBonusDetails;
+  winner: () => string | undefined;
 }

@@ -9,7 +9,7 @@ import { Lobby } from "../src/models/lobby.ts";
 import { StdGame } from "../src/models/stdGame.ts";
 import { CurrentGame } from "../src/models/CurrentGame.ts";
 import { BuyStocks, Merger } from "../src/models/merger.ts";
-import { Game, MergerData } from "../src/models/game.ts";
+import { EndBonusDetails, Game, MergerData } from "../src/models/game.ts";
 import { Player } from "../src/models/player.ts";
 import { Board } from "../src/models/board.ts";
 
@@ -695,7 +695,7 @@ const createTestAppWithMergerStocks = (username: string) => {
 
   const mergerGame = new Merger(game) as Game;
 
-  return { app, gameManager, mergerGame };
+  return { app, gameManager, mergerGame, sessions, game };
 };
 
 describe("tradeAndSellStocks() method", () => {
@@ -776,5 +776,46 @@ describe("handleMerge() method", () => {
     assertEquals(res.status, 200);
     assertEquals(await res.json(), mergerInfo);
     assertSpyCallArgs(stubedSetupMergerEntities, 0, [acquirer]);
+  });
+
+  describe("handleGameEnd()", () => {
+    it("should update game end bonus and respond with the game winner", async () => {
+      const { game, app, gameManager } = createTestAppWithMergerStocks("Ramu");
+      const currentGame = new CurrentGame(game);
+      stub(gameManager, "getCurrentGame", () => currentGame);
+      stub(game, "distributeEndGameBonus", () => {
+        return {} as EndBonusDetails;
+      });
+      stub(game, "winner", () => "2");
+
+      const res = await app.request(`/acquire/end-game`, {
+        method: "GET",
+        headers: {
+          cookie: "sessionId=2;gameId=0",
+        },
+      });
+
+      assertEquals(res.status, 200);
+      assertEquals((await res.json()).winner, "Ramu");
+    });
+    it("should update game end bonus and respond with the game winner as empty string", async () => {
+      const { game, app, gameManager } = createTestAppWithMergerStocks("");
+      const currentGame = new CurrentGame(game);
+      stub(gameManager, "getCurrentGame", () => currentGame);
+      stub(game, "distributeEndGameBonus", () => {
+        return {} as EndBonusDetails;
+      });
+      stub(game, "winner", () => undefined);
+
+      const res = await app.request(`/acquire/end-game`, {
+        method: "GET",
+        headers: {
+          cookie: "sessionId=2;gameId=0",
+        },
+      });
+
+      assertEquals(res.status, 200);
+      assertEquals((await res.json()).winner, "");
+    });
   });
 });

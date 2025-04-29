@@ -67,6 +67,122 @@ describe("Game model", () => {
       const error = game.setupMergerEntities("Continental");
       assertEquals(error, { error: "Not valid in Standard Game Mode" });
     });
+  });
+
+  describe("getPlayerDetails(playerId) method", () => {
+    it("should return a specific player info", () => {
+      const tiles = ["1A"];
+      const board = new Board([]);
+      const game = new StdGame([...tiles], createPlayers("123"), board);
+      const actual = game.getPlayerDetails("123");
+
+      assertEquals(actual?.playerId, "123");
+      assertEquals(actual?.cash, 6000);
+
+      assertEquals(actual?.tiles, tiles);
+    });
+  });
+
+  describe("placeTile() method", () => {
+    it("should return false for wrong tile", () => {
+      const board = new Board([]);
+      const game = new StdGame(
+        ["1A", "2A"],
+        createPlayers("Adi Malli Aman"),
+        board,
+      );
+
+      assertEquals(game.placeTile("3A"), { status: false });
+    });
+
+    it("should return the tile info of placed tile", () => {
+      const board = new Board([]);
+      const game = new StdGame(
+        ["1A", "2A"],
+        createPlayers("Adi Malli Aman"),
+        board,
+      );
+
+      assertEquals(game.placeTile("1A"), {
+        tile: "1A",
+        type: TileStatus.Independent,
+      });
+    });
+
+    it("should return the tile info when tile type is build", () => {
+      const board = new Board([imperial]);
+      const game = new StdGame(["1A", "2A"], createPlayers("Adi"), board);
+      game.placeTile("2A");
+
+      assertEquals(game.placeTile("1A"), {
+        inActiveHotels: [
+          {
+            name: "Imperial",
+            tiles: [],
+            stocksAvailable: 25,
+            stockPrice: 0,
+            baseTile: "",
+          },
+        ],
+        tile: "1A",
+        type: TileStatus.Build,
+      });
+    });
+  });
+
+  describe("foundHotel() method", () => {
+    it("should return false for wrong tile", () => {
+      const board = new Board([imperial]);
+      const game = new StdGame(
+        ["1A", "2A"],
+        createPlayers("Adi Malli Aman"),
+        board,
+      );
+
+      assertEquals(game.foundHotel("3A", "Imperial"), {
+        hotel: {
+          name: "Imperial",
+          tiles: [],
+          stocksAvailable: 24,
+          stockPrice: 0,
+          baseTile: "3A",
+        },
+        stockAllotted: true,
+      });
+    });
+  });
+
+  describe("buyStocks() method", () => {
+    it("should return updated player details when buying only one kind of stocks", () => {
+      const board = new Board([imperial]);
+      const game = new StdGame(
+        ["1A", "2A", "5A"],
+        createPlayers("Adi Malli Aman"),
+        board,
+      );
+      game.placeTile("1A");
+      game.changeTurn();
+
+      game.foundHotel("2A", "Imperial");
+      const stocks: BuyStocks[] = [{ hotel: "Imperial", count: 3 }];
+      const result = game.buyStocks(stocks, "Malli");
+
+      assertEquals(result, {
+        cash: 4800,
+        playerId: "Malli",
+        tiles: [],
+        stocks: {
+          Sackson: 0,
+          Tower: 0,
+          Festival: 0,
+          Worldwide: 0,
+          American: 0,
+          Continental: 0,
+          Imperial: 4,
+        },
+      });
+    });
+
     it("should return updated player details when buying multiple kind of stocks", () => {
       const players = createPlayers("Adi Malli Aman");
       const board = new Board([imperial, continental]);
@@ -742,7 +858,7 @@ describe("Game model", () => {
         stub(board, "getHotel", () => undefined);
 
         const result = game.distributeBonus("Imperial");
-        assertEquals(result.bonusHolders, undefined);
+        assertEquals(result, []);
       });
     });
 
@@ -1135,5 +1251,21 @@ describe("Game model", () => {
     players[0].addTile("1B");
     const tiles = game.getPlayerDetails("Adi")?.tiles;
     assertFalse(tiles?.includes("1B"));
+  });
+  describe("winner()", () => {
+    it("should return the winner id", () => {
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const player1 = new Player("1");
+      const player2 = new Player("2");
+      const board = new Board([imperial, continental]);
+      const game = new StdGame(tiles, [player1, player2], board);
+      player1.creditCash(2000);
+
+      const winner = game.winner();
+
+      assertEquals(winner, "1");
+    });
   });
 });

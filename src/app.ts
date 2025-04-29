@@ -4,6 +4,7 @@ import { logger } from "hono/logger";
 import { GameManager } from "./models/game_manager.ts";
 import {
   handleBuyStocks,
+  handleEndGame,
   handleEndTurn,
   handleFoundingHotel,
   handleLogin,
@@ -132,6 +133,7 @@ const createAuthenticatedRoutes = () => {
   router.patch("/acquire/place-tile/:tile", handlePlaceTile);
   router.patch("/acquire/place-tile/:tile/:hotel", handleFoundingHotel);
   router.patch("/acquire/continue-merge/:acquirer", handleMerge);
+  router.get("/acquire/end-game", handleEndGame);
 
   router.get("/*", serveStatic({ root: "./public" }));
   return router;

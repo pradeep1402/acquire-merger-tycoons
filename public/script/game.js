@@ -104,7 +104,10 @@ const renderGameBoard = () => {
 const renderGameEndBtn = () => {
   const btn = document.getElementById("end-game");
   btn.style.visibility = "visible";
-  btn.addEventListener("click", async () => await fetch("acquire/game-end"));
+  btn.addEventListener("click", async () => {
+    const { winner } = await (await fetch("/acquire/game-end")).json();
+    alert(`winner is ${winner}`);
+  });
 };
 
 const keepSellTrade = (portfolio, { acquirer, target }, poller) => {

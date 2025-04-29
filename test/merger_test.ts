@@ -9,9 +9,9 @@ import {
 } from "../src/models/merger.ts";
 import { stub } from "testing/mock";
 import { StdGame } from "../src/models/stdGame.ts";
-import { Player } from "../src/models/player.ts";
+import { HotelName, Player } from "../src/models/player.ts";
 import { Board, TileStatus } from "../src/models/board.ts";
-import { Game } from "../src/models/game.ts";
+import { BonusDistribution, Game } from "../src/models/game.ts";
 
 const createPlayers = (idTexts: string): Player[] =>
   idTexts.split(" ").map((id: string) => new Player(id));
@@ -301,9 +301,7 @@ describe("Merger class", () => {
     const merger = new Merger(game);
 
     merger.placeTile("3A");
-    stub(merger, "distributeBonus", () => {
-      return {};
-    });
+    stub(merger, "distributeBonus", () => undefined);
     const mergerHotelsDetails = merger.setupMergerEntities("Imperial");
     assertEquals(mergerHotelsDetails, {
       acquirer: "Imperial",
@@ -328,9 +326,7 @@ describe("Merger class", () => {
     const merger = new Merger(game);
 
     merger.placeTile("3A");
-    stub(merger, "distributeBonus", () => {
-      return {};
-    });
+    stub(merger, "distributeBonus", () => undefined);
     const mergerHotelsDetails = merger.setupMergerEntities("Imperial");
     assertEquals(mergerHotelsDetails, {
       acquirer: "Imperial",
@@ -354,9 +350,7 @@ describe("Merger class", () => {
     const merger = new Merger(game);
 
     merger.placeTile("3A");
-    stub(merger, "distributeBonus", () => {
-      return {};
-    });
+    stub(merger, "distributeBonus", () => undefined);
     merger.setupMergerEntities("Imperial");
     merger.changeTurn();
     merger.changeTurn();
@@ -411,9 +405,7 @@ describe("Merger class", () => {
     );
 
     const merger = game.playTurn("3A") as Merger;
-    stub(merger, "distributeBonus", () => {
-      return {};
-    });
+    stub(merger, "distributeBonus", () => undefined);
     merger.isMergerRoundOver();
     stub(merger, "doesPlayerHasStocks", () => true);
 
@@ -444,9 +436,7 @@ describe("Merger class", () => {
     );
     const merger = game.playTurn("3A");
     merger.placeTile("3A");
-    stub(game, "distributeBonus", () => {
-      return {};
-    });
+    stub(game, "distributeBonus", (): BonusDistribution => []);
     const mergerHotelsDetails = merger.setupMergerEntities("Imperial");
     assertEquals(mergerHotelsDetails, {
       acquirer: "Imperial",
@@ -466,5 +456,61 @@ describe("Merger class", () => {
     const merger = new Merger(game);
 
     assertFalse(merger.isGameEnd());
+  });
+
+  describe("winner()", () => {
+    it("should return the winner id", () => {
+      const imperial = new Hotel("Imperial", 2);
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const player1 = new Player("1");
+      const player2 = new Player("2");
+      const board = new Board([imperial]);
+      const game = new StdGame(tiles, [player1, player2], board);
+      player1.creditCash(2000);
+      const merger = new Merger(game);
+
+      const winner = merger.winner();
+
+      assertEquals(winner, "1");
+    });
+  });
+
+  describe("distributeEndGameBonus()", () => {
+    it("Should credit the avg of primary & secondary bonus among the players if there are multiple eligible players for highest equal number of stocks", () => {
+      const tiles = csv(
+        "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+      );
+      const imperial = new Hotel("Imperial", 2);
+      const continental = new Hotel("Continental", 2);
+      const player1 = new Player("1");
+      const player2 = new Player("2");
+      const player3 = new Player("3");
+
+      stub(imperial, "getPrimaryBonus", () => 2000);
+      stub(imperial, "getSecondaryBonus", () => 1000);
+      stub(continental, "getPrimaryBonus", () => 5000);
+      stub(continental, "getSecondaryBonus", () => 2500);
+      player1?.addStock(5, "Imperial");
+      player2?.addStock(4, "Imperial");
+      player3?.addStock(3, "Imperial");
+
+      player1?.addStock(5, "Continental");
+      player2?.addStock(4, "Continental");
+      player3?.addStock(3, "Continental");
+      const board = new Board([imperial, continental]);
+      stub(board, "getHotels", (): HotelName[] => ["Imperial", "Continental"]);
+      const game = new StdGame(tiles, [player1, player2, player3], board);
+      const merger = new Merger(game);
+
+      assertEquals(merger.getPlayerDetails("1")?.cash, 6000);
+      assertEquals(merger.getPlayerDetails("2")?.cash, 6000);
+
+      merger.distributeEndGameBonus();
+
+      assertEquals(merger.getPlayerDetails("1")?.cash, 13000);
+      assertEquals(merger.getPlayerDetails("2")?.cash, 9500);
+    });
   });
 });

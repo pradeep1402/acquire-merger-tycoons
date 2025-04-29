@@ -300,4 +300,12 @@ export class Merger implements Game {
   isGameEnd() {
     return this.original.isGameEnd();
   }
+
+  distributeEndGameBonus() {
+    return this.original.distributeEndGameBonus();
+  }
+
+  winner() {
+    return this.original.winner();
+  }
 }
