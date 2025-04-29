@@ -1,8 +1,9 @@
 import _ from "lodash";
 import { HotelName, Player } from "./player.ts";
-import { TileStatus } from "./board.ts";
+import { Board, TileStatus } from "./board.ts";
 import {
   BoardDetails,
+  BonusDistribution,
   Game,
   GameStats,
   MergerData,
@@ -60,6 +61,7 @@ export class Merger implements Game {
   private countOfTurns;
   private mode: string | null;
   private turnsIndex: number;
+  private mergerTile: null | string;
 
   constructor(game: Game) {
     this.original = game;
@@ -71,17 +73,39 @@ export class Merger implements Game {
     this.hotelsAffected = [];
     this.mode = null;
     this.turnsIndex = 0;
+    this.mergerTile = null;
   }
 
   playTurn(tile: Tile = "default"): Game {
     if (tile === "default" && this.countOfTurns <= this.turnsIndex) {
+      this.mergeTarget(this.target[0]);
       return this.original;
     }
 
     return this;
   }
 
+  private mergeTarget(target: HotelName) {
+    const targetInstance = this.getHotel(target);
+    const acquirerInstance = this.getHotel(this.acquirer as HotelName);
+    targetInstance?.toggleStatus();
+    const tiles = targetInstance?.getAllTiles();
+    targetInstance?.removeBaseTile();
+    const mergerTiles = this.getBoardInstance().getAdjacentTilesOf(
+      this.mergerTile as string,
+    );
+    tiles?.push(this.mergerTile as string, ...mergerTiles);
+    tiles?.forEach((tile) => acquirerInstance?.addTile(tile));
+  }
+
+  getBoardInstance(): Board {
+    return this.original.getBoardInstance();
+  }
+
   placeTile(tile: Tile): PlaceTile {
+    this.mergerTile = tile;
+    this.getPlayer(this.getCurrentPlayer())?.removeTile(tile);
+
     const game = this.original;
     const hotelsInMerge = game.getAffectedHotels(tile);
 
@@ -127,10 +151,6 @@ export class Merger implements Game {
       acquirer: highest,
       target: [lowest],
     };
-  }
-
-  getState() {
-    return this.original;
   }
 
   buyStocks(_hotels: BuyStocks[], _playerId: string) {
@@ -230,10 +250,16 @@ export class Merger implements Game {
     this.turnsIndex += 1;
   }
 
+  isMergerRoundOver() {
+    return this.countOfTurns > this.turnsIndex;
+  }
+
   changeTurn() {
     this.updatePlayerIndex();
 
-    if (!this.doesPlayerHasStocks()) this.changeTurn();
+    if (!this.doesPlayerHasStocks() && this.isMergerRoundOver()) {
+      this.changeTurn();
+    }
 
     return { status: this.getCurrentPlayer() };
   }
@@ -248,7 +274,7 @@ export class Merger implements Game {
 
   private initiateProcess() {
     this.countOfTurns = this.target.length * 3;
-    // this.original.distributeBonus();
+    this.distributeBonus(this.target[0]);
   }
 
   setupMergerEntities(acquirer: HotelName): MergerData {
@@ -260,5 +286,13 @@ export class Merger implements Game {
     this.initiateProcess();
 
     return { acquirer: this.acquirer, target: this.target };
+  }
+
+  distributeBonus(hotelName: HotelName): undefined | BonusDistribution {
+    return this.original.distributeBonus(hotelName);
+  }
+
+  isGameEnd() {
+    return this.original.isGameEnd();
   }
 }

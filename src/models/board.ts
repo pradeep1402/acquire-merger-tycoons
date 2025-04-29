@@ -183,7 +183,7 @@ export class Board {
     };
   }
 
-  private getAdjacentTiles(
+  getAdjacentTiles(
     tile: Tile,
     adjacentTiles: Set<Tile> = new Set(),
   ): Set<Tile> {

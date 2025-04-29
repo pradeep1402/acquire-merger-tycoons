@@ -85,13 +85,12 @@ class HotelView {
   }
 
   renderStocks() {
-    const hotelStocks = cloneTemplate("available-stocks-template")
-      .querySelector(
-        ".hotel-stocks",
-      );
+    const hotelStocks = cloneTemplate(
+      "available-stocks-template",
+    ).querySelector(".hotel-stocks");
     hotelStocks.style.backgroundColor = hotelLookup(this.#name).backgroundColor;
 
-    const [img, hotelName, stockCount, price] = hotelStocks.children;
+    const [hotelName, img, stockCount, price] = hotelStocks.children;
 
     img.src = `/images/hotels/${this.#name.toLowerCase()}.png`;
     hotelName.textContent = this.#name;
@@ -204,7 +203,7 @@ export class BoardView {
   }
 }
 
-class BuyStocksView {
+export class BuyStocksView {
   #activeHotels;
   #cash;
   #poller;
@@ -571,12 +570,12 @@ class MergerView {
     this.#toggleDisplay();
     setTimeout(() => this.#toggleDisplay(), 2500);
     await this.#handleMerge(this.#acquirer.name);
-    // new StockExchangeView(6, res.acquirer, res.target).render();
   }
 
   #attachImgs() {
     const target = this.#target[0].name;
     const acquirer = this.#acquirer.name;
+    console.log(target, acquirer);
     const acquirerEle = this.#mergerEle.querySelector("#acquirer");
     acquirerEle.src = `/images/hotels/${acquirer.toLowerCase()}.png`;
 
@@ -727,12 +726,12 @@ export class StockExchangeView {
   }
 
   async #completeMerge() {
-    const stocks = [{ count: Number(this.#sell.value), hotel: this.#target }];
+    const stocks = this.#sell.value;
     const trade = this.#trade.value;
     const tradeStats = {
       acquirer: this.#acquirer,
       target: this.#target,
-      count: Number(trade),
+      count: trade,
     };
 
     await fetch("/acquire/merger/sell-trade-stocks", {
@@ -745,6 +744,7 @@ export class StockExchangeView {
 
     await fetch("/acquire/end-turn", { method: "PATCH" });
     this.#poller.start();
+
     this.#popup.classList.add("hidden");
     this.#popup.classList.remove("merger-pop-container");
   }
@@ -764,7 +764,7 @@ const hotelLookup = (name) => {
     Tower: { backgroundColor: "#ffb404", color: "white" },
     Sackson: { backgroundColor: "#ff5454", color: "white" },
     Festival: {
-      backgroundColor: "#2EA47A",
+      backgroundColor: "#48c454",
       color: "white",
     },
     Continental: {

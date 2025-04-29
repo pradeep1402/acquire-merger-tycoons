@@ -64,17 +64,15 @@ describe("Merger class", () => {
   });
 
   it("should return changed player Id", () => {
-    let index = 0;
     const board = new Board([]);
     const game = new StdGame([], createPlayers("p1 p2 p3"), board);
     const merger = new Merger(game);
     stub(merger, "doesPlayerHasStocks", () => {
-      const value = [false, true][index++];
-      return value;
+      return true;
     });
     const status = merger.changeTurn();
 
-    assertEquals(status, { status: "p3" });
+    assertEquals(status, { status: "p2" });
   });
 
   it("should return playerIds", () => {
@@ -301,6 +299,9 @@ describe("Merger class", () => {
     const merger = new Merger(game);
 
     merger.placeTile("3A");
+    stub(merger, "distributeBonus", () => {
+      return {};
+    });
     const mergerHotelsDetails = merger.setupMergerEntities("Imperial");
     assertEquals(mergerHotelsDetails, {
       acquirer: "Imperial",
@@ -325,6 +326,9 @@ describe("Merger class", () => {
     const merger = new Merger(game);
 
     merger.placeTile("3A");
+    stub(merger, "distributeBonus", () => {
+      return {};
+    });
     const mergerHotelsDetails = merger.setupMergerEntities("Imperial");
     assertEquals(mergerHotelsDetails, {
       acquirer: "Imperial",
@@ -333,9 +337,30 @@ describe("Merger class", () => {
   });
 
   it("should return the StdInstance instance if the merger is commpleted", () => {
-    const board = new Board([]);
-    const game = new StdGame([], createPlayers("p1 p2 p3"), board);
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("4A");
+    continental.addTile("5A");
+    const board = new Board([imperial, continental]);
+    const game = new StdGame(
+      ["1A", "2A", "3A", "4A", "5A", "6A"],
+      createPlayers("player1"),
+      board,
+    );
     const merger = new Merger(game);
+
+    merger.placeTile("3A");
+    stub(merger, "distributeBonus", () => {
+      return {};
+    });
+    merger.setupMergerEntities("Imperial");
+    merger.changeTurn();
+    merger.changeTurn();
+    merger.changeTurn();
+    merger.changeTurn();
+    merger.changeTurn();
     const instance = merger.playTurn();
 
     assert(instance instanceof StdGame);
@@ -350,28 +375,45 @@ describe("Merger class", () => {
     assert(instance instanceof Merger);
   });
 
-  it("should return the stdGame after every turn is done", () => {
+  it("should return changed player Id when the player does not have stocks and turn over", () => {
     let index = 0;
+    const game = new StdGame([], createPlayers("p1 p2 p3"), new Board([]));
+    const merger = new Merger(game);
+    stub(merger, "doesPlayerHasStocks", () => {
+      return false;
+    });
+    stub(merger, "isMergerRoundOver", () => {
+      const value = [true, false][index++];
+      return value;
+    });
 
+    const status = merger.changeTurn();
+
+    assertEquals(status, { status: "p3" });
+  });
+
+  it("should return the stdGame after every turn is done", () => {
     const imperial = new Hotel("Imperial", 2);
     imperial.addTile("1A");
     imperial.addTile("2A");
+    imperial.addTile("1B");
     const continental = new Hotel("Continental", 2);
     continental.addTile("4A");
     continental.addTile("5A");
     const board = new Board([imperial, continental]);
 
     const game = new StdGame(
-      ["1A", "2A", "3A", "4A", "5A", "6A"],
+      ["1A", "2A", "3A", "4A", "5A", "6A", "1B"],
       [new Player("player1")],
       board,
     );
 
-    const merger = new Merger(game);
-    stub(merger, "doesPlayerHasStocks", () => {
-      const value = [true, true, true, true][index++];
-      return value;
+    const merger = game.playTurn("3A") as Merger;
+    stub(merger, "distributeBonus", () => {
+      return {};
     });
+    merger.isMergerRoundOver();
+    stub(merger, "doesPlayerHasStocks", () => true);
 
     merger.placeTile("3A");
     merger.setupMergerEntities("Imperial");
@@ -380,6 +422,47 @@ describe("Merger class", () => {
     merger.changeTurn();
     merger.playTurn();
     merger.changeTurn();
-    assert(merger.playTurn() instanceof StdGame);
+    const stdGame = merger.playTurn();
+
+    stdGame.buyStocks([], "player1");
+    assert(stdGame instanceof StdGame);
+  });
+
+  it("should return the bonus details", () => {
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("4A");
+    continental.addTile("5A");
+    const game = new StdGame(
+      ["1A", "2A", "3A", "4A", "5A", "6A"],
+      createPlayers("player1"),
+      new Board([continental, imperial]),
+    );
+    const merger = game.playTurn("3A");
+    merger.placeTile("3A");
+    stub(game, "distributeBonus", () => {
+      return {};
+    });
+    const mergerHotelsDetails = merger.setupMergerEntities("Imperial");
+    assertEquals(mergerHotelsDetails, {
+      acquirer: "Imperial",
+      target: ["Continental"],
+    });
+  });
+
+  it("should return false when game is not ended", () => {
+    const imperial = new Hotel("Imperial", 2);
+    const board = new Board([imperial]);
+    const tiles = csv(
+      "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+    );
+    imperial.toggleStatus();
+
+    const game = new StdGame(tiles, createPlayers("Adi Malli"), board);
+    const merger = new Merger(game);
+
+    assertFalse(merger.isGameEnd());
   });
 });

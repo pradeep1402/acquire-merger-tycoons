@@ -5,6 +5,7 @@ import { Hotel } from "./hotel.ts";
 import { BuyStocks, Merger, TradeStats } from "./merger.ts";
 import {
   BoardDetails,
+  BonusDistribution,
   Game,
   GameStats,
   MergerData,
@@ -20,6 +21,7 @@ export class StdGame implements Game {
   private players: Player[];
   private currentPlayerIndex: number;
   private nextTile: undefined | Tile;
+  private mode: null | string;
 
   constructor(
     tiles: Tile[],
@@ -34,6 +36,7 @@ export class StdGame implements Game {
     this.players.forEach(initTiles);
     this.currentPlayerIndex = 0;
     this.nextTile = undefined;
+    this.mode = null;
   }
 
   // deno-lint-ignore no-explicit-any
@@ -64,6 +67,7 @@ export class StdGame implements Game {
     const placeInfo = this.board.getPlaceTileType(tile);
 
     if (placeInfo.type === TileStatus.Merge) {
+      this.mode = "postMerge";
       return new Merger(this);
     }
     return this;
@@ -100,6 +104,7 @@ export class StdGame implements Game {
   }
 
   buyStocks(hotels: BuyStocks[], playerId: string): PlayerDetails | undefined {
+    if (this.mode === "postMerge") this.mode = null;
     const currentPlayer = this.players.find((player) =>
       player.doesPlayerMatch(playerId)
     );
@@ -161,6 +166,10 @@ export class StdGame implements Game {
     return this.board.getBoard();
   }
 
+  getBoardInstance(): Board {
+    return this.board;
+  }
+
   getPlayerDetails(playerId: string): PlayerDetails | undefined {
     const playerInfo = this.players.find((player: Player) =>
       player.doesPlayerMatch(playerId)
@@ -183,7 +192,7 @@ export class StdGame implements Game {
     const playersId = this.getPlayerIds();
     const isGameEnd = this.isGameEnd();
 
-    return { board, playersId, currentPlayerId, isGameEnd };
+    return { board, playersId, currentPlayerId, isGameEnd, mode: this.mode };
   }
 
   tradeAndSellStocks(
@@ -243,9 +252,9 @@ export class StdGame implements Game {
     return players?.map((playerInfo) => playerInfo.player.playerId);
   }
 
-  distributeBonus(hotelName: HotelName) {
+  distributeBonus(hotelName: HotelName): BonusDistribution {
     const hotel = this.board.getHotel(hotelName);
-    if (!hotel) return { status: "bonus is not distributed" };
+    if (!hotel) return { bonusHolders: undefined };
 
     const primaryBonus = hotel?.getPrimaryBonus();
     const secondaryBonus = hotel?.getSecondaryBonus();
@@ -261,14 +270,12 @@ export class StdGame implements Game {
         primaryBonus + secondaryBonus,
       );
       return {
-        status: "bonus distributed",
-        bonusHolders: { primaryHolderIds },
+        bonusHolders: { primaryHolderIds: primaryHolderIds },
       };
     } else {
       this.creditBonusToPlayers(primaryHolderIds, primaryBonus);
       this.creditBonusToPlayers(secondaryHolderIds, secondaryBonus);
       return {
-        status: "bonus distributed",
         bonusHolders: {
           primaryHolderIds,
           secondaryHolderIds,
