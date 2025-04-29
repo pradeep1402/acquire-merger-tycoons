@@ -30,7 +30,7 @@ const renderStocksAndPlayers = (
   players,
   currentPlayer,
   inActiveHotels,
-  activeHotels,
+  activeHotels
 ) => {
   new HotelsView(activeHotels, inActiveHotels).renderStocks();
   new PlayersView(players, currentPlayer).renderPlayers();
@@ -38,9 +38,8 @@ const renderStocksAndPlayers = (
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   const tilesEle = tiles.map((tile) => {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = tile;
     return playerTile;
   });
@@ -145,6 +144,17 @@ const startGamePolling = async (poller) => {
   renderPlaceTilesBoard(board);
 };
 
+const handleLogout = async () => {
+  console.log("logout called");
+  await fetch("./logout", { method: "GET" });
+  globalThis.location.href = "./login.html";
+};
+
+const logout = () => {
+  const logoutButton = document.getElementById("logout-button");
+  logoutButton.addEventListener("click", handleLogout);
+};
+
 const main = () => {
   const portfolio = new Collapse("tray-header", "tray-body");
   const sideBar = new Collapse("portfolio-header", "portfolio-body");
@@ -152,6 +162,7 @@ const main = () => {
   sideBar.init();
   showStartingTilesPopup();
   renderGameBoard();
+  logout();
 
   const polling = new Poller(1000, startGamePolling);
   polling.start();

@@ -7,9 +7,8 @@ class TileView {
   }
 
   render() {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = this.#label;
     const tile = document.getElementById(this.#label);
     playerTile.addEventListener("mouseover", () => {
@@ -47,9 +46,8 @@ export class PortfolioView {
   }
 
   #renderStocks([name, count]) {
-    const hotelStocks = cloneTemplate("stocks-template").querySelector(
-      ".hotel-stocks",
-    );
+    const hotelStocks =
+      cloneTemplate("stocks-template").querySelector(".hotel-stocks");
 
     hotelStocks.classList.add(name.toLowerCase());
     hotelStocks.classList.add("shares-info");
@@ -85,10 +83,9 @@ class HotelView {
   }
 
   renderStocks() {
-    const hotelStocks = cloneTemplate("available-stocks-template")
-      .querySelector(
-        ".hotel-stocks",
-      );
+    const hotelStocks = cloneTemplate(
+      "available-stocks-template"
+    ).querySelector(".hotel-stocks");
     hotelStocks.style.backgroundColor = hotelLookup(this.#name).backgroundColor;
 
     const [hotelName, img, stockCount, price] = hotelStocks.children;
@@ -298,13 +295,11 @@ class BuyStocksView {
 
   #attachStepButtons(template, input, stockPrice) {
     const [decrement, increment] = template.querySelectorAll("button");
-    increment.addEventListener(
-      "click",
-      () => this.#incrementValue(input, stockPrice),
+    increment.addEventListener("click", () =>
+      this.#incrementValue(input, stockPrice)
     );
-    decrement.addEventListener(
-      "click",
-      () => this.#decrementValue(input, stockPrice),
+    decrement.addEventListener("click", () =>
+      this.#decrementValue(input, stockPrice)
     );
   }
 
@@ -322,7 +317,7 @@ class BuyStocksView {
 
   #renderAllHotels() {
     const hotels = this.#activeHotels.filter(
-      ({ stocksAvailable }) => stocksAvailable,
+      ({ stocksAvailable }) => stocksAvailable
     );
     if (!hotels.length) return this.#changeTurn();
 
@@ -412,7 +407,7 @@ export class PlayerTurnView {
     new BuyStocksView(
       board.activeHotels,
       playerPortfolio.cash,
-      this.#poller,
+      this.#poller
     ).render();
   }
 
@@ -476,9 +471,8 @@ export class PlayerTurnView {
       outerDiv.appendChild(hotelName);
       outerDiv.appendChild(div);
 
-      outerDiv.addEventListener(
-        "click",
-        () => this.#handleFoundHotel(tileLabel, hotel.name, this.#poller),
+      outerDiv.addEventListener("click", () =>
+        this.#handleFoundHotel(tileLabel, hotel.name, this.#poller)
       );
       return outerDiv;
     });
@@ -571,12 +565,12 @@ class MergerView {
     this.#toggleDisplay();
     setTimeout(() => this.#toggleDisplay(), 2500);
     await this.#handleMerge(this.#acquirer.name);
-    // new StockExchangeView(6, res.acquirer, res.target).render();
   }
 
   #attachImgs() {
     const target = this.#target[0].name;
     const acquirer = this.#acquirer.name;
+    console.log(target, acquirer);
     const acquirerEle = this.#mergerEle.querySelector("#acquirer");
     acquirerEle.src = `/images/hotels/${acquirer.toLowerCase()}.png`;
 
@@ -727,12 +721,12 @@ export class StockExchangeView {
   }
 
   async #completeMerge() {
-    const stocks = [{ count: Number(this.#sell.value), hotel: this.#target }];
+    const stocks = this.#sell.value;
     const trade = this.#trade.value;
     const tradeStats = {
       acquirer: this.#acquirer,
       target: this.#target,
-      count: Number(trade),
+      count: trade,
     };
 
     await fetch("/acquire/merger/sell-trade-stocks", {
@@ -745,6 +739,7 @@ export class StockExchangeView {
 
     await fetch("/acquire/end-turn", { method: "PATCH" });
     this.#poller.start();
+
     this.#popup.classList.add("hidden");
     this.#popup.classList.remove("merger-pop-container");
   }
@@ -764,7 +759,7 @@ const hotelLookup = (name) => {
     Tower: { backgroundColor: "#ffb404", color: "white" },
     Sackson: { backgroundColor: "#ff5454", color: "white" },
     Festival: {
-      backgroundColor: "#2EA47A",
+      backgroundColor: "#48c454",
       color: "white",
     },
     Continental: {
