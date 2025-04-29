@@ -153,10 +153,6 @@ export class Merger implements Game {
     };
   }
 
-  getState() {
-    return this.original;
-  }
-
   buyStocks(_hotels: BuyStocks[], _playerId: string) {
     return { error: "Not valid in Merger Mode" };
   }

@@ -227,7 +227,7 @@ export class StdGame implements Game {
     const primaryHolderIds = this.extractPlayerIds(primaryHolders);
     const secondaryHolderIds = this.extractPlayerIds(secondaryHolders);
 
-    if (primaryHolders.length > 1 || secondaryHolders?.[0].count === 0) {
+    if (primaryHolders.length > 1 || secondaryHolders[0].count === 0) {
       this.creditBonusToPlayers(
         primaryHolderIds,
         primaryBonus + secondaryBonus,
