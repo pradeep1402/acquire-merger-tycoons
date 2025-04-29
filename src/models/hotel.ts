@@ -81,12 +81,6 @@ export class Hotel {
     return stockPrice?.value ? stockPrice.value + 100 * this.offset : 0;
   }
 
-  setTiles(tiles: Tile[]) {
-    tiles.forEach((tile) => {
-      this.tiles.add(tile);
-    });
-  }
-
   getPrimaryBonus() {
     return this.getStockPrice() * 10;
   }

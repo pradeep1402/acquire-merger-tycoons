@@ -1,0 +1,174 @@
+{
+  "board": {
+    "hotels": [
+      {
+        "name": "Tower",
+        "tiles": ["2C"],
+        "stocksAvailable": 24,
+        "status": true,
+        "offset": 0,
+        "baseTile": "2B"
+      },
+      {
+        "name": "Sackson",
+        "tiles": [
+          "3F",
+          "2F",
+          "3D",
+          "4D",
+          "4C",
+          "4F",
+          "5G",
+          "5F",
+          "6E",
+          "5E",
+          "8E",
+          "7D",
+          "7F",
+          "7E"
+        ],
+        "stocksAvailable": 23,
+        "status": true,
+        "offset": 0,
+        "baseTile": "3E"
+      },
+      {
+        "name": "Festival",
+        "tiles": ["9G"],
+        "stocksAvailable": 24,
+        "status": true,
+        "offset": 1,
+        "baseTile": "8G"
+      },
+      {
+        "name": "American",
+        "tiles": ["6H", "6I"],
+        "stocksAvailable": 24,
+        "status": true,
+        "offset": 1,
+        "baseTile": "7H"
+      },
+      {
+        "name": "Worldwide",
+        "tiles": [],
+        "stocksAvailable": 25,
+        "status": false,
+        "offset": 1,
+        "baseTile": ""
+      },
+      {
+        "name": "Imperial",
+        "tiles": ["9A", "10B"],
+        "stocksAvailable": 24,
+        "status": true,
+        "offset": 2,
+        "baseTile": "9B"
+      },
+      {
+        "name": "Continental",
+        "tiles": ["11A"],
+        "stocksAvailable": 24,
+        "status": true,
+        "offset": 2,
+        "baseTile": "12A"
+      }
+    ],
+    "independentTiles": [
+      "1A",
+      "12E",
+      "12C",
+      "8C",
+      "11D",
+      "6A",
+      "12H",
+      "1E",
+      "3H",
+      "4I",
+      "5B",
+      "11G",
+      "9I",
+      "2I",
+      "1G",
+      "9D",
+      "11I"
+    ]
+  },
+  "players": [
+    {
+      "playerId": "20",
+      "cash": 6000,
+      "tiles": ["8D", "5A", "3C", "7A", "3I", "1D"],
+      "stocks": {
+        "Sackson": 0,
+        "Tower": 0,
+        "Festival": 1,
+        "Worldwide": 0,
+        "American": 1,
+        "Continental": 1,
+        "Imperial": 0
+      }
+    },
+    {
+      "playerId": "30",
+      "cash": 5800,
+      "tiles": ["10I", "9H", "2D", "8F", "9F"],
+      "stocks": {
+        "Sackson": 2,
+        "Tower": 0,
+        "Festival": 0,
+        "Worldwide": 0,
+        "American": 0,
+        "Continental": 0,
+        "Imperial": 0
+      }
+    },
+    {
+      "playerId": "40",
+      "cash": 6000,
+      "tiles": ["1H", "11C", "1A", "12I", "5D"],
+      "stocks": {
+        "Sackson": 0,
+        "Tower": 1,
+        "Festival": 0,
+        "Worldwide": 0,
+        "American": 0,
+        "Continental": 0,
+        "Imperial": 1
+      }
+    }
+  ],
+  "pile": [
+    "4B",
+    "6D",
+    "1I",
+    "3B",
+    "11B",
+    "10C",
+    "3A",
+    "4H",
+    "5I",
+    "8A",
+    "10A",
+    "10D",
+    "7I",
+    "12B",
+    "10F",
+    "12G",
+    "11E",
+    "2G",
+    "7E",
+    "2H",
+    "4A",
+    "4G",
+    "8H",
+    "6B",
+    "4E",
+    "6F",
+    "7B",
+    "1B",
+    "8I",
+    "6G",
+    "6C",
+    "12D"
+  ]
+}

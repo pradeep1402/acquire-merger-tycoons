@@ -47,7 +47,7 @@ const createGuestRoutes = () => {
   guestRoutes
     .use("/login.html", ensureGuest)
     .post("/login", handleLogin)
-    .get("/acquire/test-scenario/:scenario", loadScenario)
+    .get("/acquire/load-scenario/:scenario", loadScenario)
     .get("*", serveStatic({ root: "./public/general/" }));
 
   return guestRoutes;
@@ -138,8 +138,8 @@ const createAuthenticatedRoutes = () => {
   router.patch("/acquire/place-tile/:tile", handlePlaceTile);
   router.patch("/acquire/place-tile/:tile/:hotel", handleFoundingHotel);
   router.patch("/acquire/continue-merge/:acquirer", handleMerge);
-  router.get("/acquire/set-tile/:tile", setTile);
-  router.get("/acquire/create-scenario/:scenario", storeScenario);
+  router.post("/acquire/set-tile/:tile", setTile);
+  router.post("/acquire/create-scenario/:scenario", storeScenario);
 
   router.get("/*", serveStatic({ root: "./public" }));
   return router;

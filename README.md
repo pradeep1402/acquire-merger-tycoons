@@ -95,3 +95,7 @@ Run all tests using:
 ```bash
 deno test --coverage
 ```
+
+`curl -X POST http://localhost:3000/acquire/set-tile/7E --cookie "sessionId=20;gameId=1745900831138" -v`
+
+`curl -X POST http://localhost:3000/acquire/create-scenario/large --cookie "sessionId=20;gameId=1745900831138" -v`
