@@ -54,7 +54,9 @@ export class Hotel {
   }
 
   getAllTiles() {
-    return [...this.tiles, this.baseTile];
+    const tiles = [...this.tiles, this.baseTile];
+    this.tiles.clear();
+    return tiles;
   }
 
   isAMatch(hotelName: string): boolean {

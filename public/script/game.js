@@ -145,6 +145,7 @@ const startGamePolling = async (poller) => {
 
   const { tiles } = playerPortfolio;
   const { inActiveHotels, activeHotels } = board;
+  console.log(activeHotels);
 
   if (isGameEnd) {
     const msg = "You can end the game";
@@ -152,19 +153,17 @@ const startGamePolling = async (poller) => {
     renderGameEndBtn();
   }
 
+  renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);
+  renderPortfolio(playerPortfolio);
+  renderPlaceTilesBoard(board);
+
   if (mergeData && mergeData.mode === "Merge" && isMyTurn) {
     keepSellTrade(playerPortfolio, mergeData, poller);
-  }
-
-  if (mode === "postMerge" && isMyTurn) {
+  } else if (mode === "postMerge" && isMyTurn) {
     buyStocksAfterMerger(board, playerPortfolio, poller);
   } else {
     renderPlayerTurn(isMyTurn, tiles, poller);
   }
-
-  renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);
-  renderPortfolio(playerPortfolio);
-  renderPlaceTilesBoard(board);
 };
 
 const handleLogout = async () => {
