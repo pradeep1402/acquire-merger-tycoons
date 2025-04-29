@@ -44,8 +44,8 @@ export class StdGame implements Game {
     const hotels: Hotel[] = data.board.hotels.map(Hotel.fromJSON);
     const board = Board.fromJSON(hotels, data.board.independentTiles);
     const players: Player[] = data.players.map(Player.fromJSON);
-
-    return new StdGame(data.pile, [...players], board).withPlayers(players);
+    const pile = _.shuffle(data.pile);
+    return new StdGame(pile, [...players], board).withPlayers(players);
   }
 
   withPlayers(players: Player[]) {
@@ -54,10 +54,19 @@ export class StdGame implements Game {
   }
 
   toJSON() {
+    const pile = [...this.pile];
+
+    const players = this.players.map((player) => {
+      const { tiles, ...rest } = player.toJSON();
+      pile.push(...tiles);
+
+      return rest;
+    });
+
     return {
       board: this.board.toJSON(),
-      players: this.players.map((player) => player.toJSON()),
-      pile: this.pile,
+      players,
+      pile,
     };
   }
 

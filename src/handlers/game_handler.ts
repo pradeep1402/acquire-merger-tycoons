@@ -171,7 +171,6 @@ export const storeScenario = (ctx: Context) => {
   const game = ctx.get("game");
   const filePath = ctx.req.param("scenario");
   const currentState = JSON.stringify(game.toJSON());
-  game.changeTurn();
 
   Deno.writeTextFile(`src/data/testScenario/${filePath}.json`, currentState);
 

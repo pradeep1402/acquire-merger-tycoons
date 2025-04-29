@@ -629,6 +629,7 @@ class MergerView {
   merge() {
     this.#poller.start();
     if (this.#mergeInfo.typeofMerge === "AutoMerge") return this.#autoMerge();
+    // this.#poller.pause();
     this.#selectiveMerge();
   }
 }

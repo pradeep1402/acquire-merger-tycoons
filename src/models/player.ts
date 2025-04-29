@@ -47,17 +47,11 @@ export class Player {
   static fromJSON(data: any): Player {
     return new Player(data.playerId)
       .withCash(data.cash)
-      .withStocks(data.stocks)
-      .withTiles(data.tiles);
+      .withStocks(data.stocks);
   }
 
   withCash(cash: number) {
     this.cash = cash;
-    return this;
-  }
-
-  withTiles(tiles: Tile[]) {
-    this.tiles = new Set([...tiles]);
     return this;
   }
 
