@@ -57,8 +57,7 @@ body {
   /* background-color: var(--tile-color); */
   background-color: var(--tile-color);
   font-size: 1em;
-  box-shadow:
-    inset 0.5em 0.5em 0.05em rgba(28, 27, 27, 0.1),
+  box-shadow: inset 0.5em 0.5em 0.05em rgba(28, 27, 27, 0.1),
     inset -0.5em -0.5em 0.05em rgba(28, 27, 27, 0.1);
   border: 1px white solid;
 }
@@ -72,7 +71,6 @@ body {
   opacity: 1;
   width: 40vw;
   aspect-ratio: 2;
-  /* height: 40vh; */
   background-color: var(--color);
   border: 1px solid var(--tray-color);
   box-shadow: 10px 10px 70px rgba(0, 0, 0, 0.7);
@@ -116,6 +114,7 @@ body {
 }
 
 #portfolio-panel {
+  width: 50vw;
   position: absolute;
   left: 23.2%;
   bottom: 0;
@@ -127,7 +126,7 @@ body {
 }
 
 #portfolio-header {
-  width: 50vw;
+  width: 100%;
   height: 1.3em;
   font-size: 1.4rem;
   color: var(--light-color);
@@ -149,15 +148,11 @@ body {
 
 #portfolio-body {
   border-top: 3px solid var(--light-color);
-  width: 50vw;
+  width: 100%;
   background-color: var(--color);
   justify-content: space-around;
   text-align: center;
   padding: 2% 4% 1% 4%;
-}
-
-.portfolio-section {
-  text-align: center;
 }
 
 #portfolio-tiles {
@@ -172,8 +167,7 @@ body {
   width: 50%;
   aspect-ratio: 1;
   background-color: var(--tile-color);
-  box-shadow:
-    inset 0.5em 0.5em 0.05em rgba(28, 27, 27, 0.1),
+  box-shadow: inset 0.5em 0.5em 0.05em rgba(28, 27, 27, 0.1),
     inset -0.5em -0.5em 0.05em rgba(28, 27, 27, 0.1);
   border: 1px white solid;
   display: flex;
@@ -190,7 +184,6 @@ body {
 #tiles-container .player-tile {
   width: 28%;
   aspect-ratio: 1;
-  /* height: 35%; */
   background-color: var(--tray-color);
   color: var(--light-color);
   display: flex;
@@ -199,18 +192,41 @@ body {
   font-size: 1.4rem;
 }
 
+.hotel-stocks {
+  /* height: max-content; */
+  color: white;
+  border-radius: 3px;
+  box-shadow: 0px 0px 10px gray;
+}
+
+.shares-info {
+  background-repeat: no-repeat;
+  background-size: 62.5%;
+  background-position-x: center;
+  background-position-y: top;
+}
+
+#stock-info .count {
+  font-size: 2.75rem;
+}
+
+.shares-info p {
+  background-color: rgba(0, 0, 0, 0.429);
+}
+
 #stock-info {
   text-align: center;
   width: 45%;
+  height: max-content;
   display: grid;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(4, auto);
-  margin: auto;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 23%);
+  gap: 30% 5%;
 }
 
 .hotel-img {
   width: 50%;
-  height: 45%;
+  aspect-ratio: 1;
 }
 
 #cash-info {
@@ -412,8 +428,8 @@ body {
   width: 50vw;
   aspect-ratio: 2;
   position: fixed;
-  top: 15%;
-  left: 28%;
+  top: 13%;
+  left: 22.5%;
   background-color: var(--color);
   color: var(--dark-color);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);

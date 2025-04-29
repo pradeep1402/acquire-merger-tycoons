@@ -43,9 +43,13 @@ export class PortfolioView {
     const hotelStocks = cloneTemplate("stocks-template").querySelector(
       ".hotel-stocks",
     );
-    const [img, hotelName, stockCount] = hotelStocks.children;
 
-    img.src = `/images/hotels/${name.toLowerCase()}.png`;
+    hotelStocks.classList.add(name.toLowerCase());
+    hotelStocks.classList.add("shares-info");
+
+    hotelStocks.style.backgroundColor = hotelLookup(name).backgroundColor;
+    const [stockCount, hotelName] = hotelStocks.children;
+
     hotelName.textContent = name;
     stockCount.textContent = count;
 
@@ -74,9 +78,12 @@ class HotelView {
   }
 
   renderStocks() {
-    const hotelStocks = cloneTemplate("stocks-template").querySelector(
-      ".hotel-stocks",
-    );
+    const hotelStocks = cloneTemplate("available-stocks-template")
+      .querySelector(
+        ".hotel-stocks",
+      );
+    hotelStocks.style.backgroundColor = hotelLookup(this.#name).backgroundColor;
+
     const [img, hotelName, stockCount, price] = hotelStocks.children;
 
     img.src = `/images/hotels/${this.#name.toLowerCase()}.png`;
@@ -174,7 +181,6 @@ export class BoardView {
     tiles.forEach((tile) => {
       const tileNode = document.getElementById(tile);
       tileNode.style.border = `none`;
-      // tileNode.style.border = `2px solid ${color}`;
       tileNode.style.backgroundColor = hotelLookup(name).backgroundColor;
       tileNode.style.color = hotelLookup(name).color;
     });
