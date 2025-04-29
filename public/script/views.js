@@ -87,6 +87,8 @@ class HotelView {
   renderStocks() {
     const hotelStocks = cloneTemplate(
       "available-stocks-template",
+      "available-stocks-template",
+      "available-stocks-template",
     ).querySelector(".hotel-stocks");
     hotelStocks.style.backgroundColor = hotelLookup(this.#name).backgroundColor;
 
@@ -232,20 +234,6 @@ export class BuyStocksView {
       input.max = Math.max(0, originalMax - otherTotal);
     });
   }
-
-  // #updateMax() {
-  //   const allInputs = this.#hotelsContainer.querySelectorAll("input");
-
-  //   const totalSelected = Array.from(allInputs).reduce((sum, input) => {
-  //     return sum + parseInt(input.value || 0);
-  //   }, 0);
-
-  //   allInputs.forEach((input) => {
-  //     const currentValue = parseInt(input.value || 0);
-  //     const otherTotal = totalSelected - currentValue;
-  //     input.max = Math.max(0, input.max - otherTotal);
-  //   });
-  // }
 
   #setHotelInfo(template, name, price, maxStocks) {
     template.querySelector("#hotel").textContent = name;
@@ -558,18 +546,32 @@ class MergerView {
   }
 
   async #handleHotelMerge(event) {
+    console.log("inside handler");
+
     const id = event.target.id;
     const baseTiles = this.#hotels.map(({ baseTile }) => baseTile);
     if (!baseTiles.includes(id)) return;
 
     this.#acquirer = this.#hotels.find(({ baseTile }) => baseTile === id);
-    this.#target = this.#hotels.find(({ baseTile }) => baseTile !== id);
-    this.#board.removeEventListener("click", this.#listener);
+    this.#target = [this.#hotels.find(({ baseTile }) => baseTile !== id)];
     this.#toggleHighlight();
     this.#attachImgs();
     this.#toggleDisplay();
     setTimeout(() => this.#toggleDisplay(), 2500);
+    this.#indicateMergingTile();
     await this.#handleMerge(this.#acquirer.name);
+    this.#board.removeEventListener("click", this.#listener);
+
+    const tileNode = document.getElementById(this.#tile);
+    console.log(tileNode, "Before tileNode");
+    tileNode.textContent = tileNode.id;
+    this.#tile = null;
+    console.log(tileNode, "After tileNode");
+
+    // tileNode.classList.remove(`.${this.#target[0].name.toLowerCase()}`);
+    // tileNode.classList.remove("base-tile");
+
+    this.#poller.start();
   }
 
   #attachImgs() {
@@ -618,7 +620,6 @@ class MergerView {
     this.#hotels = this.#mergeInfo.hotels;
     this.#indicateMergingTile();
     this.#toggleHighlight();
-
     this.#board.addEventListener("click", this.#listener);
   }
 
@@ -628,8 +629,19 @@ class MergerView {
 
   merge() {
     this.#poller.start();
+    if (this.#mergeInfo.typeofMerge === "AutoMerge") {
+      this.#autoMerge();
+      console.log("after auto merge.....");
+      const tileNode = document.getElementById(this.#tile);
+      tileNode.classList.remove(`.${this.#target[0].name.toLowerCase()}`);
+      tileNode.classList.remove("base-tile");
+      tileNode.innerText = tileNode.id;
+      return;
+    }
+
     if (this.#mergeInfo.typeofMerge === "AutoMerge") return this.#autoMerge();
-    this.#selectiveMerge();
+    this.#poller.pause();
+    return this.#selectiveMerge();
   }
 }
 
