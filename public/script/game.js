@@ -1,5 +1,10 @@
 import Collapse from "./collapse.js";
-import { PlayersView, PlayerTurnView, StockExchangeView } from "./views.js";
+import {
+  PlayersView,
+  PlayerTurnView,
+  StockExchangeView,
+  toggleBlur,
+} from "./views.js";
 import Poller from "./polling.js";
 import {
   BoardView,
@@ -54,6 +59,7 @@ const renderPlayerTiles = (tilesContainer, tiles) => {
 };
 
 const showStartingTilesPopup = async () => {
+  toggleBlur();
   const stats = await getResource("/acquire/game-stats");
   const { playerPortfolio } = stats;
   const { tiles } = playerPortfolio;
@@ -62,6 +68,7 @@ const showStartingTilesPopup = async () => {
 
   setTimeout(() => {
     const popup = document.getElementById("tiles-popup");
+    toggleBlur();
     popup.style.display = "none";
   }, 2000);
 };

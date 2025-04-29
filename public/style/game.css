@@ -17,10 +17,6 @@
 body {
   height: 100vh;
   width: 100vw;
-  /* display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative; */
 }
 
 .gameBoard {
@@ -71,9 +67,9 @@ body {
   background-color: var(--tile-color);
   font-size: 1em;
   box-shadow:
-    inset 0.5em 0.5em 0.05em rgba(154, 148, 148, 0.1),
-    inset -0.5em -0.5em 0.05em rgba(124, 119, 119, 0.1);
-  border: 1px white solid;
+    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+    inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169);
+  border: 1px var(--light-color) solid;
 }
 
 #tiles-popup {
@@ -82,8 +78,8 @@ body {
   justify-content: center;
   align-items: center;
   color: var(--dark-color);
-  width: 40vw;
-  aspect-ratio: 2;
+  width: 40%;
+  height: 40%;
   background-color: var(--color);
   border: 1px solid var(--tray-color);
   box-shadow: 10px 10px 70px rgba(0, 0, 0, 0.7);
@@ -91,12 +87,13 @@ body {
   z-index: 5;
   font-family: "Times New Roman", serif;
   position: absolute;
-  top: 25%;
-  left: 19%;
+  top: 30%;
+  left: 30%;
+  z-index: 9999;
 }
 
 #tiles-container {
-  width: 19em;
+  width: 15em;
   aspect-ratio: 1.4;
   display: flex;
   flex-wrap: wrap;
@@ -118,7 +115,7 @@ body {
   flex-direction: column;
   justify-content: space-evenly;
   border: 1px solid var(--tray-color);
-  margin: 2%;
+  margin-left: 1.5%;
 }
 
 #player {
@@ -174,13 +171,13 @@ body {
 }
 
 #portfolio-tiles > .player-tile {
-  width: 30%;
+  width: 28%;
   aspect-ratio: 1;
   background-color: var(--tile-color);
   box-shadow:
-    inset 0.5em 0.5em 0.05em rgba(133, 129, 129, 0.1),
-    inset -0.5em -0.5em 0.05em rgba(174, 169, 169, 0.1);
-  border: 1px white solid;
+    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+    inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169);
+  border: 1px var(--light-color) solid;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -190,8 +187,11 @@ body {
 #tiles-container .player-tile {
   width: 28%;
   aspect-ratio: 1;
-  background-color: var(--tray-color);
-  color: var(--light-color);
+  background-color: var(--tile-color);
+  box-shadow:
+    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+    inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169);
+  color: var(--dark-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -199,7 +199,7 @@ body {
 }
 
 .hotel-stocks {
-  color: white;
+  color: var(--light-color);
   border-radius: 3px;
   box-shadow: 0px 0px 10px gray;
 }
@@ -213,7 +213,7 @@ body {
 }
 
 .shares-info p {
-  background-color: rgba(0, 0, 0, 0.575);
+  background-color: rgba(0, 0, 0, 0.654);
   padding-bottom: 10%;
 }
 
@@ -262,7 +262,10 @@ body {
 .highlight {
   background-color: #cee2f8;
   color: #1e2a38;
-  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+    inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169),
+    1px 1px 7px rgba(0, 0, 0, 0.665);
   animation: pulse-scale 2s infinite ease-in-out;
   cursor: pointer;
   border: none;
@@ -288,14 +291,13 @@ body {
 }
 
 #game-tray {
-  height: 60%;
+  height: 40em;
   display: flex;
   flex-direction: row;
 }
 
 #tray-header {
   font-size: 1.5rem;
-  height: 100%;
   width: 1.3em;
   display: flex;
   justify-content: center;
@@ -308,7 +310,6 @@ body {
 
 #tray-body {
   padding: 1em;
-  height: 100%;
   width: 25vw;
   border-left: 3px solid var(--light-color);
   background-color: var(--color);
@@ -427,11 +428,10 @@ body {
 }
 
 #buy-stocks {
-  width: 50vw;
-  aspect-ratio: 2;
+  z-index: 999;
+  width: 40%;
+  padding: 2%;
   position: fixed;
-  top: 13%;
-  left: 22.5%;
   background-color: var(--color);
   color: var(--dark-color);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
@@ -441,61 +441,77 @@ body {
   align-items: center;
 }
 
-.step-down {
+.update-stocks {
+  display: flex;
+  justify-content: center;
+  width: 40%;
+}
+
+.step-down,
+.step-up {
   border: none;
-  background-color: var(--tray-color);
-  color: var(--light-color);
+  background-color: rgba(0, 0, 0, 0);
   font-weight: 700;
   font-size: 1.2em;
   border-radius: 2px;
-  display: inline-block;
-}
-
-.step-up {
-  border: none;
-  background-color: var(--tray-color);
+  width: 25%;
+  cursor: pointer;
+  margin: 2%;
   color: var(--light-color);
-  font-weight: 700;
-  font-size: 1.2em;
-  border-radius: 2x;
-  display: inline-block;
 }
 
 .count-input {
-  font-size: 1.4em;
-  display: inline-block;
+  font-size: 1em;
+  border: none;
+  width: 25%;
+  background-color: rgba(0, 0, 0, 0);
+  border-bottom: 1px solid black;
+  color: var(--light-color);
 }
 
 #buy {
-  width: 80%;
-  height: 30px;
+  margin: 5%;
+  width: 40%;
+  height: 10%;
+  padding: 2%;
   background-color: var(--tray-color);
   color: var(--light-color);
   font-size: 1.2em;
   font-weight: 600;
   border: none;
-  border-radius: 6px;
 }
 
 #active-hotels {
-  width: 60%;
-  border: 1px solid black;
+  margin: 5%;
   padding: 2%;
+  width: 65%;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1em;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-start;
+  border: 1px solid var(--tray-color);
+}
+
+.hotel-name {
+  width: 40%;
+}
+
+.stock-value {
+  width: 20%;
 }
 
 .hotel {
+  width: 100%;
+  padding: 3%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
   align-items: center;
-  width: 100px;
-  height: 100px;
-  border: 1px solid black;
+  color: white;
+  border-radius: 2.5px;
+  box-shadow:
+    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+    inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169),
+    0px 0px 10px gray;
 }
 
 input {
@@ -636,4 +652,20 @@ label {
 #logout #logout-button {
   background-color: white;
   border: none;
+}
+
+button :hover {
+  cursor: pointer;
+}
+
+.blur {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  z-index: 99;
+  display: none;
+  backdrop-filter: blur(5px);
+  align-items: center;
+  justify-content: center;
 }

@@ -47,11 +47,6 @@
       </div>
     </div>
 
-    <div id="tiles-popup">
-      <h1 id="popup-header">You were assigned 6 tiles and $6000</h1>
-      <div id="tiles-container"></div>
-    </div>
-
     <div class="merge-popup hidden">
       <h2>ENTERING MERGER...</h2>
       <div class="merger-popup-body">
@@ -78,13 +73,6 @@
 
     <div id="flash-msg-box">
       <p></p>
-    </div>
-
-    <div id="buy-stocks" class="hidden">
-      <h1>BUY STOCKS</h1>
-      <div id="active-hotels"></div>
-      <h2>Cash available: <span id="cash-available"></span></h2>
-      <button id="buy">BUY</button>
     </div>
 
     <div id="merger-pop" class="hidden">
@@ -130,11 +118,24 @@
       <button id="merger" type="submit">Complete Merger</button>
     </div>
 
+    <div class="blur">
+      <div id="tiles-popup">
+        <h1 id="popup-header">You were assigned 6 tiles and $6000</h1>
+        <div id="tiles-container"></div>
+      </div>
+      <div id="buy-stocks" class="hidden">
+        <h1>BUY STOCKS</h1>
+        <div id="active-hotels"></div>
+        <h2>Cash available: <span id="cash-available"></span></h2>
+        <button id="buy">BUY</button>
+      </div>
+    </div>
+
     <template id="hotel-template">
       <div class="hotel">
-        <p id="hotel"></p>
-        <p id="stock-value"></p>
-        <div>
+        <p class="hotel-name"></p>
+        <p class="stock-value"></p>
+        <div class="update-stocks">
           <button class="step-down">-</button>
           <input
             type="number"

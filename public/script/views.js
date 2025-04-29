@@ -1,5 +1,14 @@
 import { cloneTemplate, getResource } from "./game.js";
 
+export const toggleBlur = () => {
+  const ele = document.querySelector(".blur");
+  if (ele.style.display === "flex") {
+    ele.style.display = "none";
+    return;
+  }
+  ele.style.display = "flex";
+  return;
+};
 class TileView {
   #label;
   constructor(label) {
@@ -258,8 +267,8 @@ export class BuyStocksView {
   }
 
   #setHotelInfo(template, name, price, maxStocks) {
-    template.querySelector("#hotel").textContent = name;
-    template.querySelector("#stock-value").textContent = price;
+    template.querySelector(".hotel-name").textContent = name;
+    template.querySelector(".stock-value").textContent = `$${price}`;
 
     const input = template.querySelector("input");
     input.id = name;
@@ -320,8 +329,10 @@ export class BuyStocksView {
   #renderHotel({ name, stocksAvailable, stockPrice }) {
     const template = cloneTemplate("hotel-template");
     const maxStocks = stocksAvailable >= 3 ? 3 : stocksAvailable;
+    const hotel = template.querySelector(".hotel");
     const input = template.querySelector("input");
 
+    hotel.style.backgroundColor = hotelLookup(name).backgroundColor;
     this.#setHotelInfo(template, name, stockPrice, maxStocks);
     this.#attachInputHandlers(input);
     this.#attachStepButtons(template, input, stockPrice);
@@ -337,6 +348,7 @@ export class BuyStocksView {
 
     const buyStocksEle = document.getElementById("buy-stocks");
     buyStocksEle.classList.add("display");
+    toggleBlur();
     const hotelNode = hotels.map((hotel) => {
       return this.#renderHotel(hotel);
     });
@@ -354,13 +366,15 @@ export class BuyStocksView {
     const stocksToBuy = [];
 
     for (const child of children) {
-      const hotel = child.querySelector("#hotel").textContent;
+      const hotel = child.querySelector(".hotel-name").textContent;
       const count = +child.querySelector("input").value;
       if (count) stocksToBuy.push({ hotel, count });
     }
 
     const buyStocksEle = document.getElementById("buy-stocks");
     buyStocksEle.classList.remove("display");
+    toggleBlur();
+
     await fetch("/acquire/buy-stocks", {
       method: "PATCH",
       body: JSON.stringify(stocksToBuy),
@@ -471,7 +485,7 @@ export class PlayerTurnView {
     const container = document.querySelector("#popup");
     const hotelList = document.querySelector("#hotel-container");
 
-    this.#renderMinimap();
+    // this.#renderMinimap();
     container.style.display = "block";
 
     const hotels = inActiveHotels.map((hotel) => {
@@ -578,9 +592,12 @@ class MergerView {
     this.#target = [this.#hotels.find(({ baseTile }) => baseTile !== id)];
     this.#toggleHighlight();
     this.#attachImgs();
+    toggleBlur();
     this.#toggleDisplay();
-    setTimeout(() => this.#toggleDisplay(), 2500);
-    this.#indicateMergingTile();
+    setTimeout(() => {
+      this.#toggleDisplay();
+      toggleBlur();
+    }, 2500);
     await this.#handleMerge(this.#acquirer.name);
     this.#board.removeEventListener("click", this.#listener);
 
@@ -616,12 +633,16 @@ class MergerView {
   }
 
   async #autoMerge() {
+    toggleBlur();
     this.#toggleDisplay();
     this.#acquirer = this.#mergeInfo.acquirer;
     this.#target = this.#mergeInfo.target;
 
     this.#attachImgs();
-    setTimeout(() => this.#toggleDisplay(), 2500);
+    setTimeout(() => {
+      this.#toggleDisplay();
+      toggleBlur();
+    }, 2500);
     this.#indicateMergingTile();
     await this.#handleMerge(this.#acquirer.name);
   }
@@ -792,7 +813,7 @@ const hotelLookup = (name) => {
     Tower: { backgroundColor: "#ffb404", color: "white" },
     Sackson: { backgroundColor: "#ff5454", color: "white" },
     Festival: {
-      backgroundColor: "#48c454",
+      backgroundColor: "#2EA47A",
       color: "white",
     },
     Continental: {
