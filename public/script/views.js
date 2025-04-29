@@ -726,8 +726,8 @@ export class StockExchangeView {
   }
 
   async #completeMerge() {
-    const stocks = this.#sell.value;
-    const trade = this.#trade.value;
+    const stocks = [{ hotel: this.#target, count: Number(this.#sell.value) }];
+    const trade = Number(this.#trade.value);
     const tradeStats = {
       acquirer: this.#acquirer,
       target: this.#target,

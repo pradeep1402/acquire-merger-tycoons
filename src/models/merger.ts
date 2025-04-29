@@ -275,6 +275,9 @@ export class Merger implements Game {
   private initiateProcess() {
     this.countOfTurns = this.target.length * 3;
     this.distributeBonus(this.target[0]);
+    if (!this.doesPlayerHasStocks() && this.isMergerRoundOver()) {
+      this.changeTurn();
+    }
   }
 
   setupMergerEntities(acquirer: HotelName): MergerData {

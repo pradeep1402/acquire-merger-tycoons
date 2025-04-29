@@ -154,12 +154,12 @@ const startGamePolling = async (poller) => {
 
   if (mergeData && mergeData.mode === "Merge" && isMyTurn) {
     keepSellTrade(playerPortfolio, mergeData, poller);
-  } else {
-    renderPlayerTurn(isMyTurn, tiles, poller);
   }
 
   if (mode === "postMerge" && isMyTurn) {
     buyStocksAfterMerger(board, playerPortfolio, poller);
+  } else {
+    renderPlayerTurn(isMyTurn, tiles, poller);
   }
 
   renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);
