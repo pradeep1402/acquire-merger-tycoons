@@ -11,6 +11,13 @@ class TileView {
       ".player-tile",
     );
     playerTile.textContent = this.#label;
+    const tile = document.getElementById(this.#label);
+    playerTile.addEventListener("mouseover", () => {
+      tile.classList.add("highlight-on-hover");
+    });
+    playerTile.addEventListener("mouseleave", () => {
+      tile.classList.remove("highlight-on-hover");
+    });
 
     return playerTile;
   }
