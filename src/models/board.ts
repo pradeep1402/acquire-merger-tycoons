@@ -33,6 +33,15 @@ export type buildingHotel = {
   stockAllotted: boolean;
 };
 
+type HotelName =
+  | "Sackson"
+  | "Tower"
+  | "Festival"
+  | "Worldwide"
+  | "American"
+  | "Continental"
+  | "Imperial";
+
 export class Board {
   hotels: Hotel[];
   independentTiles: Set<Tile>;
@@ -240,5 +249,17 @@ export class Board {
     );
 
     return isAnyHotel41 || areActiveHotelsSafe;
+  }
+
+  getHotels(): HotelName[] {
+    return [
+      "Sackson",
+      "Tower",
+      "Festival",
+      "Worldwide",
+      "American",
+      "Continental",
+      "Imperial",
+    ];
   }
 }

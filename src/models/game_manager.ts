@@ -6,7 +6,7 @@ import { StdGame } from "./stdGame.ts";
 import { Player } from "./player.ts";
 import { Board } from "./board.ts";
 
-const getHotels = (): Hotel[] => {
+export const createHotels = (): Hotel[] => {
   const hotelTexts = `Tower:0,Sackson:0,
     Festival:1,American:1,Worldwide:1,
     Imperial:2,Continental:2`.split(",");
@@ -30,7 +30,7 @@ class GameManager {
 
   constructor(
     tileGenerator: () => string[] = generateShuffledTiles,
-    hotelGenerator: () => Hotel[] = getHotels,
+    hotelGenerator: () => Hotel[] = createHotels,
   ) {
     this.tileGenerator = tileGenerator;
     this.gamesMap = new Map();
