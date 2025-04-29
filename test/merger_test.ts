@@ -451,4 +451,18 @@ describe("Merger class", () => {
       target: ["Continental"],
     });
   });
+
+  it("should return false when game is not ended", () => {
+    const imperial = new Hotel("Imperial", 2);
+    const board = new Board([imperial]);
+    const tiles = csv(
+      "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+    );
+    imperial.toggleStatus();
+
+    const game = new StdGame(tiles, createPlayers("Adi Malli"), board);
+    const merger = new Merger(game);
+
+    assertFalse(merger.isGameEnd());
+  });
 });

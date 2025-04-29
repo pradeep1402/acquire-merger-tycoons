@@ -291,4 +291,8 @@ export class Merger implements Game {
   distributeBonus(hotelName: HotelName): undefined | BonusDistribution {
     return this.original.distributeBonus(hotelName);
   }
+
+  isGameEnd() {
+    return this.original.isGameEnd();
+  }
 }

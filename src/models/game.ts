@@ -140,4 +140,5 @@ export interface Game {
   getBoard: () => BoardDetails;
   distributeBonus: (hotelName: HotelName) => undefined | BonusDistribution;
   getBoardInstance: () => Board;
+  isGameEnd: () => boolean;
 }
