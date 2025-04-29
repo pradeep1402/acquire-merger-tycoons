@@ -16,7 +16,7 @@ export class Hotel {
     this.offset = offset;
     this.baseTile = "";
   }
-
+  
   // deno-lint-ignore no-explicit-any
   static fromJSON(data: any): Hotel {
     const { name, offset, status, stocksAvailable, tiles, baseTile } = data;
