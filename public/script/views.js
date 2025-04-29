@@ -405,6 +405,26 @@ export class BuyStocksView {
   }
 }
 
+const renderMinimap = () => {
+  const minimap = document.querySelector(".gameBoard");
+  minimap.classList.add("minimap");
+  const children = minimap.children;
+
+  for (const child of children) {
+    child.classList.add("mini-tile");
+  }
+};
+
+const renderGamerBoard = () => {
+  const minimap = document.querySelector(".gameBoard");
+  minimap.classList.remove("minimap");
+  const children = minimap.children;
+
+  for (const child of children) {
+    child.classList.remove("mini-tile");
+  }
+};
+
 export class PlayerTurnView {
   #tiles;
   #poller;
@@ -445,16 +465,6 @@ export class PlayerTurnView {
     await this.#buyStocks();
   }
 
-  #renderGamerBoard() {
-    const minimap = document.querySelector(".gameBoard");
-    minimap.classList.remove("minimap");
-    const children = minimap.children;
-
-    for (const child of children) {
-      child.classList.remove("mini-tile");
-    }
-  }
-
   async #handleFoundHotel(tileLabel, hotelName) {
     const res = await fetch(`/acquire/place-tile/${tileLabel}/${hotelName}`, {
       method: "PATCH",
@@ -467,18 +477,8 @@ export class PlayerTurnView {
 
     const container = document.querySelector("#popup");
     container.style.display = "none";
-    this.#renderGamerBoard();
+    // this.#renderGamerBoard();
     await this.#buyStocks();
-  }
-
-  #renderMinimap() {
-    const minimap = document.querySelector(".gameBoard");
-    minimap.classList.add("minimap");
-    const children = minimap.children;
-
-    for (const child of children) {
-      child.classList.add("mini-tile");
-    }
   }
 
   async #renderSelectHotel(inActiveHotels, tileLabel) {
@@ -816,6 +816,7 @@ export class StockExchangeView {
     this.#popup.classList.remove("merger-pop-container");
     this.#resetValue();
     this.#removeStepUpListener();
+    renderGamerBoard();
   }
 
   #resetValue() {
@@ -825,6 +826,7 @@ export class StockExchangeView {
   }
 
   render() {
+    renderMinimap();
     this.#popup.classList.add("merger-pop-container");
     this.#popup.classList.remove("hidden");
     this.renderKeep();
