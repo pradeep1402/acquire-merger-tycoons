@@ -1,4 +1,4 @@
-import { assertEquals } from "assert";
+import { assertEquals, assertFalse } from "assert";
 import { beforeEach, describe, it } from "testing/bdd";
 import { stub } from "testing/mock";
 import { BuyStocks, Merger, MergeType } from "../src/models/merger.ts";
@@ -563,11 +563,12 @@ describe("Game model", () => {
     describe("getGameStats() method", () => {
       const csv = (text: string, separator = " ") => text.split(separator);
       it("should return game stats", () => {
+        const players = createPlayers("Adi Malli");
         const boardIns = new Board([imperial]);
         const tiles = csv(
           "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
         );
-        const game = new StdGame(tiles, createPlayers("Adi Malli"), boardIns);
+        const game = new StdGame(tiles, players, boardIns);
 
         const board: BoardDetails = {
           independentTiles: [],
@@ -592,8 +593,9 @@ describe("Game model", () => {
           currentPlayerId,
           isGameEnd,
           mode: null,
+          playerPortfolio: players[0].getPlayerDetails(),
         };
-        assertEquals(game.getGameStats(), gameStats);
+        assertEquals(game.getGameStats("Adi"), gameStats);
       });
     });
 
@@ -1005,5 +1007,133 @@ describe("Game model", () => {
         game.distributeBonus("Imperial");
       });
     });
+  });
+
+  describe("Validating Merger tile", () => {
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    imperial.addTile("3A");
+    imperial.addTile("4A");
+    imperial.addTile("5A");
+    imperial.addTile("6A");
+    imperial.addTile("7A");
+    imperial.addTile("8A");
+    imperial.addTile("9A");
+    imperial.addTile("10A");
+    imperial.addTile("11A");
+    imperial.addTile("12A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("1C");
+    continental.addTile("2C");
+    continental.addTile("3C");
+    continental.addTile("4C");
+    continental.addTile("5C");
+    continental.addTile("6C");
+    continental.addTile("7C");
+    continental.addTile("8C");
+    continental.addTile("9C");
+    continental.addTile("10C");
+    continental.addTile("11C");
+    continental.addTile("12C");
+    const players = createPlayers("Adi Malli Aman");
+    const board = new Board([imperial, continental]);
+    const game = new StdGame(
+      [
+        "1A",
+        "2A",
+        "3A",
+        "4A",
+        "5A",
+        "6A",
+        "7A",
+        "8A",
+        "9A",
+        "10A",
+        "11A",
+        "12A",
+        "1B",
+        "1C",
+        "2C",
+        "3C",
+        "4C",
+        "5C",
+        "6C",
+        "7C",
+        "8C",
+        "9C",
+        "10C",
+        "11C",
+        "12C",
+      ],
+      players,
+      board,
+    );
+    assertFalse(game.getBoardInstance().validateMergeTile("1B"));
+  });
+
+  describe("Validating Merger tile", () => {
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    imperial.addTile("3A");
+    imperial.addTile("4A");
+    imperial.addTile("5A");
+    imperial.addTile("6A");
+    imperial.addTile("7A");
+    imperial.addTile("8A");
+    imperial.addTile("9A");
+    imperial.addTile("10A");
+    imperial.addTile("11A");
+    imperial.addTile("12A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("1C");
+    continental.addTile("2C");
+    continental.addTile("3C");
+    continental.addTile("4C");
+    continental.addTile("5C");
+    continental.addTile("6C");
+    continental.addTile("7C");
+    continental.addTile("8C");
+    continental.addTile("9C");
+    continental.addTile("10C");
+    continental.addTile("11C");
+    continental.addTile("12C");
+    const players = createPlayers("Adi Malli Aman");
+    const board = new Board([imperial, continental]);
+    const game = new StdGame(
+      [
+        "1A",
+        "2A",
+        "3A",
+        "4A",
+        "5A",
+        "6A",
+        "7A",
+        "8A",
+        "9A",
+        "10A",
+        "11A",
+        "12A",
+        "1B",
+        "1C",
+        "2C",
+        "3C",
+        "4C",
+        "5C",
+        "6C",
+        "7C",
+        "8C",
+        "9C",
+        "10C",
+        "11C",
+        "12C",
+      ],
+      players,
+      board,
+    );
+    players[0].addTile("1B");
+    const tiles = game.getPlayerDetails("Adi")?.tiles;
+    assertFalse(tiles?.includes("1B"));
   });
 });

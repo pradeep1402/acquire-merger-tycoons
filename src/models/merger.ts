@@ -177,10 +177,11 @@ export class Merger implements Game {
     return this.original.getBoard();
   }
 
-  getGameStats(): GameStats {
+  getGameStats(playerId: string): GameStats {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();
+    const playerPortfolio = this.getPlayerDetails(playerId);
 
     return {
       board,
@@ -191,6 +192,7 @@ export class Merger implements Game {
         acquirer: this.acquirer,
         target: this.target[0] || null,
       },
+      playerPortfolio,
     };
   }
 

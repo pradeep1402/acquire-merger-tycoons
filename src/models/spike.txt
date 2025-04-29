@@ -1,20 +1,3 @@
-// method to check if the game has ended in board class
-isGameEnd():boolean {
-  const hotelWith41 = this.hotels.filter((hotel) => hotel.getSize() >= 41);
-  if (hotelWith41.length) return true;
-  const hotelsInSafeState = this.hotels.filter(
-    (hotel) => hotel.getSize() >= 11
-  );
-  if (hotelsInSafeState.length === 7) return true;
-  return false;
-}
-// method to check if the game has ended in game class
-
-isGameEnd():boolean {
-  const isAllTilesUsed = this.pile.length === 0;
-  if (isAllTilesUsed) return true;
-  return this.board.isGameEnd();
-}
 
 // validateMergeTile method in board class
  private validateMergeTile(tile: Tile): boolean {

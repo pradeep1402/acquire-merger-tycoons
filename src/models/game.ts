@@ -57,6 +57,7 @@ export type GameStats = {
   };
   isGameEnd?: boolean;
   mode?: string | null;
+  playerPortfolio: PlayerDetails | undefined;
 };
 
 export type MergerData = {
@@ -124,7 +125,7 @@ export interface Game {
   ) => buildingHotel | { error: string };
   getPlayerIds: () => string[];
   getPlayerDetails: (playerId: string) => PlayerDetails | undefined;
-  getGameStats: () => GameStats;
+  getGameStats: (playerId: string) => GameStats;
   getAffectedHotels: (tile: Tile) => Hotel[];
   changeTurn: () => { status: string };
   tradeAndSellStocks: (

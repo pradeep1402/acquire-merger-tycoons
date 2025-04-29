@@ -122,7 +122,16 @@ export class StdGame implements Game {
   }
 
   private getTiles(count: number): string[] {
-    return this.pile.splice(0, count);
+    const pile = this.pile.splice(0, count);
+    const validatedPile = [];
+    for (const tile of pile) {
+      if (this.board.validateMergeTile(tile)) {
+        validatedPile.push(tile);
+      } else {
+        pile.push(this.pile.shift() as string);
+      }
+    }
+    return validatedPile;
   }
 
   getBoard(): BoardDetails {
@@ -137,6 +146,14 @@ export class StdGame implements Game {
     const playerInfo = this.players.find((player: Player) =>
       player.doesPlayerMatch(playerId)
     );
+    const tiles = playerInfo?.getPlayerDetails().tiles;
+
+    tiles?.forEach((tile) => {
+      if (!this.board.validateMergeTile(tile)) {
+        playerInfo?.removeTile(tile);
+        playerInfo?.addTile(this.getTiles(1)[0]);
+      }
+    });
 
     return playerInfo?.getPlayerDetails();
   }
@@ -149,13 +166,21 @@ export class StdGame implements Game {
     return this.board.dependentHotels(tile);
   }
 
-  getGameStats(): GameStats {
+  getGameStats(playerId: string): GameStats {
     const board = this.getBoard();
     const currentPlayerId = this.getCurrentPlayer();
     const playersId = this.getPlayerIds();
     const isGameEnd = this.isGameEnd();
+    const playerPortfolio = this.getPlayerDetails(playerId);
 
-    return { board, playersId, currentPlayerId, isGameEnd, mode: this.mode };
+    return {
+      board,
+      playersId,
+      currentPlayerId,
+      isGameEnd,
+      mode: this.mode,
+      playerPortfolio,
+    };
   }
 
   tradeAndSellStocks(

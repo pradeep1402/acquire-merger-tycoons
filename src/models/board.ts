@@ -76,11 +76,8 @@ export class Board {
   } {
     const adjacentTiles = this.getAdjacentTiles(tile, new Set());
     const inActiveHotels = this.getInactiveHotels();
-    if (this.isMerger(tile)) {
-      this.validateMergeTile(tile);
+    if (this.isMerger(tile) && this.validateMergeTile(tile)) {
       this.mergerTile = tile;
-      // const validation = this.validateMergeTile(tile);
-      // if (!validation) return { tile, type: PlaceType.InValid };
       return { tile, type: TileStatus.Merge };
     }
 
@@ -98,8 +95,11 @@ export class Board {
     };
   }
 
-  private validateMergeTile(tile: Tile): boolean {
-    this.dependentHotels(tile);
+  validateMergeTile(tile: Tile): boolean {
+    const hotelsInMerge = this.dependentHotels(tile);
+    const hotelsInMergeSize = hotelsInMerge.map((hotel) => hotel.getSize());
+    const countOfSafeHotel = hotelsInMergeSize.filter((size) => size >= 11);
+    if (countOfSafeHotel.length >= 2) return false;
 
     return true;
   }

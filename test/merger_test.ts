@@ -88,11 +88,12 @@ describe("Merger class", () => {
     const tiles = csv(
       "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
     );
+    const players = createPlayers("p1 p2 p3");
     const continental = new Hotel("Continental", 2);
     const board = new Board([continental]);
-    const game = new StdGame(tiles, createPlayers("p1 p2 p3"), board);
+    const game = new StdGame(tiles, players, board);
     const merger = new Merger(game);
-    const gameStats = merger.getGameStats();
+    const gameStats = merger.getGameStats("p1");
 
     assertEquals(gameStats, {
       board: {
@@ -112,6 +113,7 @@ describe("Merger class", () => {
       playersId: ["p1", "p2", "p3"],
       currentPlayerId: "p1",
       mergeData: { mode: null, acquirer: null, target: null },
+      playerPortfolio: players[0].getPlayerDetails(),
     });
   });
 
