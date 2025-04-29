@@ -6,10 +6,29 @@ import { Lobby } from "../models/lobby.ts";
 import { StdGame } from "../models/stdGame.ts";
 import { HotelName } from "../models/player.ts";
 
+function* idMaker() {
+  let index = 10;
+  while (true) {
+    yield (index += 10);
+  }
+}
+
+const gen = idMaker();
+
 export const handleLogin = async (ctx: Context): Promise<Response> => {
   const fd = await ctx.req.formData();
   const sessions = ctx.get("sessions");
   const playerName = fd.get("playerName") as string;
+  const gameManager = ctx.get("gameManager");
+
+  if (gameManager.devMode) {
+    const playerId = String(gen.next().value);
+    sessions.addTestingPlayer(playerName, playerId);
+    setCookie(ctx, "sessionId", playerId);
+
+    return ctx.redirect("/", 303);
+  }
+
   const playerId = sessions.addPlayer(playerName);
   setCookie(ctx, "sessionId", playerId);
 
@@ -31,6 +50,18 @@ export const serveGameStatus = (ctx: Context): Response => {
   const players = lobby.getWaitingPlayers(sessions.getSessions());
 
   return ctx.json(players);
+};
+
+export const loadScenario = async (ctx: Context): Promise<Response> => {
+  const gameManager = ctx.get("gameManager");
+  const filePath = ctx.req.param("scenario");
+
+  const data = await Deno.readTextFile(
+    `src/data/testScenario/${filePath}.json`,
+  );
+
+  gameManager.setScenario(JSON.parse(data));
+  return ctx.text(`created a scenario of ${filePath}`);
 };
 
 export const handleQuickPlay = (ctx: Context): Response => {
@@ -83,6 +114,14 @@ export const handlePlaceTile = (ctx: Context) => {
   return ctx.json(placeInfo);
 };
 
+export const setTile = (ctx: Context) => {
+  const game = ctx.get("game");
+  const tile = ctx.req.param("tile");
+  game.setNextTile(tile);
+
+  return ctx.text(tile);
+};
+
 export const handleFoundingHotel = (ctx: Context) => {
   const game = ctx.get("game");
   const tile = ctx.req.param("tile");
@@ -102,6 +141,7 @@ export const handleBuyStocks = async (ctx: Context) => {
 
 export const handleEndTurn = (ctx: Context) => {
   const game = ctx.get("game");
+  console.log("this is the game", game);
   const response = game.changeTurn();
   const currentGame = ctx.get("currentGame");
   currentGame.playTurn();
@@ -124,4 +164,15 @@ export const handleMerge = (ctx: Context) => {
   const acquirer = ctx.req.param("acquirer");
   const res = game.setupMergerEntities(acquirer as HotelName);
   return ctx.json(res);
+};
+
+export const storeScenario = (ctx: Context) => {
+  const game = ctx.get("game");
+  const filePath = ctx.req.param("scenario");
+  const currentState = JSON.stringify(game.toJSON());
+  game.changeTurn();
+
+  Deno.writeTextFile(`src/data/testScenario/${filePath}.json`, currentState);
+
+  return ctx.json(currentState);
 };

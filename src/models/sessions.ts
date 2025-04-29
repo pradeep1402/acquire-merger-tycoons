@@ -7,6 +7,12 @@ export class Sessions {
     this.sessions = new Map();
   }
 
+  addTestingPlayer(name: string, playerId: string) {
+    this.sessions.set(playerId, { name, status: "LoggedIn" });
+
+    return playerId;
+  }
+
   addPlayer(name: string): string {
     const playerId = this.idGenerator();
 

@@ -17,6 +17,48 @@ export class Hotel {
     this.baseTile = "";
   }
 
+  // deno-lint-ignore no-explicit-any
+  static fromJSON(data: any): Hotel {
+    const { name, offset, status, stocksAvailable, tiles, baseTile } = data;
+
+    return new Hotel(name, offset)
+      .withStatus(status)
+      .withStocks(stocksAvailable)
+      .withBaseTile(baseTile)
+      .withTiles(tiles);
+  }
+
+  withStatus(status: boolean) {
+    this.status = status;
+    return this;
+  }
+
+  withStocks(StocksCount: number) {
+    this.stocksAvailable = StocksCount;
+    return this;
+  }
+
+  withTiles(tiles: Tile[]) {
+    this.tiles = new Set([...tiles]);
+    return this;
+  }
+
+  withBaseTile(tile: Tile) {
+    this.baseTile = tile;
+    return this;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      tiles: [...this.tiles],
+      stocksAvailable: this.stocksAvailable,
+      status: this.status,
+      offset: this.offset,
+      baseTile: this.baseTile,
+    };
+  }
+
   private static stockInfo() {
     return [
       { from: 2, to: 2, value: 200 },
@@ -37,6 +79,12 @@ export class Hotel {
     );
 
     return stockPrice?.value ? stockPrice.value + 100 * this.offset : 0;
+  }
+
+  setTiles(tiles: Tile[]) {
+    tiles.forEach((tile) => {
+      this.tiles.add(tile);
+    });
   }
 
   getPrimaryBonus() {

@@ -19,6 +19,7 @@ export class StdGame implements Game {
   private pile: Tile[];
   private players: Player[];
   private currentPlayerIndex: number;
+  private nextTile: undefined | Tile;
 
   constructor(
     tiles: Tile[],
@@ -32,6 +33,29 @@ export class StdGame implements Game {
       this.getTiles(6).forEach((tile) => p.addTile(tile));
     this.players.forEach(initTiles);
     this.currentPlayerIndex = 0;
+    this.nextTile = undefined;
+  }
+
+  // deno-lint-ignore no-explicit-any
+  static fromJSON(data: any): StdGame {
+    const hotels: Hotel[] = data.board.hotels.map(Hotel.fromJSON);
+    const board = Board.fromJSON(hotels, data.board.independentTiles);
+    const players: Player[] = data.players.map(Player.fromJSON);
+
+    return new StdGame(data.pile, [...players], board).withPlayers(players);
+  }
+
+  withPlayers(players: Player[]) {
+    this.players = [...players];
+    return this;
+  }
+
+  toJSON() {
+    return {
+      board: this.board.toJSON(),
+      players: this.players.map((player) => player.toJSON()),
+      pile: this.pile,
+    };
   }
 
   playTurn(tile: Tile = "default"): Game {
@@ -51,8 +75,21 @@ export class StdGame implements Game {
     return { status: this.getCurrentPlayer() };
   }
 
+  setNextTile(tile: Tile) {
+    this.nextTile = tile;
+
+    return tile;
+  }
+
   private assignTile(): void {
     const currentPlayer = this.players[this.currentPlayerIndex];
+
+    if (this.nextTile) {
+      currentPlayer.addTile(this.nextTile);
+      this.nextTile = undefined;
+      return;
+    }
+
     const [tile] = this.getTiles(1);
     currentPlayer.addTile(tile);
   }
@@ -225,7 +262,7 @@ export class StdGame implements Game {
       );
       return {
         status: "bonus distributed",
-        bonusHolders: { primaryPlayerIds: primaryHolderIds },
+        bonusHolders: { primaryHolderIds },
       };
     } else {
       this.creditBonusToPlayers(primaryHolderIds, primaryBonus);

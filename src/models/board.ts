@@ -53,6 +53,22 @@ export class Board {
     this.mergerTile = null;
   }
 
+  static fromJSON(hotels: Hotel[], independentTiles: Tile[]): Board {
+    return new Board(hotels).withIndependentTiles(independentTiles);
+  }
+
+  withIndependentTiles(tiles: Tile[]) {
+    this.independentTiles = new Set([...tiles]);
+    return this;
+  }
+
+  toJSON() {
+    return {
+      hotels: this.hotels.map((hotel) => hotel.toJSON()),
+      independentTiles: [...this.independentTiles],
+    };
+  }
+
   private getInactiveHotels() {
     return this.hotels
       .filter((hotel) => !hotel.isActive())

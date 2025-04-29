@@ -43,6 +43,38 @@ export class Player {
     this.stocks = allZeroStockCounts();
   }
 
+  // deno-lint-ignore no-explicit-any
+  static fromJSON(data: any): Player {
+    return new Player(data.playerId)
+      .withCash(data.cash)
+      .withStocks(data.stocks)
+      .withTiles(data.tiles);
+  }
+
+  withCash(cash: number) {
+    this.cash = cash;
+    return this;
+  }
+
+  withTiles(tiles: Tile[]) {
+    this.tiles = new Set([...tiles]);
+    return this;
+  }
+
+  withStocks(stockHoldings: StocksCount) {
+    this.stocks = stockHoldings;
+    return this;
+  }
+
+  toJSON() {
+    return {
+      playerId: this.playerId,
+      cash: this.cash,
+      tiles: [...this.tiles],
+      stocks: this.stocks,
+    };
+  }
+
   addStock(delta: number, stockName: HotelName) {
     this.stocks[stockName] += delta;
 

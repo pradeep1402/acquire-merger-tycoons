@@ -11,8 +11,11 @@ import {
   handlePlaceTile,
   handleQuickPlay,
   handleSellAndTradeStocks,
+  loadScenario,
   serveGame,
   serveGameStatus,
+  setTile,
+  storeScenario,
 } from "./handlers/game_handler.ts";
 import { deleteCookie, getCookie } from "hono/cookie";
 import { Sessions } from "./models/sessions.ts";
@@ -23,6 +26,7 @@ const setContext =
   async (ctx: Context, next: Next) => {
     ctx.set("sessions", sessions);
     ctx.set("gameManager", gameManager);
+    ctx.set("testerIds", ["10", "20", "30"]);
     ctx.set("lobby", lobby);
     await next();
   };
@@ -39,9 +43,11 @@ const ensureGuest = async (c: Context, next: Next) => {
 
 const createGuestRoutes = () => {
   const guestRoutes = new Hono();
+
   guestRoutes
     .use("/login.html", ensureGuest)
     .post("/login", handleLogin)
+    .get("/acquire/test-scenario/:scenario", loadScenario)
     .get("*", serveStatic({ root: "./public/general/" }));
 
   return guestRoutes;
@@ -132,6 +138,8 @@ const createAuthenticatedRoutes = () => {
   router.patch("/acquire/place-tile/:tile", handlePlaceTile);
   router.patch("/acquire/place-tile/:tile/:hotel", handleFoundingHotel);
   router.patch("/acquire/continue-merge/:acquirer", handleMerge);
+  router.get("/acquire/set-tile/:tile", setTile);
+  router.get("/acquire/create-scenario/:scenario", storeScenario);
 
   router.get("/*", serveStatic({ root: "./public" }));
   return router;

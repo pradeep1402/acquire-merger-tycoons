@@ -1,0 +1,171 @@
+{
+  "board": {
+    "hotels": [
+      {
+        "name": "Tower",
+        "tiles": [],
+        "stocksAvailable": 25,
+        "status": false,
+        "offset": 0,
+        "baseTile": ""
+      },
+      {
+        "name": "Sackson",
+        "tiles": ["3F", "3D", "2F"],
+        "stocksAvailable": 16,
+        "status": true,
+        "offset": 0,
+        "baseTile": "3E"
+      },
+      {
+        "name": "Festival",
+        "tiles": ["1A", "2B", "2C"],
+        "stocksAvailable": 23,
+        "status": true,
+        "offset": 1,
+        "baseTile": "2A"
+      },
+      {
+        "name": "American",
+        "tiles": ["6H"],
+        "stocksAvailable": 21,
+        "status": true,
+        "offset": 1,
+        "baseTile": "6I"
+      },
+      {
+        "name": "Worldwide",
+        "tiles": [],
+        "stocksAvailable": 25,
+        "status": false,
+        "offset": 1,
+        "baseTile": ""
+      },
+      {
+        "name": "Imperial",
+        "tiles": [],
+        "stocksAvailable": 25,
+        "status": false,
+        "offset": 2,
+        "baseTile": ""
+      },
+      {
+        "name": "Continental",
+        "tiles": [],
+        "stocksAvailable": 25,
+        "status": false,
+        "offset": 2,
+        "baseTile": ""
+      }
+    ],
+    "independentTiles": ["5F", "4C", "11I"]
+  },
+  "players": [
+    {
+      "playerId": "20",
+      "cash": 4900,
+      "tiles": ["12E", "6A", "9I", "12C", "7H", "11G"],
+      "stocks": {
+        "Sackson": 2,
+        "Tower": 0,
+        "Festival": 2,
+        "Worldwide": 0,
+        "American": 1,
+        "Continental": 0,
+        "Imperial": 0
+      }
+    },
+    {
+      "playerId": "30",
+      "cash": 5300,
+      "tiles": ["9G", "8C", "9A", "12H", "4D"],
+      "stocks": {
+        "Sackson": 4,
+        "Tower": 0,
+        "Festival": 0,
+        "Worldwide": 0,
+        "American": 0,
+        "Continental": 0,
+        "Imperial": 0
+      }
+    },
+    {
+      "playerId": "40",
+      "cash": 4700,
+      "tiles": ["9B", "3H", "1H", "4I", "11D", "10B"],
+      "stocks": {
+        "Sackson": 3,
+        "Tower": 0,
+        "Festival": 0,
+        "Worldwide": 0,
+        "American": 3,
+        "Continental": 0,
+        "Imperial": 0
+      }
+    }
+  ],
+  "pile": [
+    "12A",
+    "10I",
+    "1E",
+    "8D",
+    "11A",
+    "11C",
+    "4F",
+    "5G",
+    "7F",
+    "5A",
+    "9H",
+    "1A",
+    "6E",
+    "5B",
+    "1G",
+    "3C",
+    "2I",
+    "9D",
+    "7A",
+    "2D",
+    "7D",
+    "5E",
+    "8E",
+    "3I",
+    "8F",
+    "12I",
+    "8G",
+    "5D",
+    "1D",
+    "9F",
+    "4B",
+    "6D",
+    "1I",
+    "3B",
+    "11B",
+    "10C",
+    "3A",
+    "4H",
+    "5I",
+    "8A",
+    "10A",
+    "10D",
+    "7I",
+    "12B",
+    "10F",
+    "12G",
+    "11E",
+    "2G",
+    "7E",
+    "2H",
+    "4A",
+    "4G",
+    "8H",
+    "6B",
+    "4E",
+    "6F",
+    "7B",
+    "1B",
+    "8I",
+    "6G",
+    "6C",
+    "12D"
+  ]
+}

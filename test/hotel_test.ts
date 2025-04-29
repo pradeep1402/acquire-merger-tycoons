@@ -112,3 +112,11 @@ describe("getBaseTile() method", () => {
     assertEquals(hotel.getBaseTile(), "1A");
   });
 });
+
+describe("setTiles method for creating scenario", () => {
+  it("should set given tiles to the hotel", () => {
+    const hotel = new Hotel("Tower", 0);
+    hotel.setTiles(["1A", "2A"]);
+    assertEquals(hotel.getHotel().tiles, ["1A", "2A"]);
+  });
+});
