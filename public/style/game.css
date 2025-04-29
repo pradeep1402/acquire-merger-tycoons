@@ -217,6 +217,11 @@ body {
   padding-bottom: 10%;
 }
 
+.shares-info .count {
+  padding-top: 15%;
+  font-size: 1.5rem;
+}
+
 #stock-info {
   margin-top: 2.7%;
   text-align: center;
@@ -224,11 +229,6 @@ body {
   height: max-content;
   display: flex;
   gap: 5%;
-}
-
-#stock-info .count {
-  padding-top: 15%;
-  font-size: 1.5rem;
 }
 
 .hotel-img {
@@ -443,7 +443,7 @@ body {
 
 .update-stocks {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   width: 40%;
 }
 
@@ -463,9 +463,8 @@ body {
 .count-input {
   font-size: 1em;
   border: none;
-  width: 25%;
+  width: 20%;
   background-color: rgba(0, 0, 0, 0);
-  border-bottom: 1px solid black;
   color: var(--light-color);
 }
 
@@ -490,7 +489,6 @@ body {
   gap: 1em;
   align-items: center;
   justify-content: flex-start;
-  border: 1px solid var(--tray-color);
 }
 
 .hotel-name {
