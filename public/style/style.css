@@ -14,7 +14,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url("/style/login.webp");
+  background: url("/images/malli.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -27,7 +27,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(28, 28, 28, 0.7);
+  background: rgba(28, 28, 28, 0);
   z-index: 1;
 }
 
@@ -38,13 +38,14 @@ main {
   justify-content: space-around;
   align-items: center;
   padding: 2rem;
-  height: 42vh;
+  height: 24vh;
   width: 18%;
   min-width: 260px;
-  min-height: 360px;
+  min-height: 200px;
   border-radius: 16px;
   background-color: rgba(249, 250, 251, 0.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
 }
 
 main > div {
