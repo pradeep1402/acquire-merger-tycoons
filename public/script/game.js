@@ -102,7 +102,8 @@ const renderGameBoard = () => {
 };
 
 const renderWinner = (winnerPlayer) => {
-  toggleBlur();
+  const ele = document.querySelector(".blur");
+  ele.style.display = "flex";
   const winnerPopup = document.querySelector(".winner-popup");
   winnerPopup.classList.add("display");
   const winner = document.querySelector(".winner");
@@ -116,6 +117,7 @@ const renderGameEndBtn = async () => {
   // btn.addEventListener("click", async () => {
   const { winner } = await (await fetch("/acquire/end-game")).json();
   renderWinner(winner);
+
   // });
 };
 
@@ -126,8 +128,7 @@ const keepSellTrade = (portfolio, { acquirer, target }, poller) => {
   new StockExchangeView(stocks, acquirer, target, poller).render();
 };
 
-const renderFlashMsg = (msg, poller) => {
-  poller.pause();
+const renderFlashMsg = (msg) => {
   const msgBox = document.getElementById("flash-msg-box");
   msgBox.style.visibility = "visible";
   const textBox = msgBox.querySelector("p");
@@ -163,7 +164,7 @@ const startGamePolling = async (poller) => {
   if (isGameEnd) {
     poller.pause();
     const msg = "You can end the game";
-    await renderFlashMsg(msg);
+    renderFlashMsg(msg);
     await renderGameEndBtn();
     setTimeout(async () => {
       await fetch("/acquire/back-to-home");
