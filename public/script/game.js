@@ -111,20 +111,14 @@ const renderGameEndBtn = async () => {
 };
 
 const keepSellTrade = (portfolio, { acquirer, target }, poller) => {
-  document
-    .querySelector(`.${target.toLowerCase()}`)
-    .classList.remove("base-tile");
-  document
-    .querySelector(`.${target.toLowerCase()}`)
-    .classList.remove(`.${target.toLowerCase()}`);
-
   poller.pause();
   const stocks = portfolio.stocks[target];
 
   new StockExchangeView(stocks, acquirer, target, poller).render();
 };
 
-const renderFlashMsg = (msg) => {
+const renderFlashMsg = (msg, poller) => {
+  poller.pause();
   const msgBox = document.getElementById("flash-msg-box");
   msgBox.style.visibility = "visible";
   const textBox = msgBox.querySelector("p");
@@ -132,6 +126,7 @@ const renderFlashMsg = (msg) => {
   setTimeout(() => {
     msgBox.style.visibility = "hidden";
     textBox.textContent = null;
+    renderGameEndBtn();
   }, 3000);
 };
 
@@ -147,7 +142,7 @@ const startGamePolling = async (poller) => {
     board,
     isMyTurn,
     currentPlayer,
-    mode,
+    gameState,
     playerPortfolio,
     isGameEnd,
     mergeData,
@@ -168,9 +163,9 @@ const startGamePolling = async (poller) => {
   renderPortfolio(playerPortfolio);
   renderPlaceTilesBoard(board);
 
-  if (mergeData && mergeData.mode === "Merge" && isMyTurn) {
+  if (mergeData?.mode === "Merge" && isMyTurn) {
     keepSellTrade(playerPortfolio, mergeData, poller);
-  } else if (mode === "postMerge" && isMyTurn) {
+  } else if (gameState === "postMerge" && isMyTurn) {
     buyStocksAfterMerger(board, playerPortfolio, poller);
   } else {
     renderPlayerTurn(isMyTurn, tiles, poller);

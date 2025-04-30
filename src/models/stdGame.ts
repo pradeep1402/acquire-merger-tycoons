@@ -179,7 +179,7 @@ export class StdGame implements Game {
       playersId,
       currentPlayerId,
       isGameEnd,
-      mode: this.mode,
+      gameState: this.mode,
       playerPortfolio,
     };
   }

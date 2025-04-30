@@ -56,7 +56,7 @@ export type GameStats = {
     target?: null | HotelName;
   };
   isGameEnd?: boolean;
-  mode?: string | null;
+  gameState?: string | null;
   playerPortfolio: PlayerDetails | undefined;
 };
 

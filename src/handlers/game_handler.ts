@@ -50,31 +50,30 @@ export const serveGame = (ctx: Context): Response => {
   const sessions: Sessions = ctx.get("sessions");
   const sessionId: string = ctx.get("sessionId");
 
+  const gameStats = game.getGameStats(sessionId);
   const {
     board,
     playersId,
     currentPlayerId,
     isGameEnd,
     mergeData,
-    mode,
+    gameState,
     playerPortfolio,
-  } = game.getGameStats(sessionId);
+  } = gameStats;
 
   const isMyTurn = sessionId === currentPlayerId;
   const currentPlayer = sessions.getPlayerName(currentPlayerId);
 
-  const players = playersId.map((playerId: string) => {
-    const isTheSamePlayer = sessionId === playerId;
-    const name = sessions.getPlayerName(playerId);
-
-    return { name, isTheSamePlayer };
-  });
+  const players = playersId.map((playerId: string) => ({
+    name: sessions.getPlayerName(playerId),
+    isTheSamePlayer: sessionId === playerId,
+  }));
 
   return ctx.json({
     board,
     players,
     isMyTurn,
-    mode,
+    gameState,
     currentPlayer,
     playerPortfolio,
     isGameEnd,

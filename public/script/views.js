@@ -210,11 +210,6 @@ export class BoardView {
   }
 
   #renderHotel = ({ name, tiles, baseTile }) => {
-    const hotelTile = document.getElementById(baseTile);
-    hotelTile.classList.add(name.toLowerCase());
-    hotelTile.classList.add("base-tile");
-    hotelTile.textContent = "";
-
     tiles.forEach((tile) => {
       const tileNode = this.#getCleanTileNode(tile);
 
@@ -223,6 +218,11 @@ export class BoardView {
       tileNode.style.backgroundColor = hotelLookup(name).backgroundColor;
       tileNode.style.color = hotelLookup(name).color;
     });
+
+    const hotelTile = document.getElementById(baseTile);
+    hotelTile.classList.add(name.toLowerCase());
+    hotelTile.classList.add("base-tile");
+    hotelTile.textContent = "";
   };
 
   #renderHotelTiles() {
@@ -477,7 +477,7 @@ export class PlayerTurnView {
 
     const container = document.querySelector("#popup");
     container.style.display = "none";
-    // this.#renderGamerBoard();
+    // renderGamerBoard();
     await this.#buyStocks();
   }
 
@@ -485,7 +485,7 @@ export class PlayerTurnView {
     const container = document.querySelector("#popup");
     const hotelList = document.querySelector("#hotel-container");
 
-    // this.#renderMinimap();
+    // renderMinimap();
     container.style.display = "block";
 
     const hotels = inActiveHotels.map((hotel) => {
@@ -570,6 +570,7 @@ class MergerView {
   #hotels;
   #board;
   #poller;
+
   constructor(mergeInfo, tile, poller) {
     this.#poller = poller;
     this.#tile = tile;
@@ -664,15 +665,6 @@ class MergerView {
 
   merge() {
     this.#poller.start();
-    if (this.#mergeInfo.typeofMerge === "AutoMerge") {
-      this.#autoMerge();
-      const tileNode = document.getElementById(this.#tile);
-      tileNode.classList.remove(`.${this.#target[0].name.toLowerCase()}`);
-      tileNode.classList.remove("base-tile");
-      tileNode.innerText = tileNode.id;
-      return;
-    }
-
     if (this.#mergeInfo.typeofMerge === "AutoMerge") return this.#autoMerge();
     this.#poller.pause();
     return this.#selectiveMerge();

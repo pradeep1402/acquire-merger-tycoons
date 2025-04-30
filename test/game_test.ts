@@ -708,7 +708,7 @@ describe("Game model", () => {
           playersId,
           currentPlayerId,
           isGameEnd,
-          mode: null,
+          gameState: null,
           playerPortfolio: players[0].getPlayerDetails(),
         };
         assertEquals(game.getGameStats("Adi"), gameStats);
