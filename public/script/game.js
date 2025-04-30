@@ -40,7 +40,7 @@ const renderStocksAndPlayers = (
   players,
   currentPlayer,
   inActiveHotels,
-  activeHotels
+  activeHotels,
 ) => {
   new HotelsView(activeHotels, inActiveHotels).renderStocks();
   new PlayersView(players, currentPlayer).renderPlayers();
@@ -48,8 +48,9 @@ const renderStocksAndPlayers = (
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   const tilesEle = tiles.map((tile) => {
-    const playerTile =
-      cloneTemplate("assigned-tile").querySelector(".player-tile");
+    const playerTile = cloneTemplate("assigned-tile").querySelector(
+      ".player-tile",
+    );
     playerTile.textContent = tile;
     return playerTile;
   });
