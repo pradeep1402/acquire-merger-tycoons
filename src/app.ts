@@ -117,6 +117,12 @@ const ensureLobbyPage = async (ctx: Context, next: Next) => {
   await next();
 };
 
+const deleteGameId = (ctx: Context) => {
+  deleteCookie(ctx, "gameId");
+
+  return ctx.redirect("/", 303);
+};
+
 const createAuthenticatedRoutes = () => {
   const router = new Hono();
   router.use("/game.html", ensureGamePage);
@@ -134,6 +140,7 @@ const createAuthenticatedRoutes = () => {
   router.patch("/acquire/place-tile/:tile/:hotel", handleFoundingHotel);
   router.patch("/acquire/continue-merge/:acquirer", handleMerge);
   router.get("/acquire/end-game", handleEndGame);
+  router.get("/acquire/back-to-home", deleteGameId);
 
   router.get("/*", serveStatic({ root: "./public" }));
   return router;

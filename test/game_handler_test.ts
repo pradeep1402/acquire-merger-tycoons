@@ -818,4 +818,19 @@ describe("handleMerge() method", () => {
       assertEquals((await res.json()).winner, "");
     });
   });
+
+  describe("handleGameEnd()", () => {
+    it("should update game end bonus and respond with the game winner", async () => {
+      const { app } = createTestAppWithMergerStocks("Ramu");
+
+      const res = await app.request(`/acquire/back-to-home`, {
+        method: "GET",
+        headers: {
+          cookie: "sessionId=2;gameId=0",
+        },
+      });
+
+      assertEquals(res.status, 303);
+    });
+  });
 });

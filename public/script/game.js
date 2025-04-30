@@ -101,13 +101,13 @@ const renderGameBoard = () => {
   gameBoard.replaceChildren(...tiles);
 };
 
-const renderGameEndBtn = () => {
-  const btn = document.getElementById("end-game");
-  btn.style.visibility = "visible";
-  btn.addEventListener("click", async () => {
-    const { winner } = await (await fetch("/acquire/game-end")).json();
-    alert(`winner is ${winner}`);
-  });
+const renderGameEndBtn = async () => {
+  // const btn = document.getElementById("end-game");
+  // btn.style.visibility = "visible";
+  // btn.addEventListener("click", async () => {
+  const { winner } = await (await fetch("/acquire/end-game")).json();
+  alert(`🏆 Merger Tycoon is ${winner} 🏆`);
+  // });
 };
 
 const keepSellTrade = (portfolio, { acquirer, target }, poller) => {
@@ -159,7 +159,9 @@ const startGamePolling = async (poller) => {
   if (isGameEnd) {
     const msg = "You can end the game";
     renderFlashMsg(msg);
-    renderGameEndBtn();
+    await renderGameEndBtn();
+    await fetch("/acquire/back-to-home");
+    globalThis.location = "/";
   }
 
   renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);
