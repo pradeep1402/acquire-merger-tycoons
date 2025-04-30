@@ -480,7 +480,7 @@ export class PlayerTurnView {
     const container = document.querySelector("#popup");
     container.style.display = "none";
     toggleBlur();
-    this.#renderGamerBoard();
+    renderGamerBoard();
     await this.#buyStocks();
   }
 
