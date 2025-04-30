@@ -385,6 +385,7 @@ export class BuyStocksView {
       },
     });
     await this.#changeTurn();
+    renderGamerBoard();
   }
 
   async #changeTurn() {
@@ -397,6 +398,7 @@ export class BuyStocksView {
       return this.#changeTurn();
     }
 
+    renderMinimap();
     const submit = document.getElementById("buy");
     submit.addEventListener("click", this.#handleBuy.bind(this), {
       once: true,
@@ -477,6 +479,7 @@ export class PlayerTurnView {
       alert("No stocks available for this hotel...");
     }
 
+    renderGamerBoard();
     const container = document.querySelector("#popup");
     container.style.display = "none";
     toggleBlur();
@@ -488,14 +491,15 @@ export class PlayerTurnView {
     const container = document.querySelector("#popup");
     const hotelList = document.querySelector("#hotel-container");
 
-    // this.#renderMinimap();
     toggleBlur();
     container.style.display = "flex";
+    renderMinimap();
 
     const hotels = inActiveHotels.map((hotel) => {
       const outerDiv = document.createElement("div");
       const hotelName = document.createElement("span");
       hotelName.textContent = hotel.name;
+      outerDiv.style.zIndex = 99;
 
       const div = document.createElement("div");
       div.classList.add(hotel.name.toLowerCase(), "select-hotel");
@@ -505,7 +509,7 @@ export class PlayerTurnView {
 
       outerDiv.addEventListener(
         "click",
-        () => this.#handleFoundHotel(tileLabel, hotel.name, this.#poller),
+        () => this.#handleFoundHotel(tileLabel, hotel.name),
       );
       return outerDiv;
     });
@@ -838,26 +842,11 @@ const hotelLookup = (name) => {
   const colors = {
     Tower: { backgroundColor: "#ffb404", color: "white" },
     Sackson: { backgroundColor: "#ff5454", color: "white" },
-    Festival: {
-      backgroundColor: "#2EA47A",
-      color: "white",
-    },
-    Continental: {
-      backgroundColor: "#28c4e4",
-      color: "white",
-    },
-    Imperial: {
-      backgroundColor: "#ff7c14",
-      color: "white",
-    },
-    Worldwide: {
-      backgroundColor: "#8054f4",
-      color: "white",
-    },
-    American: {
-      backgroundColor: "#288ce4",
-      color: "white",
-    },
+    Festival: { backgroundColor: "#2EA47A", color: "white" },
+    Continental: { backgroundColor: "#28c4e4", color: "white" },
+    Imperial: { backgroundColor: "#ff7c14", color: "white" },
+    Worldwide: { backgroundColor: "#8054f4", color: "white" },
+    American: { backgroundColor: "#288ce4", color: "white" },
   };
 
   return colors[name];

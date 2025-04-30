@@ -1,17 +1,15 @@
 import Collapse from "./collapse.js";
 import {
+  BoardView,
+  BuyStocksView,
+  HotelsView,
   PlayersView,
   PlayerTurnView,
+  PortfolioView,
   StockExchangeView,
   toggleBlur,
 } from "./views.js";
 import Poller from "./polling.js";
-import {
-  BoardView,
-  BuyStocksView,
-  HotelsView,
-  PortfolioView,
-} from "./views.js";
 
 export const getResource = async (path) => {
   try {
@@ -112,13 +110,8 @@ const renderWinner = (winnerPlayer) => {
 };
 
 const renderGameEndBtn = async () => {
-  // const btn = document.getElementById("end-game");
-  // btn.style.visibility = "visible";
-  // btn.addEventListener("click", async () => {
   const { winner } = await (await fetch("/acquire/end-game")).json();
   renderWinner(winner);
-
-  // });
 };
 
 const keepSellTrade = (portfolio, { acquirer, target }, poller) => {
