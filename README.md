@@ -27,7 +27,7 @@ Read the official Acquire game rules here:\
 
 Play the game online:
 
-- 🌱 [Game](https://acquire-dev-80-97tc2fjywycp.deno.dev)
+- 🌱 [Game](https://acquire-dev.onrender.com)
 
 ---
 
