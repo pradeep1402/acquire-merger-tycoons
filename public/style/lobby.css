@@ -1,6 +1,7 @@
 :root {
   --dark-blue-shade: #1e2a38;
   --light-shade: #f9fafb;
+  --dark-color: rgb(41, 53, 80);
 }
 
 * {
@@ -34,7 +35,7 @@ body {
 h1 {
   z-index: 1;
   font-size: 80px;
-  color: var(--dark-shade);
+  color: var(--dark-color);
 }
 
 #player-avatar {

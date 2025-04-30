@@ -1,6 +1,8 @@
 :root {
   --primary-color: #1e2a38;
   --light-shade: #f9fafb;
+  --dark-color: rgb(41, 53, 80);
+  --tray-color: #b49778;
 }
 
 * {
@@ -74,7 +76,7 @@ main button {
   padding: 0.6rem;
   border: none;
   border-radius: 8px;
-  background-color: #0f172a;
+  background-color: var(--dark-color);
   color: var(--light-shade);
   font-weight: bold;
   font-size: 1.1rem;
@@ -83,6 +85,6 @@ main button {
 }
 
 main button:hover {
-  background-color: #4f46e5;
+  background-color: var(--tray-color);
   transform: scale(1.02);
 }
