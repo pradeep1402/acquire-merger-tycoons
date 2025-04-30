@@ -34,7 +34,7 @@ body {
   left: 10%;
   width: 18vw;
   font-size: 0;
-  z-index: 1;
+  z-index: 999;
 }
 
 .minimap .mini-tile {
@@ -66,8 +66,7 @@ body {
   color: var(--dark-color);
   background-color: var(--tile-color);
   font-size: 1em;
-  box-shadow:
-    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+  box-shadow: inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
     inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169);
   border: 1px var(--light-color) solid;
 }
@@ -174,8 +173,7 @@ body {
   width: 28%;
   aspect-ratio: 1;
   background-color: var(--tile-color);
-  box-shadow:
-    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+  box-shadow: inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
     inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169);
   border: 1px var(--light-color) solid;
   display: flex;
@@ -188,8 +186,7 @@ body {
   width: 28%;
   aspect-ratio: 1;
   background-color: var(--tile-color);
-  box-shadow:
-    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+  box-shadow: inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
     inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169);
   color: var(--dark-color);
   display: flex;
@@ -262,8 +259,7 @@ body {
 .highlight {
   background-color: #cee2f8;
   color: #1e2a38;
-  box-shadow:
-    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+  box-shadow: inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
     inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169),
     1px 1px 7px rgba(0, 0, 0, 0.665);
   animation: pulse-scale 2s infinite ease-in-out;
@@ -340,6 +336,9 @@ body {
 
 #popup {
   display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   top: 30%;
   left: 50%;
@@ -350,7 +349,7 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  z-index: 1;
+  z-index: 999;
 }
 
 #hotel-container {
@@ -506,10 +505,8 @@ body {
   align-items: center;
   color: white;
   border-radius: 2.5px;
-  box-shadow:
-    inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
-    inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169),
-    0px 0px 10px gray;
+  box-shadow: inset 0.5em 0.5em 0.1em rgba(95, 91, 91, 0.216),
+    inset -0.5em -0.5em 0.1em rgba(70, 66, 66, 0.169), 0px 0px 10px gray;
 }
 
 input {
@@ -529,6 +526,8 @@ input {
   width: 30vw;
   border: 1px solid var(--tray-color);
   background-color: var(--color);
+  z-index: 999;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.4);
 }
 
 .merger-pop-container {
@@ -667,4 +666,20 @@ button :hover {
   backdrop-filter: blur(5px);
   align-items: center;
   justify-content: center;
+}
+
+.winner-popup {
+  position: absolute;
+  z-index: 999;
+  top: 25%;
+  left: 25%;
+  height: 40vh;
+  width: 40vw;
+  background-color: var(--color);
+  color: var(--dark-color);
+  border: 1px solid var(--tray-color);
+  box-shadow: 0 2px 25px rgba(0, 0, 0, 0.5);
+  justify-content:space-around;
+  align-items: center;
+  flex-direction: column;
 }

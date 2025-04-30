@@ -40,7 +40,7 @@ const renderStocksAndPlayers = (
   players,
   currentPlayer,
   inActiveHotels,
-  activeHotels,
+  activeHotels
 ) => {
   new HotelsView(activeHotels, inActiveHotels).renderStocks();
   new PlayersView(players, currentPlayer).renderPlayers();
@@ -48,9 +48,8 @@ const renderStocksAndPlayers = (
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   const tilesEle = tiles.map((tile) => {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = tile;
     return playerTile;
   });
@@ -101,12 +100,21 @@ const renderGameBoard = () => {
   gameBoard.replaceChildren(...tiles);
 };
 
+const renderWinner = (winnerPlayer) => {
+  toggleBlur();
+  const winnerPopup = document.querySelector(".winner-popup");
+  winnerPopup.classList.add("display");
+  const winner = document.querySelector(".winner");
+  winner.textContent = `${winnerPlayer} is the Merger Tycoon!`;
+  setTimeout(() => winnerPopup.classList.remove("display"), 30000);
+};
+
 const renderGameEndBtn = async () => {
   // const btn = document.getElementById("end-game");
   // btn.style.visibility = "visible";
   // btn.addEventListener("click", async () => {
   const { winner } = await (await fetch("/acquire/end-game")).json();
-  alert(`🏆 Merger Tycoon is ${winner} 🏆`);
+  renderWinner(winner);
   // });
 };
 
@@ -152,11 +160,14 @@ const startGamePolling = async (poller) => {
   const { inActiveHotels, activeHotels } = board;
 
   if (isGameEnd) {
+    poller.pause();
     const msg = "You can end the game";
-    renderFlashMsg(msg);
+    await renderFlashMsg(msg);
     await renderGameEndBtn();
-    await fetch("/acquire/back-to-home");
-    globalThis.location = "/";
+    setTimeout(async () => {
+      await fetch("/acquire/back-to-home");
+      globalThis.location = "/";
+    }, 30000);
   }
 
   renderStocksAndPlayers(players, currentPlayer, inActiveHotels, activeHotels);

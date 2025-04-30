@@ -2,10 +2,12 @@ import { cloneTemplate, getResource } from "./game.js";
 
 export const toggleBlur = () => {
   const ele = document.querySelector(".blur");
-  if (ele.style.display === "flex") {
+  const style = ele.style.display;
+  if (style === "flex") {
     ele.style.display = "none";
     return;
   }
+
   ele.style.display = "flex";
   return;
 };
@@ -16,9 +18,8 @@ class TileView {
   }
 
   render() {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = this.#label;
     const tile = document.getElementById(this.#label);
     playerTile.addEventListener("mouseover", () => {
@@ -56,9 +57,8 @@ export class PortfolioView {
   }
 
   #renderStocks([name, count]) {
-    const hotelStocks = cloneTemplate("stocks-template").querySelector(
-      ".hotel-stocks",
-    );
+    const hotelStocks =
+      cloneTemplate("stocks-template").querySelector(".hotel-stocks");
 
     hotelStocks.classList.add(name.toLowerCase());
     hotelStocks.classList.add("shares-info");
@@ -97,7 +97,7 @@ class HotelView {
     const hotelStocks = cloneTemplate(
       "available-stocks-template",
       "available-stocks-template",
-      "available-stocks-template",
+      "available-stocks-template"
     ).querySelector(".hotel-stocks");
     hotelStocks.style.backgroundColor = hotelLookup(this.#name).backgroundColor;
 
@@ -316,13 +316,11 @@ export class BuyStocksView {
 
   #attachStepButtons(template, input, stockPrice) {
     const [decrement, increment] = template.querySelectorAll("button");
-    increment.addEventListener(
-      "click",
-      () => this.#incrementValue(input, stockPrice),
+    increment.addEventListener("click", () =>
+      this.#incrementValue(input, stockPrice)
     );
-    decrement.addEventListener(
-      "click",
-      () => this.#decrementValue(input, stockPrice),
+    decrement.addEventListener("click", () =>
+      this.#decrementValue(input, stockPrice)
     );
   }
 
@@ -342,7 +340,7 @@ export class BuyStocksView {
 
   #renderAllHotels() {
     const hotels = this.#activeHotels.filter(
-      ({ stocksAvailable }) => stocksAvailable,
+      ({ stocksAvailable }) => stocksAvailable
     );
     if (!hotels.length) return this.#changeTurn();
 
@@ -455,7 +453,7 @@ export class PlayerTurnView {
     new BuyStocksView(
       board.activeHotels,
       playerPortfolio.cash,
-      this.#poller,
+      this.#poller
     ).render();
   }
 
@@ -477,7 +475,8 @@ export class PlayerTurnView {
 
     const container = document.querySelector("#popup");
     container.style.display = "none";
-    // renderGamerBoard();
+    toggleBlur();
+    this.#renderGamerBoard();
     await this.#buyStocks();
   }
 
@@ -485,8 +484,9 @@ export class PlayerTurnView {
     const container = document.querySelector("#popup");
     const hotelList = document.querySelector("#hotel-container");
 
-    // renderMinimap();
-    container.style.display = "block";
+    // this.#renderMinimap();
+    toggleBlur();
+    container.style.display = "flex";
 
     const hotels = inActiveHotels.map((hotel) => {
       const outerDiv = document.createElement("div");
@@ -499,9 +499,8 @@ export class PlayerTurnView {
       outerDiv.appendChild(hotelName);
       outerDiv.appendChild(div);
 
-      outerDiv.addEventListener(
-        "click",
-        () => this.#handleFoundHotel(tileLabel, hotel.name, this.#poller),
+      outerDiv.addEventListener("click", () =>
+        this.#handleFoundHotel(tileLabel, hotel.name, this.#poller)
       );
       return outerDiv;
     });
