@@ -42,25 +42,25 @@ jobs:
 
       - name: Run coverage
         run: deno run -A jsr:@ashishkujoy/deno-coverage-checker --lines=100 --functions=100 --branches=100
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: test
 
-    steps:
-      - name: Setup repo
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Setup repo
+  #       uses: actions/checkout@v4
 
-      - name: Setup Deno
-        # uses: denoland/setup-deno@v1
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
+  #     - name: Setup Deno
+  #       # uses: denoland/setup-deno@v1
+  #       uses: denoland/setup-deno@v2
+  #       with:
+  #         deno-version: v2.x
 
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          # project: "acquire-prod-1"
-          # project: "acquire-qa-51"
-          project: "acquire-dev-80"
-          entrypoint: "main.ts"
-          root: "."
+  #     - name: Upload to Deno Deploy
+  #       uses: denoland/deployctl@v1
+  #       with:
+  #         # project: "acquire-prod-1"
+  #         # project: "acquire-qa-51"
+  #         project: "acquire-dev-80"
+  #         entrypoint: "main.ts"
+  #         root: "."
