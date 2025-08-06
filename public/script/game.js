@@ -180,7 +180,7 @@ const startGamePolling = async (poller) => {
 
 const handleLogout = async () => {
   await fetch("./logout", { method: "GET" });
-  globalThis.location.href = "./login.html";
+  globalThis.location.href = "./login";
 };
 
 const logout = () => {

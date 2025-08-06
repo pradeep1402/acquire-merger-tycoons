@@ -41,8 +41,9 @@ const ensureGuest = async (c: Context, next: Next) => {
 const createGuestRoutes = () => {
   const guestRoutes = new Hono();
   guestRoutes
-    .use("/login.html", ensureGuest)
-    .post("/login", handleLogin)
+    .use("/login", ensureGuest)
+    .post("/loginDetails", handleLogin)
+    .get("/login", serveStatic({ path: "./public/general/login.html" }))
     .get("*", serveStatic({ root: "./public/general/" }));
 
   return guestRoutes;
@@ -53,7 +54,7 @@ const ensureAuthenticated = async (c: Context, next: Next) => {
   const sessions = c.get("sessions");
 
   if (!sessions.isSessionIdExist(sessionId)) {
-    return c.redirect("/login.html", 303);
+    return c.redirect("/login", 303);
   }
 
   return await next();
@@ -160,7 +161,7 @@ export const createApp = (
   app.get("/logout", (ctx: Context) => {
     deleteCookie(ctx, "sessionId");
     deleteCookie(ctx, "gameId");
-    return ctx.redirect("/login.html", 303);
+    return ctx.redirect("/login", 303);
   });
 
   app.route("/", guestRoutes);

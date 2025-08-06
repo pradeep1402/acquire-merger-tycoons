@@ -26,7 +26,10 @@ describe("App: /login", () => {
     const gameManager = new GameManager(tileGenerator);
     const sessions = new Sessions(idGenerator);
     const app = createApp(sessions, gameManager);
-    const res = await app.request("/login", { method: "POST", body: formData });
+    const res = await app.request("/loginDetails", {
+      method: "POST",
+      body: formData,
+    });
 
     assertEquals(res.headers.getSetCookie(), ["sessionId=1; Path=/"]);
     assertEquals(res.status, 303);
@@ -39,7 +42,7 @@ describe("App: /login", () => {
     const sessions = new Sessions(idGenerator);
     sessions.addPlayer("likhi");
     const app = createApp(sessions, gameManager);
-    const res = await app.request("/login.html", {
+    const res = await app.request("/login", {
       headers: { cookie: "sessionId=1;gameId=1" },
     });
 
@@ -53,7 +56,7 @@ describe("App: /login", () => {
     const sessions = new Sessions(idGenerator);
     const app = createApp(sessions, gameManager);
 
-    const res = await app.request("/login.html");
+    const res = await app.request("/login");
     await res.text();
     assertEquals(res.status, 200);
   });
