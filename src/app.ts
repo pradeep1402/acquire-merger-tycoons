@@ -84,9 +84,7 @@ const ensureGameId = async (ctx: Context, next: Next) => {
 
   if (gameId) {
     const game = gameManager.getGame(gameId);
-    return game
-      ? ctx.redirect("/game.html", 303)
-      : ctx.redirect("/lobby.html", 303);
+    return game ? ctx.redirect("/gameSetup", 303) : ctx.redirect("/lobby", 303);
   }
 
   await next();
@@ -99,7 +97,7 @@ const ensureGamePage = async (ctx: Context, next: Next) => {
 
   if (!gameId) return ctx.redirect("/", 303);
   if (gameId && !gameStatus) {
-    return ctx.redirect("/lobby.html", 303);
+    return ctx.redirect("/lobby", 303);
   }
 
   await next();
@@ -112,7 +110,7 @@ const ensureLobbyPage = async (ctx: Context, next: Next) => {
 
   if (!gameId) return ctx.redirect("/", 303);
   if (gameId && gameStatus) {
-    return ctx.redirect("/game.html", 303);
+    return ctx.redirect("/gameSetup", 303);
   }
 
   await next();
@@ -126,8 +124,8 @@ const deleteGameId = (ctx: Context) => {
 
 const createAuthenticatedRoutes = () => {
   const router = new Hono();
-  router.use("/game.html", ensureGamePage);
-  router.use("/lobby.html", ensureLobbyPage);
+  router.use("/gameSetup", ensureGamePage);
+  router.use("/lobby", ensureLobbyPage);
   router.use(ensureAuthenticated);
   router.use(authenticatedContext);
   router.use("/", ensureGameId);
@@ -142,8 +140,10 @@ const createAuthenticatedRoutes = () => {
   router.patch("/acquire/continue-merge/:acquirer", handleMerge);
   router.get("/acquire/end-game", handleEndGame);
   router.get("/acquire/back-to-home", deleteGameId);
-
+  router.get("/lobby", serveStatic({ path: "./public/lobby.html" }));
+  router.get("/gameSetup", serveStatic({ path: "./public/game.html" }));
   router.get("/*", serveStatic({ root: "./public" }));
+
   return router;
 };
 
