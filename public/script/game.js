@@ -38,7 +38,7 @@ const renderStocksAndPlayers = (
   players,
   currentPlayer,
   inActiveHotels,
-  activeHotels,
+  activeHotels
 ) => {
   new HotelsView(activeHotels, inActiveHotels).renderStocks();
   new PlayersView(players, currentPlayer).renderPlayers();
@@ -46,9 +46,8 @@ const renderStocksAndPlayers = (
 
 const renderPlayerTiles = (tilesContainer, tiles) => {
   const tilesEle = tiles.map((tile) => {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = tile;
     return playerTile;
   });
@@ -57,6 +56,9 @@ const renderPlayerTiles = (tilesContainer, tiles) => {
 };
 
 const showStartingTilesPopup = async () => {
+  const hasPopupShown = localStorage.getItem("hasPopupShown");
+  if (hasPopupShown) return;
+
   toggleBlur();
   const stats = await getResource("/acquire/game-stats");
   const { playerPortfolio } = stats;
@@ -68,6 +70,7 @@ const showStartingTilesPopup = async () => {
     const popup = document.getElementById("tiles-popup");
     toggleBlur();
     popup.style.display = "none";
+    localStorage.setItem("hasPopupShown", "true");
   }, 2000);
 };
 
@@ -180,6 +183,7 @@ const startGamePolling = async (poller) => {
 
 const handleLogout = async () => {
   await fetch("./logout", { method: "GET" });
+  localStorage.removeItem("hasPopupShown");
   globalThis.location.href = "./login";
 };
 
