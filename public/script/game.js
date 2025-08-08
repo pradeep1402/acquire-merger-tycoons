@@ -165,6 +165,7 @@ const startGamePolling = async (poller) => {
     await renderGameEndBtn();
     setTimeout(async () => {
       await fetch("/acquire/back-to-home");
+      localStorage.removeItem("hasPopupShown");
       globalThis.location = "/";
     }, 30000);
   }
