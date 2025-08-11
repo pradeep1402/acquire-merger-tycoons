@@ -42,7 +42,7 @@ export type MergerType =
   | {
     typeofMerge: MergeType;
     acquirer: HotelDetails;
-    target: HotelDetails[];
+    targets: HotelDetails[];
     hotels?: undefined;
   };
 
@@ -78,7 +78,9 @@ export class Merger implements Game {
 
   playTurn(tile: Tile = "default"): Game {
     if (tile === "default" && this.countOfTurns <= this.turnsIndex) {
-      this.mergeTarget(this.target[0]);
+      this.target.forEach((targetHotel) => {
+        this.mergeTarget(targetHotel);
+      });
       return this.original;
     }
 
@@ -128,28 +130,29 @@ export class Merger implements Game {
     return this.hotelsAffected;
   }
 
-  private getHighestAndSmallestHotel(hotels: HotelDetails[]): HotelDetails[] {
-    const highest = _.maxBy(hotels, "size");
-    const lowest = _.minBy(hotels, "size");
-
-    return [highest, lowest];
+  private sortHotelsBySize(hotels: HotelDetails[]): HotelDetails[] {
+    return _.orderBy(hotels, ["size"], ["desc"]);
   }
 
   private findMergeType(hotelsInMerge: Hotel[]) {
     const hotels = this.getHotelInfo(hotelsInMerge);
+    console.log("hotels in merger", hotels);
 
     if (this.isEveryHotelOfSameSize(hotels)) {
       return { typeofMerge: MergeType.SelectiveMerge, hotels };
     }
-    const [highest, lowest] = this.getHighestAndSmallestHotel(hotels);
 
-    this.acquirer = highest.name as HotelName;
-    this.target.push(lowest.name as HotelName);
+    const sortedHotels = this.sortHotelsBySize(hotels);
+    const acquirer = sortedHotels[0];
+    const targets = sortedHotels.slice(1);
+
+    this.acquirer = acquirer.name as HotelName;
+    this.target = targets.map((hotel) => hotel.name as HotelName);
 
     return {
       typeofMerge: MergeType.AutoMerge,
-      acquirer: highest,
-      target: [lowest],
+      acquirer,
+      targets,
     };
   }
 
@@ -276,7 +279,10 @@ export class Merger implements Game {
 
   private initiateProcess() {
     this.countOfTurns = this.target.length * 3;
-    this.distributeBonus(this.target[0]);
+    // Distribute bonus for the first target hotel to be merged
+    if (this.target.length > 0) {
+      this.distributeBonus(this.target[0]);
+    }
     if (!this.doesPlayerHasStocks() && this.isMergerRoundOver()) {
       this.changeTurn();
     }

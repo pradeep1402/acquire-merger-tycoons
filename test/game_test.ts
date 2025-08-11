@@ -653,7 +653,7 @@ describe("Game model", () => {
           tile: "8B",
           type: TileStatus.Merge,
           mergeDetails: {
-            target: [
+            targets: [
               {
                 name: "Continental",
                 size: 2,

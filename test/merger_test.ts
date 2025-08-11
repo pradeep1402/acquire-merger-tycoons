@@ -211,6 +211,71 @@ describe("Merger class", () => {
     });
   });
 
+  it("should handle multiple hotels with different sizes in a single merger", () => {
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    imperial.addTile("1B");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("4A");
+    continental.addTile("5A");
+    const tower = new Hotel("Tower", 2);
+    tower.addTile("3B");
+    tower.addTile("4B");
+    const board = new Board([imperial, continental, tower]);
+    const game = new StdGame(
+      ["1A", "2A", "3A", "4A", "5A", "1B", "4B", "3B"],
+      createPlayers("player1"),
+      board,
+    );
+    const merger = new Merger(game);
+
+    assertEquals(merger.placeTile("3A"), {
+      tile: "3A",
+      type: TileStatus.Merge,
+      mergeDetails: {
+        typeofMerge: MergeType.AutoMerge,
+        acquirer: { name: "Imperial", size: 3, baseTile: "" },
+        targets: [
+          { name: "Continental", size: 2, baseTile: "" },
+          { name: "Tower", size: 2, baseTile: "" },
+        ],
+      },
+    });
+  });
+
+  it("should handle three hotels with same size requiring selective merge", () => {
+    const imperial = new Hotel("Imperial", 2);
+    imperial.addTile("1A");
+    imperial.addTile("2A");
+    const continental = new Hotel("Continental", 2);
+    continental.addTile("4A");
+    continental.addTile("5A");
+    const tower = new Hotel("Tower", 2);
+    tower.addTile("3B");
+    tower.addTile("4B");
+    const board = new Board([imperial, continental, tower]);
+    const game = new StdGame(
+      ["1A", "2A", "3A", "4A", "5A", "4B", "3B"],
+      createPlayers("player1"),
+      board,
+    );
+    const merger = new Merger(game);
+
+    assertEquals(merger.placeTile("3A"), {
+      tile: "3A",
+      type: TileStatus.Merge,
+      mergeDetails: {
+        typeofMerge: MergeType.SelectiveMerge,
+        hotels: [
+          { name: "Imperial", size: 2, baseTile: "" },
+          { name: "Continental", size: 2, baseTile: "" },
+          { name: "Tower", size: 2, baseTile: "" },
+        ],
+      },
+    });
+  });
+
   it("should return type of merge when two hotels with different length are merging", () => {
     const imperial = new Hotel("Imperial", 2);
     imperial.addTile("1A");
@@ -233,7 +298,7 @@ describe("Merger class", () => {
       mergeDetails: {
         typeofMerge: MergeType.AutoMerge,
         acquirer: { name: "Continental", size: 3, baseTile: "" },
-        target: [{ name: "Imperial", size: 2, baseTile: "" }],
+        targets: [{ name: "Imperial", size: 2, baseTile: "" }],
       },
     });
   });
