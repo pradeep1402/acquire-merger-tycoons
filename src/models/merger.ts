@@ -41,7 +41,7 @@ export type MergerType =
   }
   | {
     typeofMerge: MergeType;
-    acquirer: HotelDetails;
+    acquirer?: HotelDetails;
     targets: HotelDetails[];
     hotels?: undefined;
   };
@@ -54,7 +54,7 @@ export enum MergeType {
 export class Merger implements Game {
   private original;
   private acquirer: HotelName | null;
-  private target: HotelName[];
+  private targets: HotelName[];
   private hotelsAffected: HotelDetails[];
   private currentPlayerIndex;
   private playersIds;
@@ -69,7 +69,7 @@ export class Merger implements Game {
     this.countOfTurns = 0;
     this.playersIds = this.getPlayerIds();
     this.acquirer = null;
-    this.target = [];
+    this.targets = [];
     this.hotelsAffected = [];
     this.mode = null;
     this.turnsIndex = 0;
@@ -78,7 +78,7 @@ export class Merger implements Game {
 
   playTurn(tile: Tile = "default"): Game {
     if (tile === "default" && this.countOfTurns <= this.turnsIndex) {
-      this.target.forEach((targetHotel) => {
+      this.targets.forEach((targetHotel) => {
         this.mergeTarget(targetHotel);
       });
       return this.original;
@@ -111,13 +111,16 @@ export class Merger implements Game {
     const game = this.original;
     const hotelsInMerge = game.getAffectedHotels(tile);
 
-    const mergeDetails = this.findMergeType(hotelsInMerge);
+    const mergeDetails = this.getMergeTypeAndDetails(hotelsInMerge);
     return { tile, type: TileStatus.Merge, mergeDetails };
   }
 
-  private isEveryHotelOfSameSize(hotels: HotelDetails[]) {
-    const sizeOfHotel = hotels[0].size;
-    return hotels.every(({ size }) => size === sizeOfHotel);
+  private isTwoHotelOfSameSize(hotels: HotelDetails[]): boolean {
+    const sizeGroups = _.groupBy(hotels, "size");
+
+    return Object.values(sizeGroups).some(
+      (group) => (group as HotelDetails[]).length >= 2,
+    );
   }
 
   private getHotelInfo(hotelsInMerge: Hotel[]) {
@@ -134,26 +137,29 @@ export class Merger implements Game {
     return _.orderBy(hotels, ["size"], ["desc"]);
   }
 
-  private findMergeType(hotelsInMerge: Hotel[]) {
-    const hotels = this.getHotelInfo(hotelsInMerge);
-    console.log("hotels in merger", hotels);
+  private areAllHotelsOfSameSize(hotels: HotelDetails[]): boolean {
+    const firstHotelSize = hotels[0].size;
+    return hotels.every((hotel) => hotel.size === firstHotelSize);
+  }
 
-    if (this.isEveryHotelOfSameSize(hotels)) {
+  private getMergeTypeAndDetails(hotelsName: Hotel[]) {
+    const hotels = this.getHotelInfo(hotelsName);
+
+    if (this.areAllHotelsOfSameSize(hotels)) {
       return { typeofMerge: MergeType.SelectiveMerge, hotels };
     }
 
     const sortedHotels = this.sortHotelsBySize(hotels);
-    const acquirer = sortedHotels[0];
-    const targets = sortedHotels.slice(1);
+    const [acquirer, ...targets] = sortedHotels;
 
     this.acquirer = acquirer.name as HotelName;
-    this.target = targets.map((hotel) => hotel.name as HotelName);
+    this.targets = targets.map((hotel) => hotel.name as HotelName);
 
-    return {
-      typeofMerge: MergeType.AutoMerge,
-      acquirer,
-      targets,
-    };
+    const typeofMerge = this.isTwoHotelOfSameSize(hotels)
+      ? MergeType.SelectiveMerge
+      : MergeType.AutoMerge;
+
+    return { typeofMerge, acquirer, targets };
   }
 
   buyStocks(_hotels: BuyStocks[], _playerId: string) {
@@ -193,7 +199,7 @@ export class Merger implements Game {
       mergeData: {
         mode: this.mode,
         acquirer: this.acquirer,
-        target: this.target[0] || null,
+        target: this.targets[0] || null,
       },
       playerPortfolio,
     };
@@ -246,7 +252,7 @@ export class Merger implements Game {
   doesPlayerHasStocks() {
     const player = this.getPlayer(this.getCurrentPlayer());
 
-    return player?.hasStocksOf(this.target[0]);
+    return player?.hasStocksOf(this.targets[0]);
   }
 
   private updatePlayerIndex() {
@@ -278,10 +284,10 @@ export class Merger implements Game {
   }
 
   private initiateProcess() {
-    this.countOfTurns = this.target.length * 3;
+    this.countOfTurns = this.targets.length * 3;
     // Distribute bonus for the first target hotel to be merged
-    if (this.target.length > 0) {
-      this.distributeBonus(this.target[0]);
+    if (this.targets.length > 0) {
+      this.distributeBonus(this.targets[0]);
     }
     if (!this.doesPlayerHasStocks() && this.isMergerRoundOver()) {
       this.changeTurn();
@@ -290,13 +296,13 @@ export class Merger implements Game {
 
   setupMergerEntities(acquirer: HotelName): MergerData {
     this.acquirer = acquirer;
-    this.target = this.hotelsAffected
+    this.targets = this.hotelsAffected
       .filter(({ name }) => name !== acquirer)
       .map(({ name }) => name as HotelName);
     this.mode = "Merge";
     this.initiateProcess();
 
-    return { acquirer: this.acquirer, target: this.target };
+    return { acquirer: this.acquirer, target: this.targets };
   }
 
   distributeBonus(hotelName: HotelName): undefined | BonusDistribution {

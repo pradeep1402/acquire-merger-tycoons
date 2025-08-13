@@ -234,7 +234,7 @@ describe("Merger class", () => {
       tile: "3A",
       type: TileStatus.Merge,
       mergeDetails: {
-        typeofMerge: MergeType.AutoMerge,
+        typeofMerge: MergeType.SelectiveMerge,
         acquirer: { name: "Imperial", size: 3, baseTile: "" },
         targets: [
           { name: "Continental", size: 2, baseTile: "" },
