@@ -203,7 +203,8 @@ describe("Merger class", () => {
       type: TileStatus.Merge,
       mergeDetails: {
         typeofMerge: MergeType.SelectiveMerge,
-        hotels: [
+        acquirer: null,
+        targets: [
           { name: "Imperial", size: 2, baseTile: "" },
           { name: "Continental", size: 2, baseTile: "" },
         ],
@@ -235,8 +236,9 @@ describe("Merger class", () => {
       type: TileStatus.Merge,
       mergeDetails: {
         typeofMerge: MergeType.SelectiveMerge,
-        acquirer: { name: "Imperial", size: 3, baseTile: "" },
+        acquirer: null,
         targets: [
+          { name: "Imperial", size: 3, baseTile: "" },
           { name: "Continental", size: 2, baseTile: "" },
           { name: "Tower", size: 2, baseTile: "" },
         ],
@@ -267,7 +269,8 @@ describe("Merger class", () => {
       type: TileStatus.Merge,
       mergeDetails: {
         typeofMerge: MergeType.SelectiveMerge,
-        hotels: [
+        acquirer: null,
+        targets: [
           { name: "Imperial", size: 2, baseTile: "" },
           { name: "Continental", size: 2, baseTile: "" },
           { name: "Tower", size: 2, baseTile: "" },

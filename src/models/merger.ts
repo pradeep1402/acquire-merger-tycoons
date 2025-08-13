@@ -30,21 +30,11 @@ export type BuyStocks = {
   count: number;
 };
 
-export type MergerType =
-  | {
-    typeofMerge: MergeType;
-    hotels: {
-      name: string;
-      size: number;
-      baseTile: Tile;
-    }[];
-  }
-  | {
-    typeofMerge: MergeType;
-    acquirer?: HotelDetails;
-    targets: HotelDetails[];
-    hotels?: undefined;
-  };
+export type MergerType = {
+  typeofMerge: MergeType;
+  acquirer: HotelDetails | null;
+  targets: HotelDetails[];
+};
 
 export enum MergeType {
   AutoMerge = "AutoMerge",
@@ -137,16 +127,16 @@ export class Merger implements Game {
     return _.orderBy(hotels, ["size"], ["desc"]);
   }
 
-  private areAllHotelsOfSameSize(hotels: HotelDetails[]): boolean {
-    const firstHotelSize = hotels[0].size;
-    return hotels.every((hotel) => hotel.size === firstHotelSize);
-  }
-
-  private getMergeTypeAndDetails(hotelsName: Hotel[]) {
+  private getMergeTypeAndDetails(hotelsName: Hotel[]): MergerType {
     const hotels = this.getHotelInfo(hotelsName);
+    const hasHotelsOfSameSize = this.isTwoHotelOfSameSize(hotels);
 
-    if (this.areAllHotelsOfSameSize(hotels)) {
-      return { typeofMerge: MergeType.SelectiveMerge, hotels };
+    if (hasHotelsOfSameSize) {
+      return {
+        typeofMerge: MergeType.SelectiveMerge,
+        acquirer: null,
+        targets: hotels,
+      };
     }
 
     const sortedHotels = this.sortHotelsBySize(hotels);
@@ -155,11 +145,11 @@ export class Merger implements Game {
     this.acquirer = acquirer.name as HotelName;
     this.targets = targets.map((hotel) => hotel.name as HotelName);
 
-    const typeofMerge = this.isTwoHotelOfSameSize(hotels)
-      ? MergeType.SelectiveMerge
-      : MergeType.AutoMerge;
-
-    return { typeofMerge, acquirer, targets };
+    return {
+      typeofMerge: MergeType.AutoMerge,
+      acquirer,
+      targets,
+    };
   }
 
   buyStocks(_hotels: BuyStocks[], _playerId: string) {

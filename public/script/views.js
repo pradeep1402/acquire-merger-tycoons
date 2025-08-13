@@ -643,7 +643,7 @@ class MergerView {
     toggleBlur();
     this.#toggleDisplay();
     this.#acquirer = this.#mergeInfo.acquirer;
-    this.#target = this.#mergeInfo.target;
+    this.#target = this.#mergeInfo.targets; // Updated to use targets array
 
     this.#attachImgs();
     setTimeout(() => {
@@ -661,7 +661,7 @@ class MergerView {
   }
 
   #selectiveMerge() {
-    this.#hotels = this.#mergeInfo.hotels;
+    this.#hotels = this.#mergeInfo.targets; // Updated to use targets array
     this.#indicateMergingTile();
     this.#toggleHighlight();
     this.#board.addEventListener("click", this.#listener);

@@ -235,7 +235,8 @@ describe("Game model", () => {
         type: TileStatus.Merge,
         mergeDetails: {
           typeofMerge: MergeType.SelectiveMerge,
-          hotels: [
+          acquirer: null,
+          targets: [
             { name: "Imperial", size: 2, baseTile: "7A" },
             { name: "Continental", size: 2, baseTile: "10B" },
           ],
@@ -314,7 +315,8 @@ describe("Game model", () => {
         type: TileStatus.Merge,
         mergeDetails: {
           typeofMerge: MergeType.SelectiveMerge,
-          hotels: [
+          acquirer: null,
+          targets: [
             { name: "Imperial", size: 2, baseTile: "7A" },
             { name: "Continental", size: 2, baseTile: "10B" },
           ],
@@ -518,7 +520,8 @@ describe("Game model", () => {
           type: TileStatus.Merge,
           mergeDetails: {
             typeofMerge: MergeType.SelectiveMerge,
-            hotels: [
+            acquirer: null,
+            targets: [
               { name: "Imperial", size: 2, baseTile: "7A" },
               { name: "Continental", size: 2, baseTile: "10B" },
             ],
@@ -595,7 +598,8 @@ describe("Game model", () => {
           type: TileStatus.Merge,
           mergeDetails: {
             typeofMerge: MergeType.SelectiveMerge,
-            hotels: [
+            acquirer: null,
+            targets: [
               { name: "Imperial", size: 2, baseTile: "7A" },
               { name: "Continental", size: 2, baseTile: "10B" },
             ],
@@ -1252,6 +1256,7 @@ describe("Game model", () => {
     const tiles = game.getPlayerDetails("Adi")?.tiles;
     assertFalse(tiles?.includes("1B"));
   });
+
   describe("winner()", () => {
     it("should return the winner id", () => {
       const tiles = csv(
