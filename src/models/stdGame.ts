@@ -27,7 +27,7 @@ export class StdGame implements Game {
   constructor(
     tiles: Tile[],
     players: Player[],
-    board: Board = new Board(createHotels())
+    board: Board = new Board(createHotels()),
   ) {
     this.board = board;
     this.pile = [...tiles];
@@ -71,8 +71,8 @@ export class StdGame implements Game {
   }
 
   private updateCurrentPlayerIndex(): void {
-    this.currentPlayerIndex =
-      (this.currentPlayerIndex + 1) % this.players.length;
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
+      this.players.length;
   }
 
   buyStocks(hotels: BuyStocks[], playerId: string): PlayerDetails | undefined {
@@ -195,7 +195,7 @@ export class StdGame implements Game {
   tradeAndSellStocks(
     _tradeStats: TradeStats,
     _stocks: BuyStocks[],
-    _playerId: string
+    _playerId: string,
   ) {
     return { error: "Not valid in Standard Game Mode" };
   }
@@ -210,7 +210,7 @@ export class StdGame implements Game {
 
   private getShareCount(
     player: Player,
-    hotelName: HotelName
+    hotelName: HotelName,
   ): { player: Player; count: number } {
     return { player, count: player.countSharesOf(hotelName) };
   }
@@ -221,7 +221,7 @@ export class StdGame implements Game {
     );
     const groupedByStockCount = _.groupBy(
       playersStockCount,
-      (value: { player: Player; count: number }) => value.count
+      (value: { player: Player; count: number }) => value.count,
     );
     const sortedByStockCount = _.sortBy(Object.keys(groupedByStockCount));
     const highestStockCount = sortedByStockCount.at(-1);
@@ -244,7 +244,7 @@ export class StdGame implements Game {
   }
 
   private extractPlayerIds(
-    players: { player: PlayerDetails; count: number }[]
+    players: { player: PlayerDetails; count: number }[],
   ) {
     return players?.map((playerInfo) => playerInfo.player.playerId);
   }
@@ -255,8 +255,8 @@ export class StdGame implements Game {
 
     const primaryBonus = hotel?.getPrimaryBonus();
     const secondaryBonus = hotel?.getSecondaryBonus();
-    const { primaryHolders, secondaryHolders } =
-      this.getPrimaryAndSecondaryHolders(hotelName);
+    const { primaryHolders, secondaryHolders } = this
+      .getPrimaryAndSecondaryHolders(hotelName);
 
     const primaryHolderIds = this.extractPlayerIds(primaryHolders);
     const secondaryHolderIds = this.extractPlayerIds(secondaryHolders);
@@ -316,7 +316,7 @@ export class StdGame implements Game {
       hotel: HotelName,
       id: string,
       bonus: number,
-      category: string
+      category: string,
     ) => {
       const bonusDetails = {
         id,
@@ -343,7 +343,7 @@ export class StdGame implements Game {
 
   winner(): string | undefined {
     const sortedByCash = this.players.sort(
-      (a, b) => a.getPlayerDetails().cash - b.getPlayerDetails().cash
+      (a, b) => a.getPlayerDetails().cash - b.getPlayerDetails().cash,
     );
 
     return sortedByCash.at(-1)?.getPlayerDetails().playerId;

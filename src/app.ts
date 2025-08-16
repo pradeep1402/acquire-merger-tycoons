@@ -152,7 +152,7 @@ const createAuthenticatedRoutes = () => {
 export const createApp = (
   sessions: Sessions,
   gameManager: GameManager,
-  lobby: Lobby = new Lobby()
+  lobby: Lobby = new Lobby(),
 ) => {
   const guestRoutes = createGuestRoutes();
   const authenticatedRoutes = createAuthenticatedRoutes();

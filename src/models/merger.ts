@@ -32,19 +32,19 @@ export type BuyStocks = {
 
 export type MergerType =
   | {
-      typeofMerge: MergeType;
-      hotels: {
-        name: string;
-        size: number;
-        baseTile: Tile;
-      }[];
-    }
+    typeofMerge: MergeType;
+    hotels: {
+      name: string;
+      size: number;
+      baseTile: Tile;
+    }[];
+  }
   | {
-      typeofMerge: MergeType;
-      acquirer: HotelDetails;
-      target: HotelDetails[];
-      hotels?: undefined;
-    };
+    typeofMerge: MergeType;
+    acquirer: HotelDetails;
+    target: HotelDetails[];
+    hotels?: undefined;
+  };
 
 export enum MergeType {
   AutoMerge = "AutoMerge",
@@ -94,7 +94,7 @@ export class Merger implements Game {
     const tiles = targetInstance?.getAllTiles();
     targetInstance?.removeBaseTile();
     const mergerTiles = this.getBoardInstance().getAdjacentTilesOf(
-      this.mergerTile as string
+      this.mergerTile as string,
     );
     tiles?.push(this.mergerTile as string, ...mergerTiles);
     tiles?.forEach((tile) => acquirerInstance?.addTile(tile));
@@ -229,7 +229,7 @@ export class Merger implements Game {
   tradeAndSellStocks(
     tradeStats: TradeStats,
     stocks: BuyStocks[],
-    playerId: string
+    playerId: string,
   ): PlayerDetails | undefined {
     const player = this.getPlayer(playerId) as Player;
     this.sellStocks(player, stocks);
@@ -249,8 +249,8 @@ export class Merger implements Game {
   }
 
   private updatePlayerIndex() {
-    this.currentPlayerIndex =
-      (this.currentPlayerIndex + 1) % this.playersIds.length;
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
+      this.playersIds.length;
     this.turnsIndex += 1;
   }
 
