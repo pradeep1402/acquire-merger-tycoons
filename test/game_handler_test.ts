@@ -837,3 +837,35 @@ describe("handleMerge() method", () => {
     });
   });
 });
+
+describe("setTile() handler", () => {
+  const createTestAppWithGame = () => {
+    const gameManager = new GameManager();
+    const sessions = new Sessions(() => "1");
+    const imperial = new Hotel("Imperial", 2);
+    const board = new Board([imperial]);
+    const game = new StdGame(["1A"], createPlayers("player1"), board);
+    const app = createApp(sessions, gameManager);
+    const currentGame = new CurrentGame(game);
+
+    stub(sessions, "isSessionIdExist", () => true);
+    stub(game, "setNextTile", (tile) => tile);
+    stub(gameManager, "getCurrentGame", () => currentGame);
+
+    return { app };
+  };
+
+  describe("GET /acquire/set-tile/:tile", () => {
+    it("should call setNextTile and return the tile", async () => {
+      const { app } = createTestAppWithGame();
+
+      const res = await app.request("/acquire/set-tile/5A", {
+        method: "GET",
+        headers: { cookie: "sessionId=0;gameId=1" },
+      });
+
+      assertEquals(res.status, 200);
+      assertEquals(await res.text(), "5A");
+    });
+  });
+});
