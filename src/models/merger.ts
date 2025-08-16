@@ -32,19 +32,19 @@ export type BuyStocks = {
 
 export type MergerType =
   | {
-    typeofMerge: MergeType;
-    hotels: {
-      name: string;
-      size: number;
-      baseTile: Tile;
-    }[];
-  }
+      typeofMerge: MergeType;
+      hotels: {
+        name: string;
+        size: number;
+        baseTile: Tile;
+      }[];
+    }
   | {
-    typeofMerge: MergeType;
-    acquirer: HotelDetails;
-    target: HotelDetails[];
-    hotels?: undefined;
-  };
+      typeofMerge: MergeType;
+      acquirer: HotelDetails;
+      target: HotelDetails[];
+      hotels?: undefined;
+    };
 
 export enum MergeType {
   AutoMerge = "AutoMerge",
@@ -54,7 +54,7 @@ export enum MergeType {
 export class Merger implements Game {
   private original;
   private acquirer: HotelName | null;
-  private target: HotelName[];
+  private targets: HotelName[];
   private hotelsAffected: HotelDetails[];
   private currentPlayerIndex;
   private playersIds;
@@ -62,6 +62,7 @@ export class Merger implements Game {
   private mode: string | null;
   private turnsIndex: number;
   private mergerTile: null | string;
+  private targetIndex: number;
 
   constructor(game: Game) {
     this.original = game;
@@ -69,7 +70,8 @@ export class Merger implements Game {
     this.countOfTurns = 0;
     this.playersIds = this.getPlayerIds();
     this.acquirer = null;
-    this.target = [];
+    this.targets = [];
+    this.targetIndex = 0;
     this.hotelsAffected = [];
     this.mode = null;
     this.turnsIndex = 0;
@@ -78,7 +80,7 @@ export class Merger implements Game {
 
   playTurn(tile: Tile = "default"): Game {
     if (tile === "default" && this.countOfTurns <= this.turnsIndex) {
-      this.mergeTarget(this.target[0]);
+      this.mergeTarget(this.targets[0]);
       return this.original;
     }
 
@@ -92,7 +94,7 @@ export class Merger implements Game {
     const tiles = targetInstance?.getAllTiles();
     targetInstance?.removeBaseTile();
     const mergerTiles = this.getBoardInstance().getAdjacentTilesOf(
-      this.mergerTile as string,
+      this.mergerTile as string
     );
     tiles?.push(this.mergerTile as string, ...mergerTiles);
     tiles?.forEach((tile) => acquirerInstance?.addTile(tile));
@@ -144,7 +146,7 @@ export class Merger implements Game {
     const [highest, lowest] = this.getHighestAndSmallestHotel(hotels);
 
     this.acquirer = highest.name as HotelName;
-    this.target.push(lowest.name as HotelName);
+    this.targets.push(lowest.name as HotelName);
 
     return {
       typeofMerge: MergeType.AutoMerge,
@@ -190,7 +192,7 @@ export class Merger implements Game {
       mergeData: {
         mode: this.mode,
         acquirer: this.acquirer,
-        target: this.target[0] || null,
+        target: this.targets[0] || null,
       },
       playerPortfolio,
     };
@@ -227,7 +229,7 @@ export class Merger implements Game {
   tradeAndSellStocks(
     tradeStats: TradeStats,
     stocks: BuyStocks[],
-    playerId: string,
+    playerId: string
   ): PlayerDetails | undefined {
     const player = this.getPlayer(playerId) as Player;
     this.sellStocks(player, stocks);
@@ -243,12 +245,12 @@ export class Merger implements Game {
   doesPlayerHasStocks() {
     const player = this.getPlayer(this.getCurrentPlayer());
 
-    return player?.hasStocksOf(this.target[0]);
+    return player?.hasStocksOf(this.targets[0]);
   }
 
   private updatePlayerIndex() {
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) %
-      this.playersIds.length;
+    this.currentPlayerIndex =
+      (this.currentPlayerIndex + 1) % this.playersIds.length;
     this.turnsIndex += 1;
   }
 
@@ -275,8 +277,8 @@ export class Merger implements Game {
   }
 
   private initiateProcess() {
-    this.countOfTurns = this.target.length * 3;
-    this.distributeBonus(this.target[0]);
+    this.countOfTurns = this.targets.length * 3;
+    this.distributeBonus(this.targets[0]);
     if (!this.doesPlayerHasStocks() && this.isMergerRoundOver()) {
       this.changeTurn();
     }
@@ -284,13 +286,13 @@ export class Merger implements Game {
 
   setupMergerEntities(acquirer: HotelName): MergerData {
     this.acquirer = acquirer;
-    this.target = this.hotelsAffected
+    this.targets = this.hotelsAffected
       .filter(({ name }) => name !== acquirer)
       .map(({ name }) => name as HotelName);
     this.mode = "Merge";
     this.initiateProcess();
 
-    return { acquirer: this.acquirer, target: this.target };
+    return { acquirer: this.acquirer, target: this.targets };
   }
 
   distributeBonus(hotelName: HotelName): undefined | BonusDistribution {

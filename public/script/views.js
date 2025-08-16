@@ -18,9 +18,8 @@ class TileView {
   }
 
   render() {
-    const playerTile = cloneTemplate("assigned-tile").querySelector(
-      ".player-tile",
-    );
+    const playerTile =
+      cloneTemplate("assigned-tile").querySelector(".player-tile");
     playerTile.textContent = this.#label;
     const tile = document.getElementById(this.#label);
     playerTile.addEventListener("mouseover", () => {
@@ -58,9 +57,8 @@ export class PortfolioView {
   }
 
   #renderStocks([name, count]) {
-    const hotelStocks = cloneTemplate("stocks-template").querySelector(
-      ".hotel-stocks",
-    );
+    const hotelStocks =
+      cloneTemplate("stocks-template").querySelector(".hotel-stocks");
 
     hotelStocks.classList.add(name.toLowerCase());
     hotelStocks.classList.add("shares-info");
@@ -99,7 +97,7 @@ class HotelView {
     const hotelStocks = cloneTemplate(
       "available-stocks-template",
       "available-stocks-template",
-      "available-stocks-template",
+      "available-stocks-template"
     ).querySelector(".hotel-stocks");
     hotelStocks.style.backgroundColor = hotelLookup(this.#name).backgroundColor;
 
@@ -318,13 +316,11 @@ export class BuyStocksView {
 
   #attachStepButtons(template, input, stockPrice) {
     const [decrement, increment] = template.querySelectorAll("button");
-    increment.addEventListener(
-      "click",
-      () => this.#incrementValue(input, stockPrice),
+    increment.addEventListener("click", () =>
+      this.#incrementValue(input, stockPrice)
     );
-    decrement.addEventListener(
-      "click",
-      () => this.#decrementValue(input, stockPrice),
+    decrement.addEventListener("click", () =>
+      this.#decrementValue(input, stockPrice)
     );
   }
 
@@ -344,7 +340,7 @@ export class BuyStocksView {
 
   #renderAllHotels() {
     const hotels = this.#activeHotels.filter(
-      ({ stocksAvailable }) => stocksAvailable,
+      ({ stocksAvailable }) => stocksAvailable
     );
     if (!hotels.length) return this.#changeTurn();
 
@@ -459,7 +455,7 @@ export class PlayerTurnView {
     new BuyStocksView(
       board.activeHotels,
       playerPortfolio.cash,
-      this.#poller,
+      this.#poller
     ).render();
   }
 
@@ -507,9 +503,8 @@ export class PlayerTurnView {
       outerDiv.appendChild(hotelName);
       outerDiv.appendChild(div);
 
-      outerDiv.addEventListener(
-        "click",
-        () => this.#handleFoundHotel(tileLabel, hotel.name),
+      outerDiv.addEventListener("click", () =>
+        this.#handleFoundHotel(tileLabel, hotel.name)
       );
       return outerDiv;
     });
@@ -574,7 +569,8 @@ class MergerView {
   #tile;
   #listener;
   #acquirer;
-  #target;
+  #targets;
+  #targetIndex;
   #hotels;
   #board;
   #poller;
@@ -584,7 +580,9 @@ class MergerView {
     this.#tile = tile;
     this.#mergeInfo = mergeInfo;
     this.#mergerEle = document.querySelector(".merge-popup");
-    this.#target = "";
+    this.#targets = [];
+    this.#targetIndex = 0;
+    this.#acquirer = null;
     this.#hotels = [];
     this.#listener = this.#handleHotelMerge.bind(this);
     this.#board = document.querySelector(".gameBoard");
@@ -596,7 +594,7 @@ class MergerView {
     if (!baseTiles.includes(id)) return;
 
     this.#acquirer = this.#hotels.find(({ baseTile }) => baseTile === id);
-    this.#target = [this.#hotels.find(({ baseTile }) => baseTile !== id)];
+    this.#targets = [this.#hotels.find(({ baseTile }) => baseTile !== id)];
     this.#toggleHighlight();
     this.#attachImgs();
     toggleBlur();
@@ -616,7 +614,8 @@ class MergerView {
   }
 
   #attachImgs() {
-    const target = this.#target[0].name;
+    const target = this.#targets[this.#targetIndex].name;
+    this.#targetIndex--;
     const acquirer = this.#acquirer.name;
     const acquirerEle = this.#mergerEle.querySelector("#acquirer");
     acquirerEle.src = `/images/hotels/${acquirer.toLowerCase()}.png`;
@@ -632,11 +631,13 @@ class MergerView {
     mergerTile.textContent = "Merger";
   }
 
-  async #handleMerge(acquirer) {
+  async #handleMerge() {
+    const acquirer = this.#acquirer.name;
     const res = await fetch(`/acquire/continue-merge/${acquirer}`, {
       method: "PATCH",
     });
-    return await res.json();
+    const result = await res.json();
+    console.log(result);
   }
 
   async #autoMerge() {
@@ -649,9 +650,9 @@ class MergerView {
     setTimeout(() => {
       this.#toggleDisplay();
       toggleBlur();
-    }, 2500);
+    }, 2000);
     this.#indicateMergingTile();
-    await this.#handleMerge(this.#acquirer.name);
+    await this.#handleMerge();
   }
 
   #toggleHighlight() {
