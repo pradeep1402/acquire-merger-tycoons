@@ -14,6 +14,7 @@ import {
   handleSellAndTradeStocks,
   serveGame,
   serveGameStatus,
+  setTile,
 } from "./handlers/game_handler.ts";
 import { deleteCookie, getCookie } from "hono/cookie";
 import { Sessions } from "./models/sessions.ts";
@@ -135,6 +136,7 @@ const createAuthenticatedRoutes = () => {
   router.patch("/acquire/merger/sell-trade-stocks", handleSellAndTradeStocks);
   router.patch("/acquire/end-turn", handleEndTurn);
   router.get("/acquire/game-stats", serveGame);
+  router.get("/acquire/set-tile/:tile", setTile);
   router.patch("/acquire/place-tile/:tile", handlePlaceTile);
   router.patch("/acquire/place-tile/:tile/:hotel", handleFoundingHotel);
   router.patch("/acquire/continue-merge/:acquirer", handleMerge);
