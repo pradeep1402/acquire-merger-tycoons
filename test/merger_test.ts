@@ -371,7 +371,7 @@ describe("Merger class", () => {
     assert(instance instanceof Merger);
   });
 
-  it("should return changed player Id when the player does not have stocks and turn over", () => {
+  it("should return changed player Id when the player does not have stocks and turns remain", () => {
     let index = 0;
     const game = new StdGame([], createPlayers("p1 p2 p3"), new Board([]));
     const merger = new Merger(game);
@@ -379,7 +379,7 @@ describe("Merger class", () => {
       return false;
     });
     stub(merger, "isMergerRoundOver", () => {
-      const value = [true, false][index++];
+      const value = [false, true][index++];
       return value;
     });
 

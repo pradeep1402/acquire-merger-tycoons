@@ -327,6 +327,16 @@ describe("Board class", () => {
       assertEquals(board.isGameEnd(), true);
     });
 
+    it("should ignore inactive hotels when checking end game safety", () => {
+      const imperial = new Hotel("Imperial", 2);
+      const tower = new Hotel("Tower", 0);
+      const board = new Board([imperial, tower]);
+      imperial.toggleStatus();
+      stub(imperial, "getSize", () => 12);
+
+      assertEquals(board.isGameEnd(), true);
+    });
+
     it("should return the false if any active hotel is not safe", () => {
       const imperial = new Hotel("Imperial", 2);
       const tower = new Hotel("Tower", 0);

@@ -844,6 +844,34 @@ describe("Game model", () => {
         assertEquals(game.getPlayerDetails("3")?.cash, 6000);
       });
 
+      it("should distribute both bonuses to the sole shareholder without errors", () => {
+        const tiles = csv(
+          "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",
+        );
+        const board = new Board([imperial]);
+        const player1 = new Player("1");
+        const game = new StdGame(tiles, [player1], board);
+
+        stub(imperial, "getPrimaryBonus", () => 2000);
+        stub(imperial, "getSecondaryBonus", () => 1000);
+
+        player1?.addStock(5, "Imperial");
+
+        const result = game.distributeBonus("Imperial");
+
+        assertEquals(game.getPlayerDetails("1")?.cash, 9000);
+        assertEquals(result, [
+          {
+            primaryHolderIds: ["1"],
+            primaryBonus: 2000,
+          },
+          {
+            secondaryHolderIds: ["1"],
+            secondaryBonus: 1000,
+          },
+        ]);
+      });
+
       it("should not distribute bonuses if hotel is not merging", () => {
         const tiles = csv(
           "6A 7A 8A 9A 9B 10B 11B 10A 6B 7B 12B 1I 10I 11H 10H 6H 7H 12H 1H",

@@ -223,17 +223,24 @@ export class StdGame implements Game {
       playersStockCount,
       (value: { player: Player; count: number }) => value.count,
     );
-    const sortedByStockCount = _.sortBy(Object.keys(groupedByStockCount));
-    const highestStockCount = sortedByStockCount.at(-1);
-    const secondHighestStockCount = sortedByStockCount.at(-2);
+    const sortedStockCounts = Object.keys(groupedByStockCount)
+      .map(Number)
+      .sort((a, b) => a - b);
+    const highestStockCount = sortedStockCounts.at(-1);
+    const secondHighestStockCount = sortedStockCounts.slice(0, -1).at(-1);
 
-    const primaryHolders = groupedByStockCount[highestStockCount];
-    const secondaryHolders = groupedByStockCount[secondHighestStockCount];
+    const primaryHolders = highestStockCount !== undefined
+      ? groupedByStockCount[highestStockCount.toString()] ?? []
+      : [];
+    const secondaryHolders = secondHighestStockCount !== undefined
+      ? groupedByStockCount[secondHighestStockCount.toString()] ?? []
+      : [];
 
     return { primaryHolders, secondaryHolders };
   }
 
   private creditBonusToPlayers(playerIds: string[], bonus: number) {
+    if (playerIds.length === 0 || bonus === 0) return;
     const avgBonus = bonus / playerIds.length;
     playerIds.forEach((playerId) => {
       const player = this.players.find((player) =>
@@ -257,39 +264,55 @@ export class StdGame implements Game {
     const secondaryBonus = hotel?.getSecondaryBonus();
     const { primaryHolders, secondaryHolders } = this
       .getPrimaryAndSecondaryHolders(hotelName);
+    const normalizedPrimaryHolders = primaryHolders ?? [];
+    const normalizedSecondaryHolders = secondaryHolders ?? [];
 
-    const primaryHolderIds = this.extractPlayerIds(primaryHolders);
-    const secondaryHolderIds = this.extractPlayerIds(secondaryHolders);
+    const primaryHolderIds = this.extractPlayerIds(normalizedPrimaryHolders) ??
+      [];
+    const secondaryHolderIds = this.extractPlayerIds(
+      normalizedSecondaryHolders,
+    ) ?? [];
+    const secondaryHolderCount = normalizedSecondaryHolders[0]?.count ?? 0;
+    const shouldMergeBonuses = normalizedPrimaryHolders.length > 1 ||
+      secondaryHolderCount === 0;
+    const primaryDivisor = Math.max(normalizedPrimaryHolders.length, 1);
 
-    if (primaryHolders.length > 1 || secondaryHolders[0].count === 0) {
+    if (shouldMergeBonuses) {
       const bonus = primaryBonus + secondaryBonus;
-      this.creditBonusToPlayers(primaryHolderIds, bonus);
+      if (primaryHolderIds.length > 0) {
+        this.creditBonusToPlayers(primaryHolderIds, bonus);
+      }
 
       return [
         {
           primaryHolderIds,
-          primaryBonus: primaryBonus / primaryHolders.length,
+          primaryBonus: primaryBonus / primaryDivisor,
         },
         {
           secondaryHolderIds: primaryHolderIds,
-          secondaryBonus: secondaryBonus / primaryHolders.length,
-        },
-      ];
-    } else {
-      this.creditBonusToPlayers(primaryHolderIds, primaryBonus);
-      this.creditBonusToPlayers(secondaryHolderIds, secondaryBonus);
-
-      return [
-        {
-          primaryHolderIds,
-          primaryBonus: primaryBonus / primaryHolders.length,
-        },
-        {
-          secondaryHolderIds,
-          secondaryBonus: secondaryBonus / secondaryHolders.length,
+          secondaryBonus: secondaryBonus / primaryDivisor,
         },
       ];
     }
+
+    if (primaryHolderIds.length > 0) {
+      this.creditBonusToPlayers(primaryHolderIds, primaryBonus);
+    }
+    if (secondaryHolderIds.length > 0) {
+      this.creditBonusToPlayers(secondaryHolderIds, secondaryBonus);
+    }
+
+    return [
+      {
+        primaryHolderIds,
+        primaryBonus: primaryBonus / primaryDivisor,
+      },
+      {
+        secondaryHolderIds,
+        secondaryBonus: secondaryBonus /
+          Math.max(secondaryHolderIds.length, 1),
+      },
+    ];
   }
 
   isGameEnd(): boolean {

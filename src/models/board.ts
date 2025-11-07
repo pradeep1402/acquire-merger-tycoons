@@ -244,9 +244,9 @@ export class Board {
 
   isGameEnd(): boolean {
     const isAnyHotel41 = this.hotels.some((hotel) => hotel.getSize() >= 41);
-    const areActiveHotelsSafe = this.hotels.every(
-      (hotel) => hotel.isActive() && hotel.getSize() >= 11,
-    );
+    const activeHotels = this.hotels.filter((hotel) => hotel.isActive());
+    const areActiveHotelsSafe = activeHotels.length > 0 &&
+      activeHotels.every((hotel) => hotel.getSize() >= 11);
 
     return isAnyHotel41 || areActiveHotelsSafe;
   }
