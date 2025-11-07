@@ -253,14 +253,14 @@ export class Merger implements Game {
   }
 
   isMergerRoundOver() {
-    return this.countOfTurns >= this.turnsIndex;
+    return this.turnsIndex >= this.countOfTurns;
   }
 
   changeTurn() {
     this.updatePlayerIndex();
 
-    if (!this.doesPlayerHasStocks() && this.isMergerRoundOver()) {
-      this.changeTurn();
+    if (!this.doesPlayerHasStocks() && !this.isMergerRoundOver()) {
+      return this.changeTurn();
     }
 
     return { status: this.getCurrentPlayer() };
@@ -277,7 +277,7 @@ export class Merger implements Game {
   private initiateProcess() {
     this.countOfTurns = this.target.length * 3;
     this.distributeBonus(this.target[0]);
-    if (!this.doesPlayerHasStocks() && this.isMergerRoundOver()) {
+    if (!this.doesPlayerHasStocks() && !this.isMergerRoundOver()) {
       this.changeTurn();
     }
   }
